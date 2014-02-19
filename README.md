@@ -73,7 +73,7 @@ Convert media input files into DASH stream files.
 		
 #### Prerequisites
 
-* common_transcoding-packager-encrypter is installed (`fixes branch`);
+* common_transcoding-packager-encrypter is installed (`fixes` branch);
 
 #### Insturctions
 
