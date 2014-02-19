@@ -19,8 +19,8 @@ dash.as
 	* Loaded bytes indicator;
 	* Buffering indicator;
 
-[1] A server has to have [crossdomain.xml](https://github.com/castlabs/dash.as/blob/master/utils/crossdomain.xml) file in the root context.  
-[2] A server has to have custom [.htaccess](https://github.com/castlabs/dash.as/blob/master/utils/.htaccess) file in the root context.  
+[1] A server has to have [crossdomain.xml](https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml) file in the root context.  
+[2] A server has to have custom [.htaccess](https://github.com/castlabs/dashas/blob/master/utils/.htaccess) file in the root context.  
 [3] Adobe Flash Player supports only [H.264 (MPEG-4 Part 10)  and HE-AAC (MPEG-4 Part 3) codecs](http://helpx.adobe.com/flash/kb/supported-codecs-flash-player.html).
 
 ## Known issues
@@ -107,9 +107,9 @@ Copy DASH stream files into directory that is visible from the web (preferred Ap
 
 1. Copy DASH stream files;
 
-1. Copy the [crossdomain.xml](https://github.com/castlabs/dash.as/blob/master/utils/crossdomain.xml) file into the root context;
+1. Copy the [crossdomain.xml](https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml) file into the root context;
 
-1. Copy the [.htaccess](https://github.com/castlabs/dash.as/blob/master/utils/.htaccess) file into the root context;
+1. Copy the [.htaccess](https://github.com/castlabs/dashas/blob/master/utils/.htaccess) file into the root context;
 
 ### Page
 
@@ -117,9 +117,9 @@ Add a HTML snippet to a page.
 
 #### Insturctions
 
-1. Copy [swfobject](https://github.com/castlabs/dash.as/tree/master/site/demo/swfobject) directory into the root context;
+1. Copy [swfobject](https://github.com/castlabs/dashas/tree/master/site/demo/swfobject) directory into the root context;
 
-1. Copy [dashas.swf](https://github.com/castlabs/dash.as/blob/master/site/demo/debug/dash.as.swf) and [StrobeMediaPlayback.swf](https://github.com/castlabs/dash.as/blob/master/site/demo/debug/StrobeMediaPlayback.swf) files into a `dashas` directory in the root context;
+1. Copy [dashas.swf](https://github.com/castlabs/dashas/blob/master/site/demo/debug/dashas.swf) and [StrobeMediaPlayback.swf](https://github.com/castlabs/dashas/blob/master/site/demo/debug/StrobeMediaPlayback.swf) files into a `dashas` directory in the root context;
 
 1. Append a following snippet to the header (type absolute URL to a `Manifest.mpd` file):
 
