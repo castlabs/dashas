@@ -163,4 +163,4 @@ Add a HTML snippet to a page.
 		$ gradle clean compile
 		
 		
-... do you prefer developing in an IDE? Read how to [import project into the IntelliJ IDEA](https://github.com/castlabs/dash.as/wiki/IntelliJ-IDEA).
+... do you prefer developing in an IDE? Read how to [import project into the IntelliJ IDEA](https://github.com/castlabs/dashas/wiki/IntelliJ-IDEA).
