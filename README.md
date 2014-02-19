@@ -25,7 +25,7 @@ dash.as
 
 ## Known issues
 
-* [#9](https://github.com/castlabs/dash.as/issues/9) Player doesn't resume downloading after reconnecting;
+* [#2](https://github.com/castlabs/dashas/issues/2) Player doesn't resume downloading after reconnecting;
 
 ## Demo
 
