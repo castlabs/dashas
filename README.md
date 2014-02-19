@@ -3,6 +3,10 @@ dash.as
 
 [MPEG-DASH](http://dashif.org/) player written in ActionScript. The project is released under the [Mozilla Public License 2.0](http://www.mozilla.org/MPL/2.0/).
 
+## Demo
+
+For more information visit [examples page](http://dashas.castlabs.com/demo/index.html).
+
 ## Features
 
 * An OSMF extension;
@@ -23,30 +27,10 @@ dash.as
 [2] A server has to have custom [.htaccess](https://github.com/castlabs/dashas/blob/master/utils/.htaccess) file in the root context.  
 [3] Adobe Flash Player supports only [H.264 (MPEG-4 Part 10)  and HE-AAC (MPEG-4 Part 3) codecs](http://helpx.adobe.com/flash/kb/supported-codecs-flash-player.html).
 
-## Known issues
+### Known issues
 
 * [#2](https://github.com/castlabs/dashas/issues/2) Player doesn't resume downloading after reconnecting;
 
-## Demo
-
-### Prerequisites
-
-* Adobe Flash Player is installed (at least version 10.1);
-
-### Insturctions
-
-1. Go to demo directory:
-
-		$ cd <workspace>/site/demo/
-
-1. Run simple HTTP server (with Python 3.x use `python -m http.server 8000`):
-
-		$ python -m SimpleHTTPServer
-
-1. Open browser and go to URL:
-
-		http://localhost:8000/
-		
 ## Start guide
 
 ### Input files
