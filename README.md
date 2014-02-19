@@ -83,7 +83,7 @@ Convert media input files into DASH stream files.
 		
 ### Page
 
-Run dash.as locally using [Apache2](http://httpd.apache.org/).
+Finally try dash.as locally.
 
 #### Prerequisites
 
