@@ -69,7 +69,7 @@ Create media input files in different bitrates.
 		
 ### Stream
 		
-Convert media input files into a DASH stream.
+Convert media input files into DASH stream files.
 		
 #### Prerequisites
 
@@ -85,53 +85,55 @@ Convert media input files into a DASH stream.
 		
 		$ TODO use `common_transcoding-packager-encrypter` from `fixes` branch 
 		
-### Server
-
-Copy DASH stream files into directory that is visible from the web (preferred Apache2).
-
-#### Insturctions
-
-1. Copy DASH stream files;
-
-1. Copy the [crossdomain.xml](https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml) file into the root context;
-
-1. Copy the [.htaccess](https://github.com/castlabs/dashas/blob/master/utils/.htaccess) file into the root context;
-
 ### Page
 
-Add a HTML snippet to a page.
+Run dash.as locally using [Apache2](http://httpd.apache.org/).
+
+#### Prerequisites
+
+* apache2 is installed;
 
 #### Insturctions
 
-1. Copy [swfobject](https://github.com/castlabs/dashas/tree/master/site/demo/swfobject) directory into the root context;
+1. Create a virtual host for localhost;
 
-1. Copy [dashas.swf](https://github.com/castlabs/dashas/blob/master/site/demo/debug/dashas.swf) and [StrobeMediaPlayback.swf](https://github.com/castlabs/dashas/blob/master/site/demo/debug/StrobeMediaPlayback.swf) files into a `dashas` directory in the root context;
+1. Copy DASH stream files into a document root;
 
-1. Append a following snippet to the header (type absolute URL to a `Manifest.mpd` file):
+1. Copy [crossdomain.xml](https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml) and [.htaccess](https://github.com/castlabs/dashas/blob/master/utils/.htaccess) files into a document root;
 
-        <script type="text/javascript" src="/swfobject/swfobject.js"></script>
-        <script type="text/javascript">
-            var flashvars = {};
-            
-            // absolut URL to Manifest.mpd file
-            flashvars.src = encodeURIComponent("<absolute URL to Manifest.mpd file>");
-            
-            // absolut URL to dashas.swf file
-            flashvars.plugin_DashPlugin = encodeURIComponent("<host>/dashas/dashas.swf");
+1. Copy contents of the [demo](https://github.com/castlabs/dashas/tree/master/site/demo/) directory into a document root;
 
-            var params = {};
-            params.allowfullscreen = "true";
-            params.allownetworking = "true";
-            params.wmode = "direct";
+1. Create `index.html` file in a document root (type absolute URL to a `Manifest.mpd` file):
 
-            swfobject.embedSWF("/dashas/StrobeMediaPlayback.swf", "placeholder", "640", "360", "10.1", "/swfobject/expressInstall.swf", flashvars, params, {});
-        </script>
-
-1. Append a following snippet to the body:
-
-        <div id="placeholder">
-            <p><span>Please install <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></span></p>
-        </div>
+		<html>
+		<head>
+		<script type="text/javascript" src="/swfobject/swfobject.js"></script>
+		<script type="text/javascript">
+		    var flashvars = {};
+		
+		    // absolut URL to Manifest.mpd file
+		    flashvars.src = encodeURIComponent("<absolute URL to Manifest.mpd file>");
+		
+		    // absolut URL to dashas.swf file
+		    flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/dashas.swf");
+		
+		    var params = {};
+		    params.allowfullscreen = "true";
+		    params.allownetworking = "true";
+		    params.wmode = "direct";
+		
+		    swfobject.embedSWF("/debug/StrobeMediaPlayback.swf", "placeholder", "640", "360", "10.1", "/swfobject/expressInstall.swf", flashvars, params, {});
+		</script>
+		</head>
+		
+		<body>
+		<div id="placeholder">
+		    <p><span>Please install <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></span></p>
+		</div>
+		</body>
+		</html>
+	
+1. Go to `http://localhost/index.html`;
 	
 ## Development
 
