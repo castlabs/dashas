@@ -33,7 +33,7 @@ For more information visit [examples page](http://dashas.castlabs.com/demo/index
 
 * [#2](https://github.com/castlabs/dashas/issues/2) Player doesn't resume downloading after reconnecting;
 
-## Start guide
+## Quick start
 
 ### Input files
 
