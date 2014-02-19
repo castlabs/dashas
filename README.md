@@ -73,17 +73,13 @@ Convert media input files into DASH stream files.
 		
 #### Prerequisites
 
-* common_transcoding-packager-encrypter is installed;
+* common_transcoding-packager-encrypter is installed (`fixes branch`);
 
 #### Insturctions
-		
-* Use following command to generate DASH stream with file segments (better caching):
 
-		$ TODO use `common_transcoding-packager-encrypter` from `fixes` branch 
+* Use following command to generate DASH stream with byte segments:
 		
-* Use following command to generate DASH stream with byte segments (smaller size):
-		
-		$ TODO use `common_transcoding-packager-encrypter` from `fixes` branch 
+		$ dash -o <output directory> <input video files> <input audio files>
 		
 ### Page
 
