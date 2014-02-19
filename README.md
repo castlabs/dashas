@@ -1,7 +1,9 @@
 dash.as
 =======
 
-[MPEG-DASH](http://dashif.org/) player written in ActionScript. The project is released under the [Mozilla Public License 2.0](http://www.mozilla.org/MPL/2.0/).
+[MPEG-DASH](http://dashif.org/) player written in ActionScript. Current development status is technology preview. 
+
+The project is released under the [Mozilla Public License 2.0](http://www.mozilla.org/MPL/2.0/).
 
 ## Demo
 
