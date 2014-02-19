@@ -1,0 +1,67 @@
+/*
+ * Copyright (c) 2014 castLabs GmbH
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+package com.castlabs.dash.boxes {
+import flash.errors.IllegalOperationError;
+import flash.utils.ByteArray;
+
+internal class Box {
+    protected const SIZE_AND_TYPE:uint = 8;
+    private const NUMBER:uint = 4;
+
+    private var _end:uint;
+
+    public function Box(offset:uint, size:uint) {
+        _end = offset + size;
+    }
+
+    public function get end():uint {
+        return _end;
+    }
+
+    public function parse(ba:ByteArray):void {
+        while (ba.bytesAvailable) {
+            var offset:uint = ba.position;
+            var size:uint = ba.readUnsignedInt();
+            var type:String = ba.readUTFBytes(4);
+
+            var parsed:Object = parseChildBox(type, offset, size, ba);
+
+            if (parsed == false) {
+                if (ba.position < _end) { // skip
+                    ba.position += size - SIZE_AND_TYPE;
+                } else { // quit
+                    ba.position = _end;
+                    return;
+                }
+            }
+        }
+    }
+
+    protected function parseChildBox(type:String, offset:uint, size:uint, ba:ByteArray):Boolean {
+        throw new IllegalOperationError("Method not implemented");
+    }
+
+    protected function readNumber(ba:ByteArray, length:uint = NUMBER):uint {
+        var number:uint = 0;
+
+        for (var i:uint = 0; i < length; i++) {
+            number = number << 8;
+            number += ba.readUnsignedByte();
+        }
+
+        return number;
+    }
+
+    protected function skipNumberIfNeeded(condition:Boolean, ba:ByteArray):void {
+        if (condition) {
+            ba.position += NUMBER;
+        }
+    }
+}
+}

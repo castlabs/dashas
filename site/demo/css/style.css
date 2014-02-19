@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2014 castLabs GmbH
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#placeholder p {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+    width: 640px;
+    height: 360px;
+    text-align: center;
+    line-height: 350px;
+}

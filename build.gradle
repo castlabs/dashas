@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.gradlefx', name: 'gradlefx', version: '0.7.1'
+    }
+}
+
+apply plugin: 'gradlefx'
+apply plugin: 'flashbuilder'
+
+type = 'swf'
+version = '1.0-SNAPSHOT'
+mainClass = 'com/castlabs/dash/DashPlugin.as'
+
+repositories {
+    ivy {
+        name 'Apache'
+        artifactPattern 'http://apache.cu.be/flex/[revision]/binaries/[module]-[revision]-bin.[ext]'
+    }
+}
+
+dependencies {
+    flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.11.0', ext: 'tar.gz'
+}
+
+additionalCompilerOptions = [
+    '-define=CONFIG::FLASH_10_1,true',
+    '-define=CONFIG::LOGGING,true',
+    '-define=CONFIG::PLATFORM,true',
+    '-define=CONFIG::MOCK,false',
+    '-debug=true',
+]
+
+sdkAutoInstall {
+    showPrompts = false
+}
+
+task copySwfToDemo(type: Copy) {
+    mustRunAfter compileFlex
+
+    from file('build/dashas.swf')
+    into 'site/demo/debug/'
+}
+
+task compile {
+    dependsOn compileFlex
+    dependsOn copySwfToDemo
+}
+
+

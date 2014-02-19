@@ -1,0 +1,11 @@
+<IfModule headers_module>
+<IfModule rewrite_module>
+
+	# ^(.*) if .htaccess in a root; ^/(.*) otherwise
+	RewriteEngine On
+	RewriteCond %{QUERY_STRING} ^(.*)bytes=(.*)$
+	RewriteRule ^(.*) - [L,E=range:%2]
+
+	RequestHeader set Range "bytes=%{range}e" env=range
+</IfModule>
+</IfModule>

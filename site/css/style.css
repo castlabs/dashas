@@ -1,0 +1,183 @@
+/*
+ * Copyright (c) 2014 castLabs GmbH
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+footer {
+  background-color: #edeff1;
+  color: #bac1c8;
+  font-size: 15px;
+  padding: 0;
+}
+
+.container {
+  max-width: 970px !important;
+}
+
+.demo-headline {
+  /*padding: 73px 0 110px;*/
+  text-align: center;
+}
+
+.demo-logo {
+  font: 900 90px/100px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: -2px;
+  margin: 10px 0;
+}
+
+.demo-logo small {
+  color: rgba(52, 73, 94, 0.30000000000000004);
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+  padding-top: 5px;
+}
+
+.features span {
+  font-size: 32px;
+}
+
+.documentation .guides p {
+  font-size: 12px;
+  line-height: 20px;
+}
+
+footer h6 {
+  font-size: 18px;
+  display: inline;
+  padding-left: 10px;
+  margin: 0;
+}
+
+footer a.company {
+  color: rgb(186, 193, 200);
+}
+
+footer {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+footer p {
+  font-size: 14px;
+  /*line-height:60px;*/
+  margin: 0;
+}
+
+.trynow {
+  padding: 15px 20px;
+  color: #777;
+  background-color: #fcf8e3;
+  margin-bottom: 73px;
+}
+
+.trynow p.lead {
+  font-size: 18px;
+  margin: 0;
+}
+
+.trynow .slogan {
+  margin: 0 auto;
+}
+
+.trynow a {
+  margin-left: 30px;
+}
+
+.made {
+  border: 2px solid rgb(186, 193, 200);
+  display: inline;
+  padding: 5px;
+  color: rgb(186, 193, 200);
+  font-size: 14px;
+}
+
+.demo object {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.demo h5 {
+  color: #D35400;
+}
+
+.xs-space-after {
+  margin-bottom: 20px;
+}
+
+.sm-space-before {
+  margin-top: 40px;
+}
+
+.md-space-before {
+  margin-top: 73px;
+}
+
+.md-space-after {
+  margin-bottom: 73px;
+}
+
+.lg-space-after {
+  margin-bottom: 110px;
+}
+
+.lg-space-before {
+  margin-top: 110px;
+}
+
+@media (max-width: 992px) {
+  footer .text-left,
+  footer .text-right,
+  .demo .text-right {
+    text-align: center;
+  }
+  .made {
+    display: none;
+  }
+  .features span {
+    font-size: 48px;
+  }  
+  footer {
+    padding-bottom: 10px;
+  }
+  footer p {
+    margin-bottom: 10px;
+  }
+  .trynow a {
+    display: block;
+    margin-top: 15px;
+    margin-left: 0px;
+  }
+  .xs-space-after {
+    margin-bottom: 0;
+  }
+  .sm-space-before {
+    margin-top: 0;
+  }
+  .md-space-before {
+    margin-top: 48px;
+  }
+  .md-space-after {
+    margin-bottom: 48px;
+  }  
+  .lg-space-after {
+    margin-bottom: 73px;
+  }
+  .lg-space-before {
+    margin-top: 73px;
+  }
+}
+
+@media (max-width: 330px) {
+  .demo-logo {
+    font: 900 64px/80px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  footer a {
+    white-space:nowrap;
+  }
+}

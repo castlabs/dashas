@@ -1,0 +1,21 @@
+# IDEA
+.idea/
+*.iml
+bin-debug/
+
+# Flash Builder
+.flexProperties
+.actionScriptProperties
+.project
+
+# Maven
+target/
+
+# Gradle
+build/
+.gradle/
+
+# other
+.DS_Store
+unused/
+rsync.sh
