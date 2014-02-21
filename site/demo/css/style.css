@@ -9,8 +9,44 @@
 #placeholder p {
     background-color: #ECF0F1;
     color: #2C3E50;
-    width: 640px;
     height: 360px;
     text-align: center;
     line-height: 350px;
 }
+
+.console .log #screen {
+    overflow:scroll;
+    width: 640px;
+    height: 450px;
+}
+
+.console .log #screen p {
+    margin: 0;
+    padding: 5px;
+}
+
+.console .log #screen p:nth-child(even) {
+    background: #ECF0F1
+}
+
+.console .log .buttons {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #95A5A6;
+}
+
+.console .log .buttons label {
+    margin-right: 10px;
+}
+
+.console .log {
+    margin-top: 20px;
+    width: 640px;
+    border: solid 1px #7F8C8D;
+}
+
+.console .bandwidth #chart {
+    margin-top: 20px;
+    width: 640px;
+}
+

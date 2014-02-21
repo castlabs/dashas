@@ -56,8 +56,9 @@ public class BandwidthMonitor {
                 _lastBandwidth = sum / _history.length;
             }
 
-            trace("Duration/Bits/Bandwidth: " + duration + "/" + contentLengthBits + "/" + bandwidth);
-            trace("Updated user's bandwidth: " + _lastBandwidth);
+            Console.debug("Duration/Bits/Bandwidth: " + duration + "/" + contentLengthBits + "/" + bandwidth);
+            Console.debug("Updated user's bandwidth: " + _lastBandwidth);
+            Console.appendBandwidth(_lastBandwidth);
         }
 
         //URLLoader events

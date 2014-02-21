@@ -11,6 +11,7 @@ import com.castlabs.dash.events.FragmentEvent;
 import com.castlabs.dash.events.StreamEvent;
 import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.FragmentLoader;
+import com.castlabs.dash.utils.Console;
 
 import flash.events.NetStatusEvent;
 import flash.events.TimerEvent;
@@ -219,42 +220,42 @@ public class DashNetStream extends NetStream {
     private function updateState(action:Number):void {
         switch (action) {
             case PLAY:
-                trace("PLAY");
-                trace("PLAYING");
+                Console.debug("action: PLAY");
+                Console.debug("state: PLAYING");
                 _state = PLAYING;
                 break;
             case PAUSE:
-                trace("PAUSE");
-                trace("PAUSED");
+                Console.debug("action: PAUSE");
+                Console.debug("state: PAUSED");
                 _state = PAUSED;
                 break;
             case RESUME:
-                trace("RESUME");
-                trace("PLAYING");
+                Console.debug("action: RESUME");
+                Console.debug("state: PLAYING");
                 _state = PLAYING;
                 break;
             case STOP:
-                trace("STOP");
-                trace("STOPPED");
+                Console.debug("STOP");
+                Console.debug("state: STOPPED");
                 _state = STOPPED;
                 break;
             case SEEK:
-                trace("SEEK");
+                Console.debug("action: SEEK");
                 switch (_state) {
                     case PAUSED:
-                        trace("SEEKING");
+                        Console.debug("state: SEEKING");
                         _state = SEEKING;
                         break;
                     case PLAYING:
                     case BUFFERING:
-                        trace("PLAYING");
+                        Console.debug("state: PLAYING");
                         _state = PLAYING;
                         break;
                 }
                 break;
             case BUFFER:
-                trace("BUFFER");
-                trace("BUFFERING");
+                Console.debug("action: BUFFER");
+                Console.debug("state: BUFFERING");
                 _state = BUFFERING;
                 break;
         }
@@ -324,7 +325,7 @@ public class DashNetStream extends NetStream {
                 close();
                 break;
             default:
-                trace(event.info.code);
+                Console.debug(event.info.code);
         }
     }
 

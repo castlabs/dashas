@@ -11,6 +11,7 @@ import com.castlabs.dash.descriptors.segments.DataSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.events.SegmentEvent;
 import com.castlabs.dash.utils.BandwidthMonitor;
+import com.castlabs.dash.utils.Console;
 
 import flash.events.Event;
 import flash.events.IOErrorEvent;
@@ -30,7 +31,7 @@ public class DataSegmentLoader extends SegmentLoader {
         http.dataFormat = URLLoaderDataFormat.BINARY;
         http.addEventListener(Event.COMPLETE, onComplete);
         http.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
-            trace("Connection was interrupted:" + event.toString());
+            Console.warn("Connection was interrupted:" + event.toString());
         });
 
         _monitor.appendListeners(http);

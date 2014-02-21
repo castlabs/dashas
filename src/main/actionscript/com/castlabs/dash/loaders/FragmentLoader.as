@@ -24,6 +24,7 @@ import com.castlabs.dash.handlers.MediaSegmentHandler;
 import com.castlabs.dash.handlers.VideoSegmentHandler;
 import com.castlabs.dash.utils.AdaptiveSegmentIterator;
 import com.castlabs.dash.utils.BandwidthMonitor;
+import com.castlabs.dash.utils.Console;
 
 import flash.events.EventDispatcher;
 import flash.utils.ByteArray;
@@ -78,8 +79,8 @@ public class FragmentLoader extends EventDispatcher {
         _audioOffset = _audioSegment.startTimestamp;
         _videoOffset = _videoSegment.startTimestamp;
 
-        trace("Seek to audio segment: " + _audioSegment);
-        trace("Seek to video segment: " + _videoSegment);
+        Console.info("Seek to audio segment: " + _audioSegment);
+        Console.info("Seek to video segment: " + _videoSegment);
 
         return _videoSegment.startTimestamp; // offset
     }
@@ -120,12 +121,12 @@ public class FragmentLoader extends EventDispatcher {
         }
 
         if (!_audioSegmentLoaded) {
-            trace("Next audio segment: " + _audioSegment);
+            Console.info("Next audio segment: " + _audioSegment);
             _audioSegmentLoader = loadSegment(_audioSegment, onAudioSegmentLoaded);
         }
 
         if (!_videoSegmentLoaded) {
-            trace("Next video segment: " + _videoSegment);
+            Console.info("Next video segment: " + _videoSegment);
             _videoSegmentLoader = loadSegment(_videoSegment, onVideoSegmentLoaded);
         }
     }
