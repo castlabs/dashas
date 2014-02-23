@@ -20,6 +20,8 @@ import flash.net.NetStream;
 import flash.net.NetStreamAppendBytesAction;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
+import flash.utils.clearTimeout;
+import flash.utils.setTimeout;
 
 import org.osmf.net.NetStreamCodes;
 
@@ -320,7 +322,23 @@ public class DashNetStream extends NetStream {
     private function onLoaded(event:FragmentEvent):void {
         _loadedTimestamp = event.endTimestamp;
         appendBytes(event.bytes);
-        _loader.loadNextFragment();
+        next();
+    }
+
+    private var timerId:uint;
+    private var timer:Boolean = false;
+    private function next():void {
+        if (timer) {
+            clearTimeout(timerId);
+            timer = false;
+        }
+
+        if ((_loadedTimestamp - time) < 30) {
+            _loader.loadNextFragment();
+        } else {
+            timerId = setTimeout(next, 250);
+            timer = true;
+        }
     }
 
     private function onNetStatus(event:NetStatusEvent):void {
