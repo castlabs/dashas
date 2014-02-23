@@ -8,11 +8,11 @@
 
 package com.castlabs.dash.loaders {
 import com.castlabs.dash.events.ManifestEvent;
-import com.castlabs.dash.utils.BandwidthMonitor;
+import com.castlabs.dash.utils.Console;
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.events.IEventDispatcher;
+import flash.events.IOErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
@@ -29,6 +29,9 @@ public class ManifestLoader extends EventDispatcher {
 
         http.dataFormat = URLLoaderDataFormat.TEXT;
         http.addEventListener(Event.COMPLETE, onComplete);
+        http.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
+            Console.warn("Connection was interrupted:" + event.toString());
+        });
 
         http.load(new URLRequest(_url));
     }

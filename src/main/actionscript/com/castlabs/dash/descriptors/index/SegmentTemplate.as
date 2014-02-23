@@ -16,11 +16,11 @@ import com.castlabs.dash.descriptors.segments.Segment;
 public class SegmentTemplate implements SegmentIndex {
     use namespace dash;
 
-    private var _initializationSegmentFilename:String;
-    private var _segmentFilename:String;
-    private var _duration:Number; //TODO rename to avoid confusion with video duration
-    private var _timescale:Number;
-    private var _startNumber:Number;
+    protected var _initializationSegmentFilename:String;
+    protected var _segmentFilename:String;
+    protected var _duration:Number; //TODO rename to avoid confusion with video duration
+    protected var _timescale:Number;
+    protected var _startNumber:Number;
 
     public function SegmentTemplate(representation:XML) {
         _initializationSegmentFilename = traverseAndBuildInitializationFilename(representation);
@@ -65,6 +65,9 @@ public class SegmentTemplate implements SegmentIndex {
         return new MediaDataSegment(internalRepresentationId, baseUrl + url, "0-", startTimestamp, endTimestamp);
     }
 
+    public function update(xml:XML):void {
+    }
+
     private function get segmentDuration():Number {
         return _duration / _timescale;
     }
@@ -78,25 +81,25 @@ public class SegmentTemplate implements SegmentIndex {
         return predictedTimestamp >= duration;
     }
 
-    private static function traverseAndBuildInitializationFilename(node:XML):String {
+    private function traverseAndBuildInitializationFilename(node:XML):String {
         if (node == null) {
             throw new ArgumentError("Couldn't find initialization segment");
         }
 
         if (node.SegmentBase.length() == 1
                 && node.SegmentBase.Initialization.length() == 1
-                && node.SegmentBase.Initialization.@sourceURL != null) {
+                && node.SegmentBase.Initialization.hasOwnProperty("@sourceURL")) {
             return node.SegmentBase.Initialization.@sourceURL.toString();
         }
 
         if (node.SegmentTemplate.length() == 1
                 && node.SegmentTemplate.Initialization.length() == 1
-                && node.SegmentTemplate.Initialization.@sourceURL != null) {
+                && node.SegmentTemplate.Initialization.hasOwnProperty("@sourceURL")) {
             return node.SegmentTemplate.Initialization.@sourceURL.toString();
         }
 
         if (node.SegmentTemplate.length() == 1
-                && node.SegmentTemplate.@initialization != null) {
+                && node.SegmentTemplate.hasOwnProperty("@initialization")) {
             return node.SegmentTemplate.@initialization.toString();
         }
 
@@ -104,12 +107,12 @@ public class SegmentTemplate implements SegmentIndex {
         return traverseAndBuildInitializationFilename(node.parent());
     }
 
-    private static function traverseAndBuildSegmentFilename(node:XML):String {
+    private function traverseAndBuildSegmentFilename(node:XML):String {
         if (node == null) {
             throw new ArgumentError("Couldn't find media segment");
         }
 
-        if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.@media != null) {
+        if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@media")) {
             return node.SegmentTemplate.@media.toString();
         }
 
@@ -117,12 +120,12 @@ public class SegmentTemplate implements SegmentIndex {
         return traverseAndBuildSegmentFilename(node.parent());
     }
 
-    private static function traverseAndBuildDuration(node:XML):Number {
+    protected function traverseAndBuildDuration(node:XML):Number {
         if (node == null) {
             throw new ArgumentError("Couldn't find duration");
         }
 
-        if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.@duration != null) {
+        if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@duration")) {
             return Number(node.SegmentTemplate.@duration.toString());
         }
 
@@ -130,12 +133,12 @@ public class SegmentTemplate implements SegmentIndex {
         return traverseAndBuildDuration(node.parent());
     }
 
-    private static function traverseAndBuildTimescale(node:XML):Number {
+    private function traverseAndBuildTimescale(node:XML):Number {
         if (node == null) {
             throw new ArgumentError("Couldn't find timescale");
         }
 
-        if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.@timescale != null) {
+        if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@timescale")) {
             return Number(node.SegmentTemplate.@timescale.toString());
         }
 
@@ -143,12 +146,12 @@ public class SegmentTemplate implements SegmentIndex {
         return traverseAndBuildTimescale(node.parent());
     }
 
-    private static function traverseAndBuildStartNumber(node:XML):Number {
+    protected function traverseAndBuildStartNumber(node:XML):Number {
         if (node == null) {
             throw new ArgumentError("Couldn't find start number");
         }
 
-        if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.@startNumber != null) {
+        if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@startNumber")) {
             return Number(node.SegmentTemplate.@startNumber.toString());
         }
 

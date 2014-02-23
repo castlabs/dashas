@@ -8,10 +8,7 @@
 
 package com.castlabs.dash.handlers {
 import com.castlabs.dash.boxes.FLVTag;
-import com.castlabs.dash.boxes.MovieBox;
 import com.castlabs.dash.boxes.SampleEntry;
-import com.castlabs.dash.boxes.TrackBox;
-import com.castlabs.dash.boxes.TrackExtendsBox;
 
 import flash.utils.ByteArray;
 

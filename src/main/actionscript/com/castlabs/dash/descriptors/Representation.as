@@ -52,6 +52,10 @@ public class Representation {
         return _segmentIndex.getSegment(timestamp, _id, _bandwidth, _baseUrl, _duration, _internalId);
     }
 
+    public function update(xml:XML):void {
+        _segmentIndex.update(xml);
+    }
+
     private static function buildId(xml:XML):String {
         return xml.@id;
     }

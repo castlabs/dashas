@@ -10,7 +10,6 @@ package com.castlabs.dash {
 import flash.events.NetStatusEvent;
 
 import org.osmf.net.NetStreamCodes;
-
 import org.osmf.traits.TimeTrait;
 
 public class DashTimeTrait extends TimeTrait {

@@ -7,11 +7,11 @@
  */
 
 package com.castlabs.dash.loaders {
-import com.castlabs.dash.boxes.FLVTag;
 import com.castlabs.dash.boxes.Mixer;
 import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
+import com.castlabs.dash.descriptors.segments.WaitSegment;
 import com.castlabs.dash.events.FragmentEvent;
 import com.castlabs.dash.events.SegmentEvent;
 import com.castlabs.dash.events.StreamEvent;
@@ -29,6 +29,7 @@ import com.castlabs.dash.utils.Console;
 import flash.events.EventDispatcher;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
+import flash.utils.setTimeout;
 
 public class FragmentLoader extends EventDispatcher {
     private var _manifest:ManifestHandler;
@@ -107,11 +108,25 @@ public class FragmentLoader extends EventDispatcher {
         }
 
         if (!_audioSegmentLoaded) {
-            _audioSegment = MediaDataSegment(_iterator.getAudioSegment(_audioSegment.endTimestamp));
+            var segment1:Segment = _iterator.getAudioSegment(_audioSegment.endTimestamp);
+
+            if (segment1 is WaitSegment) {
+                setTimeout(loadNextFragment, 250);
+                return;
+            }
+
+            _audioSegment = MediaDataSegment(segment1);
         }
 
         if (!_videoSegmentLoaded) {
-            _videoSegment = MediaDataSegment(_iterator.getVideoSegment(_videoSegment.endTimestamp));
+            var segment2:Segment = _iterator.getVideoSegment(_videoSegment.endTimestamp);
+
+            if (segment2 is WaitSegment) {
+                setTimeout(loadNextFragment, 250);
+                return;
+            }
+
+            _videoSegment = MediaDataSegment(segment2);
         }
 
         if (!_audioSegment || !_videoSegment) { // notify end
@@ -180,7 +195,7 @@ public class FragmentLoader extends EventDispatcher {
         var indexSegmentsLoaded:Boolean = getLength(_indexSegmentFlags) == expectedLength;
 
         if (initializationSegmentsLoaded && indexSegmentsLoaded) {
-            dispatchEvent(new StreamEvent(StreamEvent.READY, false, false, { duration: _manifest.duration }));
+            dispatchEvent(new StreamEvent(StreamEvent.READY, false, false, _manifest));
         }
     }
 
@@ -269,7 +284,7 @@ public class FragmentLoader extends EventDispatcher {
                 endTimestamp = _audioSegment.endTimestamp;
             }
 
-            dispatchEvent(new FragmentEvent(FragmentEvent.LOADED, false, false, bytes, endTimestamp)); // startTimestamp
+            dispatchEvent(new FragmentEvent(FragmentEvent.LOADED, false, false, bytes, endTimestamp));
         }
     }
 

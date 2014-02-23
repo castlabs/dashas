@@ -9,17 +9,31 @@
 package com.castlabs.dash.handlers {
 import com.castlabs.dash.dash;
 import com.castlabs.dash.descriptors.Representation;
+import com.castlabs.dash.events.ManifestEvent;
+import com.castlabs.dash.loaders.ManifestLoader;
+import com.castlabs.dash.utils.Manifest;
+
+import flash.events.TimerEvent;
+import flash.utils.Timer;
 
 public class ManifestHandler {
     use namespace dash;
 
+    private var _url:String;
+
+    private var _live:Boolean;
     private var _duration:Number;
     private var _audioRepresentations:Vector.<Representation>;
     private var _videoRepresentations:Vector.<Representation>;
 
     private var _nextInternalRepresentationId:Number = 0;
 
+    private var _updateTimer:Timer;
+
     public function ManifestHandler(url:String, xml:XML) {
+        _url = url;
+
+        _live = buildLive(xml);
         _duration = buildDuration(xml);
 
         var baseUrl:String = buildBaseUrl(url);
@@ -28,6 +42,17 @@ public class ManifestHandler {
 
         sortByBandwidth(_audioRepresentations);
         sortByBandwidth(_videoRepresentations);
+
+        var minimumUpdatePeriod:Number = buildMinimumUpdatePeriod(xml);
+        if (_live && minimumUpdatePeriod) {
+            _updateTimer = new Timer(minimumUpdatePeriod * 1000);
+            _updateTimer.addEventListener(TimerEvent.TIMER, onUpdate);
+            _updateTimer.start();
+        }
+    }
+
+    public function get live():Boolean {
+        return _live;
     }
 
     public function get duration():Number {
@@ -42,35 +67,65 @@ public class ManifestHandler {
         return _videoRepresentations
     }
 
+    private function onUpdate(timerEvent:TimerEvent):void {
+        var loader:ManifestLoader = new ManifestLoader(_url);
+        loader.addEventListener(ManifestEvent.LOADED, onLoad);
+
+        function onLoad(event:ManifestEvent):void {
+            for each (var representation1:Representation in _videoRepresentations) {
+                representation1.update(event.xml..AdaptationSet.(@mimeType == "video/mp4")[0]);
+            }
+
+            for each (var representation2:Representation in _audioRepresentations) {
+                representation2.update(event.xml..AdaptationSet.(@mimeType == "audio/mp4")[0]);
+            }
+        }
+
+        loader.load();
+    }
+
+    private function buildMinimumUpdatePeriod(xml:XML):Number {
+        if (xml.hasOwnProperty("@minimumUpdatePeriod")) {
+            return Manifest.toSeconds(xml.@minimumUpdatePeriod.toString());
+        }
+
+        return NaN;
+    }
+
     private static function buildBaseUrl(url:String):String {
         return url.slice(0, url.lastIndexOf("/")) + "/";
     }
 
     private static function buildDuration(xml:XML):Number {
+        if (xml.hasOwnProperty("@mediaPresentationDuration")) {
+            return Manifest.toSeconds(xml.@mediaPresentationDuration.toString());
+        }
 
-        // format: "PT\d+H\d+M\d+S"; "S" means seconds, "M" means minutes and "H" means hours
-        var duration:String = xml.@mediaPresentationDuration.toString();
+        return NaN;
+    }
 
-        var match:Array;
-
-        match = duration.match(/([\d.]+)S/);
-        var seconds:Number = match ? Number(match[1]) : 0;
-
-        match = duration.match(/([\d.]+)M/);
-        var minutes:Number = match ? Number(match[1]) : 0;
-
-        match = duration.match(/([\d.]+)H/);
-        var hours:Number = match ? Number(match[1]) : 0;
-
-        return (hours * 60 * 60) + (minutes * 60) + seconds;
+    private static function buildLive(xml:XML):Boolean {
+        if (xml.hasOwnProperty("@type")) {
+            return xml.@type.toString() == "dynamic";
+        }
+        return false;
     }
 
     private static function findVideoRepresentationNodes(xml:XML):* {
-        return xml..Representation.(@mimeType == "video/mp4");
+        return findAdaptionSetNode("video/mp4", xml).Representation;
     }
 
     private static function findAudioRepresentationNodes(xml:XML):* {
-        return xml..Representation.(@mimeType == "audio/mp4");
+        return findAdaptionSetNode("audio/mp4", xml).Representation;
+    }
+
+    private static function findAdaptionSetNode(mimeType:String, xml:XML):* {
+        var adaptationSet:* = xml..AdaptationSet.(attribute('mimeType') == mimeType);
+        if (adaptationSet.length() == 1) {
+            return adaptationSet;
+        } else {
+            return xml..Representation.(@mimeType == mimeType)[0].parent();
+        }
     }
 
     private function buildRepresentations(baseUrl:String, duration:Number, nodes:XMLList):Vector.<Representation> {

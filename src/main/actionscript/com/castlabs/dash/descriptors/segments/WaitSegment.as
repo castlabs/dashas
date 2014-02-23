@@ -6,6 +6,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package com.castlabs.dash {
-public namespace dash = "urn:mpeg:dash:schema:mpd:2011"
+package com.castlabs.dash.descriptors.segments {
+public class WaitSegment extends NullSegment {
+    public function WaitSegment(internalRepresentationId:Number) {
+        super(internalRepresentationId);
+    }
+}
 }

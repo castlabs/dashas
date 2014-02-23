@@ -20,9 +20,8 @@ import org.osmf.media.URLResource;
 import org.osmf.net.NetConnectionFactoryBase;
 import org.osmf.net.NetLoader;
 import org.osmf.net.NetStreamLoadTrait;
-import org.osmf.traits.DisplayObjectTrait;
+import org.osmf.net.StreamingURLResource;
 import org.osmf.traits.LoadState;
-import org.osmf.traits.MediaTraitType;
 
 public class DashNetLoader extends NetLoader {
     public function DashNetLoader(factory:NetConnectionFactoryBase = null) {
@@ -42,10 +41,13 @@ public class DashNetLoader extends NetLoader {
         stream.addEventListener(StreamEvent.READY, onReady);
 
         function onReady(event:StreamEvent):void {
-            var timeTrait:DashTimeTrait = new DashTimeTrait(stream, event.info.duration);
-
-            loadTrait.setTrait(timeTrait);
-            loadTrait.setTrait(new DashSeekTrait(timeTrait, loadTrait, stream));
+            if (event.manifest.live && loadTrait.resource is StreamingURLResource) {
+                StreamingURLResource(loadTrait.resource).streamType = "live";
+            } else {
+                var timeTrait:DashTimeTrait = new DashTimeTrait(stream, event.manifest.duration);
+                loadTrait.setTrait(timeTrait);
+                loadTrait.setTrait(new DashSeekTrait(timeTrait, loadTrait, stream));
+            }
 
             updateLoadTrait(loadTrait, LoadState.READY);
         }

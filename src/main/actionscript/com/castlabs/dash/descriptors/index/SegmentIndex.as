@@ -19,5 +19,6 @@ public interface SegmentIndex {
     function getSegment(timestamp:Number, representationId:String, bandwidth:Number, baseUrl:String, duration:Number,
                         internalRepresentationId:Number):Segment;
 
+    function update(xml:XML):void;
 }
 }

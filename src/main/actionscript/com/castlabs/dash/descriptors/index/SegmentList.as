@@ -53,6 +53,9 @@ public class SegmentList implements SegmentIndex {
                 startTimestamp, endTimestamp);
     }
 
+    public function update(xml:XML):void {
+    }
+
     private function get segmentDuration():Number {
         return _duration / _timescale;
     }

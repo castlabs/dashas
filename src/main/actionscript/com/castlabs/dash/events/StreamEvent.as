@@ -7,27 +7,29 @@
  */
 
 package com.castlabs.dash.events {
+import com.castlabs.dash.handlers.ManifestHandler;
+
 import flash.events.Event;
 
 public class StreamEvent extends Event {
     public static const READY:String = "streamReady";
     public static const END:String = "streamEnd";
 
-    private var _info:Object;
+    private var _manifest:ManifestHandler;
 
-    public function StreamEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, info:Object = null) {
+    public function StreamEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false,
+                                manifest:ManifestHandler = null) {
         super(type, bubbles, cancelable);
-        _info = info;
+        _manifest = manifest;
     }
 
-    //TODO change into more verbose field with type
-    public function get info():Object {
-        return _info;
+    public function get manifest():ManifestHandler {
+        return _manifest;
     }
 
     // override to support re-dispatching
     override public function clone():Event {
-        return new StreamEvent(type, bubbles, cancelable, info);
+        return new StreamEvent(type, bubbles, cancelable, manifest);
     }
 }
 }

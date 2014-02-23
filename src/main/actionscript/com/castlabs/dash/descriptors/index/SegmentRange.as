@@ -54,6 +54,9 @@ public class SegmentRange implements SegmentIndex {
                 reference.startTimestamp, reference.endTimestamp);
     }
 
+    public function update(xml:XML):void {
+    }
+
     private function calculateIndex(timestamp:Number):Number {
         var references:Vector.<Object> = _indexSegmentHandler.references;
         for (var i:uint = 0; i < references.length; i++) {

@@ -24,6 +24,11 @@ public class SegmentIndexFactory {
             throw new ArgumentError("Couldn't find media segment");
         }
 
+        if (node.SegmentTemplate.length() == 1
+                && node.SegmentTemplate.SegmentTimeline.length() == 1) {
+            return new SegmentTimeline(representation);
+        }
+
         if (node.SegmentTemplate.length() == 1) {
             return new SegmentTemplate(representation);
         }

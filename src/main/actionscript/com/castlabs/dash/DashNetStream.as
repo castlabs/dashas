@@ -50,6 +50,7 @@ public class DashNetStream extends NetStream {
     private var _offset:Number = 0;
     private var _loadedTimestamp:Number = 0;
     private var _duration:Number = 0;
+    private var _live:Boolean;
 
     private var _bufferTimer:Timer;
 
@@ -162,28 +163,37 @@ public class DashNetStream extends NetStream {
     }
 
     override public function get bytesLoaded():uint {
-        if (_loadedTimestamp == 0) {
-
-            //WORKAROUND ScrubBar:531 ignores zero value
+        if (_live) {
             return 1;
-        }
+        } else {
+            if (_loadedTimestamp == 0) {
 
-        // seconds
-        return _loadedTimestamp;
+                //WORKAROUND ScrubBar:531 ignores zero value
+                return 1;
+            }
+
+            // seconds
+            return _loadedTimestamp;
+        }
     }
 
     override public function get bytesTotal():uint {
-        if (_loadedTimestamp == 0) {
+        if (_live) {
+            return 1;
+        } else {
+            if (_loadedTimestamp == 0) {
 
-            //WORKAROUND ScrubBar:531 ignore zero value; generate smallest possible fraction
-            return uint.MAX_VALUE;
+                //WORKAROUND ScrubBar:531 ignore zero value; generate smallest possible fraction
+                return uint.MAX_VALUE;
+            }
+
+            // seconds
+            return _duration;
         }
-
-        // seconds
-        return _duration;
     }
 
     public function set manifest(manifest:ManifestHandler):void {
+        _live = manifest.live;
         _duration = manifest.duration;
 
         _loader = Factory.createFragmentLoader(manifest);
