@@ -21,7 +21,7 @@ public class ManifestLoader extends EventDispatcher {
     private var _url:String;
 
     public function ManifestLoader(url:String) {
-        _url = url;
+        _url = url + "?t=" + new Date().getTime();
     }
 
     public function load():void {
