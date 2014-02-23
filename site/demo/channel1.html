@@ -1,0 +1,80 @@
+<!--
+  ~ Copyright (c) 2014 castLabs GmbH
+  ~
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="./c3/c3.css">
+
+    <script src="./d3/d3.min.js" charset="utf-8"></script>
+    <script src="./c3/c3.min.js"></script>
+    <script src="./js/console.js"></script>
+
+    <script type="text/javascript" src="./swfobject/swfobject.js"></script>
+    <script type="text/javascript">
+        window.addEventListener("load", function() {
+            loadSwf();
+        }, false);
+
+        function loadSwf() {
+            var timestamp = new Date().getTime();
+
+            var flashvars = {};
+            flashvars.src = encodeURIComponent("http://ec2-46-137-139-183.eu-west-1.compute.amazonaws.com/live/channel1/channel1.isml/channel1.mpd");
+            flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../debug/dashas.swf?t=" + timestamp);
+
+            var params = {};
+            params.allowfullscreen = "true";
+            params.allownetworking = "true";
+            params.wmode = "direct";
+
+            swfobject.embedSWF("./debug/StrobeMediaPlayback.swf?=" + timestamp, "placeholder", "640", "360", "10.1",
+                    "./swfobject/expressInstall.swf", flashvars, params, {});
+        }
+    </script>
+</head>
+
+<body>
+<div id="placeholder">
+    <p><span>Please install <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></span></p>
+</div>
+
+<div class="console">
+    <h4>Bandwidth</h4>
+
+    <div class="bandwidth">
+        <div id="chart"></div>
+    </div>
+
+    <h4>Console</h4>
+
+    <div class="log">
+        <div class="buttons">
+            <label for="error">
+                <input id="error" type="checkbox" checked="checked" value="">
+                Error
+            </label>
+            <label for="warn">
+                <input id="warn" type="checkbox" checked="checked" value="">
+                Warn
+            </label>
+            <label for="info">
+                <input id="info" type="checkbox" checked="checked" value="">
+                Info
+            </label>
+            <label for="debug">
+                <input id="debug" type="checkbox" value="">
+                Debug
+            </label>
+        </div>
+
+        <div id="screen"></div>
+    </div>
+</div>
+</body>
+</html>
