@@ -46,7 +46,6 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
                 var end:Number = seconds(_segments[i].time) + seconds(_segments[i].duration);
                 if (timestamp < end) {
                     segment = _segments[i];
-                    trace("segment i: " + i);
                     break;
                 }
             }

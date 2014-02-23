@@ -80,12 +80,14 @@ public class DashNetStream extends NetStream {
         updateState(PLAY);
     }
 
+    public static var BUFFER_COUNT:uint = 0;
     private function onBufferTimer(timerEvent:TimerEvent):void {
         var bufferTime:Number = _loadedTimestamp - time;
 
         switch(_state) {
             case PLAYING:
                 if (!_loaded && bufferTime < MIN_BUFFER_TIME) {
+                    BUFFER_COUNT++;
                     pause();
                     notifyBufferEmpty();
                     updateState(BUFFER);
@@ -313,6 +315,7 @@ public class DashNetStream extends NetStream {
         _offset = 0;
         _loadedTimestamp = 0;
         _loaded = false;
+        BUFFER_COUNT = 0;
     }
 
     private function onReady(event:StreamEvent):void {
