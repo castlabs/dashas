@@ -11,6 +11,7 @@ import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.events.StreamEvent;
 import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.ManifestLoader;
+import com.castlabs.dash.utils.SmoothMonitor;
 
 import flash.net.NetConnection;
 import flash.net.NetStream;
@@ -33,7 +34,12 @@ public class DashNetLoader extends NetLoader {
     }
 
     override protected function createNetStream(connection:NetConnection, resource:URLResource):NetStream {
-        return new DashNetStream(connection);
+        var netStream:NetStream = new DashNetStream(connection);
+
+        var smoothMonitor:SmoothMonitor = Factory.createSmoothMonitor();
+        smoothMonitor.appendListeners(netStream);
+
+        return netStream;
     }
 
     override protected function processFinishLoading(loadTrait:NetStreamLoadTrait):void {

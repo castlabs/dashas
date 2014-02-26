@@ -9,7 +9,6 @@
 package com.castlabs.dash.loaders {
 import com.castlabs.dash.boxes.Mixer;
 import com.castlabs.dash.descriptors.Representation;
-import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.descriptors.segments.WaitSegment;
@@ -23,7 +22,7 @@ import com.castlabs.dash.handlers.InitializationVideoSegmentHandler;
 import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.handlers.MediaSegmentHandler;
 import com.castlabs.dash.handlers.VideoSegmentHandler;
-import com.castlabs.dash.utils.AdaptiveSegmentIterator;
+import com.castlabs.dash.utils.AdaptiveSegmentDispatcher;
 import com.castlabs.dash.utils.BandwidthMonitor;
 import com.castlabs.dash.utils.Console;
 
@@ -34,7 +33,7 @@ import flash.utils.setTimeout;
 
 public class FragmentLoader extends EventDispatcher {
     private var _manifest:ManifestHandler;
-    private var _iterator:AdaptiveSegmentIterator;
+    private var _iterator:AdaptiveSegmentDispatcher;
     private var _monitor:BandwidthMonitor;
     private var _mixer:Mixer;
 
@@ -56,7 +55,7 @@ public class FragmentLoader extends EventDispatcher {
     private var _audioOffset:Number = 0;
     private var _videoOffset:Number = 0;
 
-    public function FragmentLoader(manifest:ManifestHandler, iterator:AdaptiveSegmentIterator,
+    public function FragmentLoader(manifest:ManifestHandler, iterator:AdaptiveSegmentDispatcher,
                                    monitor:BandwidthMonitor, mixer:Mixer) {
        _manifest = manifest;
        _iterator = iterator;

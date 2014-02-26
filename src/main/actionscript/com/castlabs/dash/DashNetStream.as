@@ -20,13 +20,12 @@ import flash.net.NetStream;
 import flash.net.NetStreamAppendBytesAction;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
-import flash.utils.clearTimeout;
-import flash.utils.setTimeout;
 
 import org.osmf.net.NetStreamCodes;
 
 public class DashNetStream extends NetStream {
     private const MIN_BUFFER_TIME:Number = 5;
+    private const MAX_BUFFER_TIME:Number = 30;
 
     // actions
     private const PLAY:uint = 1;
@@ -84,14 +83,12 @@ public class DashNetStream extends NetStream {
         updateState(PLAY);
     }
 
-    public static var BUFFER_COUNT:uint = 0;
     private function onBufferTimer(timerEvent:TimerEvent):void {
         var bufferTime:Number = _loadedTimestamp - time;
 
         switch(_state) {
             case PLAYING:
                 if (!_loaded && bufferTime < MIN_BUFFER_TIME) {
-                    BUFFER_COUNT++;
                     pause();
                     notifyBufferEmpty();
                     updateState(BUFFER);
@@ -321,7 +318,6 @@ public class DashNetStream extends NetStream {
         _offset = 0;
         _loadedTimestamp = 0;
         _loaded = false;
-        BUFFER_COUNT = 0;
     }
 
     private function onReady(event:StreamEvent):void {
@@ -337,7 +333,7 @@ public class DashNetStream extends NetStream {
     private function onFragmentTimer(timerEvent:TimerEvent = null):void {
         _fragmentTimer.stop();
 
-        if ((_loadedTimestamp - time) < 30) { // buffer is smaller than 30 seconds
+        if ((_loadedTimestamp - time) < MAX_BUFFER_TIME) {
             _loader.loadNextFragment();
         } else {
             _fragmentTimer.start();

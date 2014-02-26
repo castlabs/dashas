@@ -7,19 +7,20 @@
  */
 
 package com.castlabs.dash.utils {
-import com.castlabs.dash.DashNetStream;
 import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.handlers.ManifestHandler;
 
-//TODO change iterator suffix
-public class AdaptiveSegmentIterator {
+public class AdaptiveSegmentDispatcher {
     private var _manifest:ManifestHandler;
-    private var _monitor:BandwidthMonitor;
+    private var _bandwidthMonitor:BandwidthMonitor;
+    private var _smoothMonitor:SmoothMonitor;
 
-    public function AdaptiveSegmentIterator(manifest:ManifestHandler, monitor:BandwidthMonitor) {
+    public function AdaptiveSegmentDispatcher(manifest:ManifestHandler, bandwidthMonitor:BandwidthMonitor,
+                                              smoothMonitor:SmoothMonitor) {
         _manifest = manifest;
-        _monitor = monitor;
+        _bandwidthMonitor = bandwidthMonitor;
+        _smoothMonitor = smoothMonitor;
     }
 
     public function getAudioSegment(timestamp:Number):Segment {
@@ -38,23 +39,16 @@ public class AdaptiveSegmentIterator {
         var index:int = 0;
 
         for (var i:uint = 0;  i < representations.length; i++) {
-            if (_monitor.userBandwidth >= representations[i].bandwidth) {
+            if (_bandwidthMonitor.userBandwidth >= representations[i].bandwidth) {
                 index = i;
             } else {
                 break;
             }
         }
 
-//        trace("BUFFER_COUNT: " + DashNetStream.BUFFER_COUNT);
-        if (DashNetStream.BUFFER_COUNT > 0) {
-//            var oldIndex:int = index;
-            index -= (DashNetStream.BUFFER_COUNT - 1);
-            if (index < 0) {
-                index = 0;
-            }
-
-//            Console.warn("Downgrade bandwidth from " + representations[oldIndex].bandwidth
-//                    + " to " + representations[oldIndex].bandwidth);
+        index -= _smoothMonitor.fix;
+        if (index < 0) {
+            index = 0;
         }
 
         return representations[index];
