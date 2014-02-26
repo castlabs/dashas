@@ -36,8 +36,10 @@ public class Console {
     }
 
     public static function log(level:String, message:String):void {
-        trace(message);
-        ExternalInterface.call("log", level, message);
+        CONFIG::LOGGING {
+            trace(message);
+            ExternalInterface.call("log", level, message);
+        }
     }
 
     public static function appendRealUserBandwidth(bandwidth:Number):void {
@@ -49,7 +51,9 @@ public class Console {
     }
 
     public static function appendUserBandwidth(type:String, bandwidth:Number):void {
-        ExternalInterface.call("appendUserBandwidth", type, bandwidth);
+        CONFIG::LOGGING {
+            ExternalInterface.call("appendUserBandwidth", type, bandwidth);
+        }
     }
 
     public static function appendVideoBandwidth(bandwidth:Number):void {
@@ -61,7 +65,9 @@ public class Console {
     }
 
     public static function appendMediaBandwidth(type:String, bandwidth:Number):void {
-        ExternalInterface.call("appendMediaBandwidth", type, bandwidth);
+        CONFIG::LOGGING {
+            ExternalInterface.call("appendMediaBandwidth", type, bandwidth);
+        }
     }
 }
 }
