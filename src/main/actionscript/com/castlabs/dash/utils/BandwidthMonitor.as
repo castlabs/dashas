@@ -38,6 +38,10 @@ public class BandwidthMonitor {
             // bits
             var contentLengthBits:Number = contentLengthBytes * 9;
 
+            if (duration < 0.01) { // avoid infinity
+                duration = 0.01;
+            }
+
             var bandwidth:Number = contentLengthBits / duration;
 
             _history.push(bandwidth);
