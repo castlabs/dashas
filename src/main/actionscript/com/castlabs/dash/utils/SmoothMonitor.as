@@ -13,6 +13,8 @@ import flash.events.NetStatusEvent;
 import org.osmf.net.NetStreamCodes;
 
 public class SmoothMonitor {
+    private static const ACCEPTED_BUFFERING_COUNT:uint = 1;
+
     private var _bufferingCount:Number = 0;
 
     public function SmoothMonitor() {
@@ -33,7 +35,7 @@ public class SmoothMonitor {
     }
 
     public function get fix():Number {
-        var fix:Number = _bufferingCount - 1;
+        var fix:Number = _bufferingCount - ACCEPTED_BUFFERING_COUNT;
         return fix > 0 ? fix : 0;
     }
 }
