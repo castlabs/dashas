@@ -27,9 +27,10 @@ import com.castlabs.dash.utils.BandwidthMonitor;
 import com.castlabs.dash.utils.Console;
 
 import flash.events.EventDispatcher;
+import flash.events.TimerEvent;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
-import flash.utils.setTimeout;
+import flash.utils.Timer;
 
 public class FragmentLoader extends EventDispatcher {
     private var _manifest:ManifestHandler;
@@ -55,12 +56,17 @@ public class FragmentLoader extends EventDispatcher {
     private var _audioOffset:Number = 0;
     private var _videoOffset:Number = 0;
 
+    private var _waitTimer:Timer;
+
     public function FragmentLoader(manifest:ManifestHandler, iterator:AdaptiveSegmentDispatcher,
                                    monitor:BandwidthMonitor, mixer:Mixer) {
        _manifest = manifest;
        _iterator = iterator;
        _monitor = monitor;
        _mixer = mixer;
+
+       _waitTimer = new Timer(250); // 250 ms
+       _waitTimer.addEventListener(TimerEvent.TIMER, loadNextFragment);
     }
 
     public function init():void {
@@ -93,7 +99,9 @@ public class FragmentLoader extends EventDispatcher {
         _videoSegmentLoader = loadSegment(_videoSegment, onVideoSegmentLoaded);
     }
 
-    public function loadNextFragment():void {
+    public function loadNextFragment(timerEvent:TimerEvent = null):void {
+        _waitTimer.stop();
+
         if (_videoSegment.endTimestamp < _audioSegment.endTimestamp) {
             _videoSegmentLoaded = false;
             _audioSegmentLoaded = true;
@@ -113,7 +121,8 @@ public class FragmentLoader extends EventDispatcher {
             var segment1:Segment = _iterator.getAudioSegment(_audioSegment.endTimestamp);
 
             if (segment1 is WaitSegment) {
-                setTimeout(loadNextFragment, 250);
+                _waitTimer.start();
+                Console.warn("Received wait segment.");
                 return;
             }
 
@@ -124,7 +133,8 @@ public class FragmentLoader extends EventDispatcher {
             var segment2:Segment = _iterator.getVideoSegment(_videoSegment.endTimestamp);
 
             if (segment2 is WaitSegment) {
-                setTimeout(loadNextFragment, 250);
+                _waitTimer.start();
+                Console.warn("Received wait segment.");
                 return;
             }
 
@@ -174,6 +184,8 @@ public class FragmentLoader extends EventDispatcher {
         if (_videoSegmentLoader != null) {
             _videoSegmentLoader.close();
         }
+
+        _waitTimer.stop();
 
         reset();
     }
