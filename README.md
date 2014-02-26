@@ -15,8 +15,10 @@ For more information visit [examples page](http://dashas.castlabs.com/demo/index
 * Basic support for manifests with a list [1];
 * Basic support for manifests with a template [1];
 * Basic support for manifests with a base URL [1][2];
+* Basic support for manifests with a time line;
 * Audio-video playback [3];
 * Adaptive bitrate streaming;
+* Live streaming;
 * User interface:
 	* Play/Pause;
 	* Seeking;
