@@ -276,6 +276,11 @@ public class DashNetStream extends NetStream {
     }
 
     private function jump():void {
+        if (timer) {
+            clearTimeout(timerId);
+            timer = false;
+        }
+
         _offset = _loader.seek(_offset);
         _loadedTimestamp = 0;
 
@@ -337,9 +342,11 @@ public class DashNetStream extends NetStream {
         }
 
         if ((_loadedTimestamp - time) < 30) {
+            trace("loading next fragment");
             _loader.loadNextFragment();
         } else {
             timerId = setTimeout(next, 250);
+            trace("wait 250 ms and load next fragment");
             timer = true;
         }
     }

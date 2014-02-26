@@ -40,8 +40,28 @@ public class Console {
         ExternalInterface.call("log", level, message);
     }
 
-    public static function appendBandwidth(bandwidth:Number):void {
-        ExternalInterface.call("appendBandwidth", bandwidth);
+    public static function appendRealUserBandwidth(bandwidth:Number):void {
+        appendUserBandwidth("real", bandwidth);
+    }
+
+    public static function appendAverageUserBandwidth(bandwidth:Number):void {
+        appendUserBandwidth("average", bandwidth);
+    }
+
+    public static function appendUserBandwidth(type:String, bandwidth:Number):void {
+        ExternalInterface.call("appendUserBandwidth", type, bandwidth);
+    }
+
+    public static function appendVideoBandwidth(bandwidth:Number):void {
+        appendMediaBandwidth("video", bandwidth);
+    }
+
+    public static function appendAudioBandwidth(bandwidth:Number):void {
+        appendMediaBandwidth("audio", bandwidth);
+    }
+
+    public static function appendMediaBandwidth(type:String, bandwidth:Number):void {
+        ExternalInterface.call("appendMediaBandwidth", type, bandwidth);
     }
 }
 }

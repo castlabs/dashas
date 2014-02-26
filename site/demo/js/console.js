@@ -1,4 +1,4 @@
-var chart, bandwidths = [];
+var userBandwidthChart, realUserBandwidths = [], averageUserBandwidths = [], mediaBandwidthChart, videoBandwidths = [], audioBandwidths = [];
 
 function showOrHideMessage(level, node) {
     if (document.getElementById(level).checked) {
@@ -25,19 +25,42 @@ function log(level, message) {
     document.getElementById("screen").appendChild(node);
 }
 
-function appendBandwidth(bandwidth) {
-    bandwidths.push(bandwidth);
+function appendUserBandwidth(type, bandwidth) {
+    if (type == 'real') {
+        realUserBandwidths.push(bandwidth);
+    }
 
-    chart.load({
+    if (type == 'average') {
+        averageUserBandwidths.push(bandwidth);
+    }
+
+    userBandwidthChart.load({
         columns: [
-            ['bandwidth'].concat(bandwidths)
+            ['real'].concat(realUserBandwidths),
+            ['average'].concat(averageUserBandwidths)
         ]
     });
 }
 
-function loadChart() {
-    chart = c3.generate({
-        bindto: '#chart',
+function appendMediaBandwidth(type, bandwidth) {
+    if (type == 'video') {
+        videoBandwidths.push(bandwidth);
+    }
+
+    if (type == 'audio') {
+        audioBandwidths.push(bandwidth);
+    }
+
+    mediaBandwidthChart.load({
+        columns: [
+            ['video'].concat(videoBandwidths),
+            ['audio'].concat(audioBandwidths)
+        ]
+    });
+}
+
+function loadCharts() {
+    var options = {
         padding: {
             left: 75
         },
@@ -50,13 +73,19 @@ function loadChart() {
             }
         },
         legend: {
-            show: false
+            show: true
         }
-    });
+    };
+
+    options.bindto = '#userBandwidthChart';
+    userBandwidthChart = c3.generate(options);
+
+    options.bindto = '#mediaBandwidthChart';
+    mediaBandwidthChart = c3.generate(options);
 }
 
 window.addEventListener("load", function() {
-    loadChart();
+    loadCharts();
 
     document.getElementById("error").onchange = function() {
         showOrHideMessages("error");

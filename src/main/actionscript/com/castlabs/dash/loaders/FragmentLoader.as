@@ -9,6 +9,7 @@
 package com.castlabs.dash.loaders {
 import com.castlabs.dash.boxes.Mixer;
 import com.castlabs.dash.descriptors.Representation;
+import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.descriptors.segments.WaitSegment;
@@ -87,6 +88,8 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     public function loadFirstFragment():void {
+        logMediaBandwidth();
+
         _audioSegmentLoader = loadSegment(_audioSegment, onAudioSegmentLoaded);
         _videoSegmentLoader = loadSegment(_videoSegment, onVideoSegmentLoaded);
     }
@@ -135,6 +138,8 @@ public class FragmentLoader extends EventDispatcher {
             return;
         }
 
+        logMediaBandwidth();
+
         if (!_audioSegmentLoaded) {
             Console.info("Next audio segment: " + _audioSegment);
             _audioSegmentLoader = loadSegment(_audioSegment, onAudioSegmentLoaded);
@@ -143,6 +148,22 @@ public class FragmentLoader extends EventDispatcher {
         if (!_videoSegmentLoaded) {
             Console.info("Next video segment: " + _videoSegment);
             _videoSegmentLoader = loadSegment(_videoSegment, onVideoSegmentLoaded);
+        }
+    }
+
+    private function logMediaBandwidth():void {
+        for each (var representation1:Representation in _manifest.audioRepresentations) {
+            if (representation1.internalId == _audioSegment.internalRepresentationId) {
+                Console.appendAudioBandwidth(representation1.bandwidth);
+                break;
+            }
+        }
+
+        for each (var representation2:Representation in _manifest.videoRepresentations) {
+            if (representation2.internalId == _videoSegment.internalRepresentationId) {
+                Console.appendVideoBandwidth(representation2.bandwidth);
+                break;
+            }
         }
     }
 

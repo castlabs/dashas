@@ -45,16 +45,16 @@ public class AdaptiveSegmentIterator {
             }
         }
 
-        trace("BUFFER_COUNT: " + DashNetStream.BUFFER_COUNT);
+//        trace("BUFFER_COUNT: " + DashNetStream.BUFFER_COUNT);
         if (DashNetStream.BUFFER_COUNT > 0) {
-            var oldIndex:int = index;
+//            var oldIndex:int = index;
             index -= (DashNetStream.BUFFER_COUNT - 1);
             if (index < 0) {
                 index = 0;
             }
 
-            Console.warn("Downgrade bandwidth from " + representations[oldIndex].bandwidth
-                    + " to " + representations[oldIndex].bandwidth);
+//            Console.warn("Downgrade bandwidth from " + representations[oldIndex].bandwidth
+//                    + " to " + representations[oldIndex].bandwidth);
         }
 
         return representations[index];

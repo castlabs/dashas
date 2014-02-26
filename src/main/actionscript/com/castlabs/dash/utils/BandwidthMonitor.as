@@ -40,12 +40,12 @@ public class BandwidthMonitor {
 
             var bandwidth:Number = contentLengthBits / duration;
 
-            if (duration > 0.1) { // ignore too small intervals
-                _history.push(bandwidth);
-                if (_history.length > HISTORY_LENGTH) {
-                    _history.shift();
-                }
+            _history.push(bandwidth);
+            if (_history.length > HISTORY_LENGTH) {
+                _history.shift();
             }
+
+            Console.appendRealUserBandwidth(bandwidth);
 
             var sum:Number = 0;
             for (var i:uint = 0; i < _history.length; i++) {
@@ -56,9 +56,7 @@ public class BandwidthMonitor {
                 _lastBandwidth = sum / _history.length;
             }
 
-            Console.debug("Duration/Bits/Bandwidth: " + duration + "/" + contentLengthBits + "/" + bandwidth);
-            Console.debug("Updated user's bandwidth: " + _lastBandwidth);
-            Console.appendBandwidth(_lastBandwidth);
+            Console.appendAverageUserBandwidth(_lastBandwidth);
         }
 
         //URLLoader events
