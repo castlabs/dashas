@@ -55,6 +55,7 @@ public class DashNetStream extends NetStream {
     private var _live:Boolean;
 
     private var _bufferTimer:Timer;
+    private var _fragmentTimer:Timer;
 
     public function DashNetStream(connection:NetConnection) {
         super(connection);
@@ -63,6 +64,9 @@ public class DashNetStream extends NetStream {
 
         _bufferTimer = new Timer(250); // 250 ms
         _bufferTimer.addEventListener(TimerEvent.TIMER, onBufferTimer);
+
+        _fragmentTimer = new Timer(250); // 250 ms
+        _fragmentTimer.addEventListener(TimerEvent.TIMER, onFragmentTimer);
     }
 
     override public function play(...rest):void {
@@ -276,10 +280,9 @@ public class DashNetStream extends NetStream {
     }
 
     private function jump():void {
-        if (timer) {
-            clearTimeout(timerId);
-            timer = false;
-        }
+
+        // stop loading next fragments
+        _fragmentTimer.stop();
 
         _offset = _loader.seek(_offset);
         _loadedTimestamp = 0;
@@ -330,24 +333,16 @@ public class DashNetStream extends NetStream {
     private function onLoaded(event:FragmentEvent):void {
         _loadedTimestamp = event.endTimestamp;
         appendBytes(event.bytes);
-        next();
+        onFragmentTimer();
     }
 
-    private var timerId:uint;
-    private var timer:Boolean = false;
-    private function next():void {
-        if (timer) {
-            clearTimeout(timerId);
-            timer = false;
-        }
+    private function onFragmentTimer(timerEvent:TimerEvent = null):void {
+        _fragmentTimer.stop();
 
-        if ((_loadedTimestamp - time) < 30) {
-            trace("loading next fragment");
+        if ((_loadedTimestamp - time) < 30) { // buffer is smaller than 30 seconds
             _loader.loadNextFragment();
         } else {
-            timerId = setTimeout(next, 250);
-            trace("wait 250 ms and load next fragment");
-            timer = true;
+            _fragmentTimer.start();
         }
     }
 
