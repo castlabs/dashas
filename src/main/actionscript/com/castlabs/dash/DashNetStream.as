@@ -135,12 +135,14 @@ public class DashNetStream extends NetStream {
             case PAUSED:
             case SEEKING:
             case STOPPED:
+                _fragmentTimer.stop();
                 _loader.close();
                 _offset = offset;
                 super.seek(_offset);
                 break;
             case PLAYING:
             case BUFFERING:
+                _fragmentTimer.stop();
                 _loader.close();
                 _offset = offset;
                 super.seek(_offset);
@@ -280,10 +282,6 @@ public class DashNetStream extends NetStream {
     }
 
     private function jump():void {
-
-        // stop loading next fragments
-        _fragmentTimer.stop();
-
         _offset = _loader.seek(_offset);
         _loadedTimestamp = 0;
 
