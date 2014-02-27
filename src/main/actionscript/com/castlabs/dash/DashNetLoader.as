@@ -16,6 +16,10 @@ import com.castlabs.dash.utils.SmoothMonitor;
 import flash.net.NetConnection;
 import flash.net.NetStream;
 
+import org.osmf.events.MediaError;
+
+import org.osmf.events.MediaErrorEvent;
+
 import org.osmf.media.MediaResourceBase;
 import org.osmf.media.URLResource;
 import org.osmf.net.NetConnectionFactoryBase;
@@ -59,15 +63,21 @@ public class DashNetLoader extends NetLoader {
         }
 
         var manifest:URLResource = loadTrait.resource as URLResource;
-        loadManifest(manifest.url, stream);
+        loadManifest(loadTrait, manifest.url, stream);
     }
 
-    private function loadManifest(url:String, stream:DashNetStream):void {
+    private function loadManifest(loadTrait:NetStreamLoadTrait, url:String, stream:DashNetStream):void {
         var loader:ManifestLoader = new ManifestLoader(url);
+
         loader.addEventListener(ManifestEvent.LOADED, onLoad);
+        loader.addEventListener(ManifestEvent.ERROR, onError);
 
         function onLoad(event:ManifestEvent):void {
             stream.manifest = new ManifestHandler(event.url, event.xml);
+        }
+
+        function onError(event:ManifestEvent):void {
+            loadTrait.dispatchEvent(new MediaErrorEvent(MediaErrorEvent.MEDIA_ERROR, false, false, new MediaError(7)));
         }
 
         loader.load();

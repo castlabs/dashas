@@ -22,7 +22,6 @@ public class SegmentLoaderFactory {
             return new ReflexiveSegmentLoader(segment, monitor);
         }
 
-        // TODO Does MediaDataSegment pass?
         if (segment is DataSegment) {
             return new DataSegmentLoader(segment, monitor);
         }

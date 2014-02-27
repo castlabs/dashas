@@ -11,6 +11,7 @@ import flash.events.Event;
 
 public class ManifestEvent extends Event {
     public static const LOADED:String = "manifestLoaded";
+    public static const ERROR:String = "manifestError";
 
     private var _url:String;
     private var _xml:XML;

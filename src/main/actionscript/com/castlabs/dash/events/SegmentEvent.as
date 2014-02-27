@@ -14,6 +14,7 @@ import flash.utils.ByteArray;
 
 public class SegmentEvent extends Event {
     public static const LOADED:String = "segmentLoaded";
+    public static const ERROR:String = "segmentError";
 
     private var _segment:Segment;
     private var _bytes:ByteArray;
@@ -32,6 +33,11 @@ public class SegmentEvent extends Event {
 
     public function get bytes():ByteArray {
         return _bytes;
+    }
+
+    // override to support re-dispatching
+    override public function clone():Event {
+        return new SegmentEvent(type, bubbles, cancelable, segment, bytes);
     }
 }
 }

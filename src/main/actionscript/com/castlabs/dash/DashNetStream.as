@@ -8,6 +8,7 @@
 
 package com.castlabs.dash {
 import com.castlabs.dash.events.FragmentEvent;
+import com.castlabs.dash.events.SegmentEvent;
 import com.castlabs.dash.events.StreamEvent;
 import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.FragmentLoader;
@@ -207,6 +208,7 @@ public class DashNetStream extends NetStream {
         _loader.addEventListener(StreamEvent.READY, onReady);
         _loader.addEventListener(FragmentEvent.LOADED, onLoaded);
         _loader.addEventListener(StreamEvent.END, onEnd);
+        _loader.addEventListener(SegmentEvent.ERROR, onError);
         _loader.init();
     }
 
@@ -328,6 +330,11 @@ public class DashNetStream extends NetStream {
         _loadedTimestamp = event.endTimestamp;
         appendBytes(event.bytes);
         onFragmentTimer();
+    }
+
+    private function onError(event:SegmentEvent):void {
+        dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS, false, false,
+                { code: NetStreamCodes.NETSTREAM_FAILED, level: "error" }));
     }
 
     private function onFragmentTimer(timerEvent:TimerEvent = null):void {

@@ -13,8 +13,12 @@ import com.castlabs.dash.events.SegmentEvent;
 import com.castlabs.dash.utils.BandwidthMonitor;
 import com.castlabs.dash.utils.Console;
 
+import flash.events.AsyncErrorEvent;
+import flash.events.ErrorEvent;
+
 import flash.events.Event;
 import flash.events.IOErrorEvent;
+import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
@@ -29,10 +33,12 @@ public class DataSegmentLoader extends SegmentLoader {
 
     override public function load():void {
         http.dataFormat = URLLoaderDataFormat.BINARY;
+
         http.addEventListener(Event.COMPLETE, onComplete);
-        http.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
-            Console.warn("Connection was interrupted:" + event.toString());
-        });
+        http.addEventListener(ErrorEvent.ERROR, onError);
+        http.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onError);
+        http.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onError);
+        http.addEventListener(IOErrorEvent.IO_ERROR, onError);
 
         _monitor.appendListeners(http);
 
@@ -41,6 +47,11 @@ public class DataSegmentLoader extends SegmentLoader {
 
     override public function close():void {
         http.close();
+    }
+
+    private function onError(event:Event):void {
+        Console.warn("Connection was interrupted: " + event.toString());
+        dispatchEvent(new SegmentEvent(SegmentEvent.ERROR, false, false));
     }
 
     protected function buildUrl():String {

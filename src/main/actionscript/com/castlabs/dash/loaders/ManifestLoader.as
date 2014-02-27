@@ -10,9 +10,12 @@ package com.castlabs.dash.loaders {
 import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.utils.Console;
 
+import flash.events.AsyncErrorEvent;
+import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.IOErrorEvent;
+import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
@@ -28,12 +31,19 @@ public class ManifestLoader extends EventDispatcher {
         var http:URLLoader = new URLLoader();
 
         http.dataFormat = URLLoaderDataFormat.TEXT;
+
         http.addEventListener(Event.COMPLETE, onComplete);
-        http.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
-            Console.warn("Connection was interrupted:" + event.toString());
-        });
+        http.addEventListener(ErrorEvent.ERROR, onError);
+        http.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onError);
+        http.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onError);
+        http.addEventListener(IOErrorEvent.IO_ERROR, onError);
 
         http.load(new URLRequest(_url));
+    }
+
+    private function onError(event:Event):void {
+        Console.warn("Connection was interrupted: " + event.toString());
+        dispatchEvent(new ManifestEvent(ManifestEvent.ERROR, false, false));
     }
 
     private function onComplete(event:Event):void {
@@ -42,7 +52,7 @@ public class ManifestLoader extends EventDispatcher {
         dispatchEvent(new ManifestEvent(ManifestEvent.LOADED, false, false, _url, xml));
     }
 
-    private function removeNamespacesAndBuildXml(response:String):XML {
+    private static function removeNamespacesAndBuildXml(response:String):XML {
 
         // define the regex pattern to remove the namespaces from the string
         var xmlnsPattern:RegExp = new RegExp("(xmlns|xsi)[^\"]*\"[^\"]*\"", "gi");

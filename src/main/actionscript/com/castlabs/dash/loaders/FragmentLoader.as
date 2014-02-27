@@ -271,6 +271,10 @@ public class FragmentLoader extends EventDispatcher {
         notifyLoadedIfNeeded();
     }
 
+    private function onError(event:SegmentEvent):void {
+        dispatchEvent(event);
+    }
+
     private function findSmallerOffset():Number {
         if (_videoOffset <= _audioOffset) {
             return _videoOffset;
@@ -282,6 +286,7 @@ public class FragmentLoader extends EventDispatcher {
     private function loadSegment(segment:Segment, callback:Function):SegmentLoader {
         var loader:SegmentLoader = SegmentLoaderFactory.create(segment, _monitor);
         loader.addEventListener(SegmentEvent.LOADED, callback);
+        loader.addEventListener(SegmentEvent.ERROR, onError);
         loader.load();
         return loader;
     }
