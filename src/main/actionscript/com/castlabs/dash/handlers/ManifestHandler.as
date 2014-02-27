@@ -10,6 +10,7 @@ package com.castlabs.dash.handlers {
 import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.loaders.ManifestLoader;
+import com.castlabs.dash.utils.Console;
 import com.castlabs.dash.utils.Manifest;
 
 import flash.events.TimerEvent;
@@ -69,6 +70,8 @@ public class ManifestHandler {
         loader.addEventListener(ManifestEvent.LOADED, onLoad);
 
         function onLoad(event:ManifestEvent):void {
+            Console.info("Updated manifest");
+
             for each (var representation1:Representation in _videoRepresentations) {
                 representation1.update(event.xml..AdaptationSet.(@mimeType == "video/mp4")[0]);
             }
