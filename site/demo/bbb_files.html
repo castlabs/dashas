@@ -17,19 +17,25 @@
 
     <script type="text/javascript" src="./swfobject/swfobject.js"></script>
     <script type="text/javascript">
-        var timestamp = new Date().getTime();
+        window.addEventListener("load", function() {
+            loadSwf();
+        }, false);
 
-        var flashvars = {};
-        flashvars.src = encodeURIComponent("http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd");
-        flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../debug/dashas.swf?t=" + timestamp);
+        function loadSwf() {
+            var timestamp = new Date().getTime();
 
-        var params = {};
-        params.allowfullscreen = "true";
-        params.allownetworking = "true";
-        params.wmode = "direct";
+            var flashvars = {};
+            flashvars.src = encodeURIComponent("http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd");
+            flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../debug/dashas.swf?t=" + timestamp);
 
-        swfobject.embedSWF("./debug/StrobeMediaPlayback.swf?=" + timestamp, "placeholder", "640", "360", "10.1",
-                "./swfobject/expressInstall.swf", flashvars, params, {});
+            var params = {};
+            params.allowfullscreen = "true";
+            params.allownetworking = "true";
+            params.wmode = "direct";
+
+            swfobject.embedSWF("./debug/StrobeMediaPlayback.swf?=" + timestamp, "placeholder", "640", "360", "10.1",
+                    "./swfobject/expressInstall.swf", flashvars, params, {});
+        }
     </script>
 </head>
 
