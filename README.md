@@ -143,10 +143,14 @@ Finally try dash.as locally.
 
 #### Instructions
 
-1. Build SWF package:
+* Build debug SWF package:
 
 		$ cd <project_workspace>
-		$ gradle clean compile
-		
-		
+		$ gradle -Pprofile=debug clean compile
+
+* Build production SWF package:
+
+		$ cd <project_workspace>
+		$ gradle -Pprofile=production clean compile
+
 ... do you prefer developing in an IDE? Read how to [import project into the IntelliJ IDEA](https://github.com/castlabs/dashas/wiki/IntelliJ-IDEA).
