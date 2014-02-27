@@ -46,9 +46,16 @@ public class AdaptiveSegmentDispatcher {
             }
         }
 
+        var oldIndex:int = index;
+
         index -= _smoothMonitor.fix;
         if (index < 0) {
             index = 0;
+        }
+
+        if (index != oldIndex) {
+            Console.warn("Downgrade quality, originalBandwidth='" + representations[oldIndex].bandwidth
+                    + "', newBandwidth='" + representations[index].bandwidth + "'");
         }
 
         return representations[index];

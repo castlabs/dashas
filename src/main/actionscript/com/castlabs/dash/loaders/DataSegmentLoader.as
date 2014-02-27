@@ -50,7 +50,7 @@ public class DataSegmentLoader extends SegmentLoader {
     }
 
     private function onError(event:Event):void {
-        Console.warn("Connection was interrupted: " + event.toString());
+        Console.error("Connection was interrupted: " + event.toString());
         dispatchEvent(new SegmentEvent(SegmentEvent.ERROR, false, false));
     }
 

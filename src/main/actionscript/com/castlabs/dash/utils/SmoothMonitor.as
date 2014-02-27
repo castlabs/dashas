@@ -27,10 +27,12 @@ public class SmoothMonitor {
     private function onNetStatus(event:NetStatusEvent):void {
         if (event.info.code == NetStreamCodes.NETSTREAM_BUFFER_EMPTY) {
             _bufferingCount++;
+            Console.warn("Registered buffering incident, bufferingCount='" + _bufferingCount + "'");
         }
 
         if (event.info.code == NetStreamCodes.NETSTREAM_SEEK_NOTIFY) {
             _bufferingCount = 0;
+            Console.info("Reset buffering incidents counter");
         }
     }
 

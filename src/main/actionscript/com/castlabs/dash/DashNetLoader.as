@@ -11,6 +11,7 @@ import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.events.StreamEvent;
 import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.ManifestLoader;
+import com.castlabs.dash.utils.Console;
 import com.castlabs.dash.utils.SmoothMonitor;
 
 import flash.net.NetConnection;
@@ -74,6 +75,7 @@ public class DashNetLoader extends NetLoader {
 
         function onLoad(event:ManifestEvent):void {
             stream.manifest = new ManifestHandler(event.url, event.xml);
+            Console.info("Loaded manifest");
         }
 
         function onError(event:ManifestEvent):void {

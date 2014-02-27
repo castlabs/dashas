@@ -239,42 +239,36 @@ public class DashNetStream extends NetStream {
     private function updateState(action:Number):void {
         switch (action) {
             case PLAY:
-                Console.debug("action: PLAY");
-                Console.debug("state: PLAYING");
+                Console.debug("Received PLAY action and changed to PLAYING state");
                 _state = PLAYING;
                 break;
             case PAUSE:
-                Console.debug("action: PAUSE");
-                Console.debug("state: PAUSED");
+                Console.debug("Received PAUSE action and changed to PAUSED state");
                 _state = PAUSED;
                 break;
             case RESUME:
-                Console.debug("action: RESUME");
-                Console.debug("state: PLAYING");
+                Console.debug("Received RESUME action and changed to PLAYING state");
                 _state = PLAYING;
                 break;
             case STOP:
-                Console.debug("STOP");
-                Console.debug("state: STOPPED");
+                Console.debug("Received STOP action and changed to STOPPED state");
                 _state = STOPPED;
                 break;
             case SEEK:
-                Console.debug("action: SEEK");
                 switch (_state) {
                     case PAUSED:
-                        Console.debug("state: SEEKING");
+                        Console.debug("Received SEEK action and changed to SEEKING state");
                         _state = SEEKING;
                         break;
                     case PLAYING:
                     case BUFFERING:
-                        Console.debug("state: PLAYING");
+                        Console.debug("Received SEEK action and changed to PLAYING state");
                         _state = PLAYING;
                         break;
                 }
                 break;
             case BUFFER:
-                Console.debug("action: BUFFER");
-                Console.debug("state: BUFFERING");
+                Console.debug("Received BUFFER action and changed to BUFFERING state");
                 _state = BUFFERING;
                 break;
         }
@@ -358,8 +352,6 @@ public class DashNetStream extends NetStream {
             case NetStreamCodes.NETSTREAM_PLAY_STREAMNOTFOUND:
                 close();
                 break;
-            default:
-                Console.debug(event.info.code);
         }
     }
 
