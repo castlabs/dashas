@@ -11,7 +11,7 @@ apply plugin: 'gradlefx'
 apply plugin: 'flashbuilder'
 
 type = 'swf'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 mainClass = 'com/castlabs/dash/DashPlugin.as'
 
 repositories {
@@ -25,28 +25,20 @@ dependencies {
     flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.11.0', ext: 'tar.gz'
 }
 
-additionalCompilerOptions = [
-    '-define=CONFIG::FLASH_10_1,true',
-    '-define=CONFIG::LOGGING,true',
-    '-define=CONFIG::PLATFORM,true',
-    '-define=CONFIG::MOCK,false',
-    '-debug=true',
-]
-
 sdkAutoInstall {
     showPrompts = false
 }
 
+apply from: "${profile}-profile.gradle"
+
 task copySwfToDemo(type: Copy) {
     mustRunAfter compileFlex
 
-    from file('build/dashas.swf')
-    into 'site/demo/debug/'
+    from file(project.copyFrom)
+    into project.copyTo
 }
 
 task compile {
     dependsOn compileFlex
     dependsOn copySwfToDemo
 }
-
-

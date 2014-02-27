@@ -1,0 +1,10 @@
+project.ext.copyFrom = 'build/dashas.swf'
+project.ext.copyTo = 'site/demo/debug/'
+
+additionalCompilerOptions = [
+        '-define=CONFIG::FLASH_10_1,true',
+        '-define=CONFIG::LOGGING,true',
+        '-define=CONFIG::PLATFORM,true',
+        '-define=CONFIG::MOCK,false',
+        '-debug=true',
+]

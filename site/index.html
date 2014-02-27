@@ -31,24 +31,30 @@
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
     <!--[if lt IE 9]>
-      <script src="js/html5shiv.js"></script>
+    <script src="js/html5shiv.js"></script>
     <![endif]-->
 
     <script type="text/javascript" src="./demo/swfobject/swfobject.js"></script>
     <script type="text/javascript">
-      var timestamp = new Date().getTime();
+        window.addEventListener("load", function() {
+            loadSwf();
+        }, false);
 
-      var flashvars = {};
-      flashvars.src = encodeURIComponent("http://dashas.castlabs.com/videos/bytes/bbb/Manifest.mpd");
-      flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../demo/debug/dashas.swf?t=" + timestamp);
+        function loadSwf() {
+            var timestamp = new Date().getTime();
 
-      var params = {};
-      params.allowfullscreen = "true";
-      params.allownetworking = "true";
-      params.wmode = "direct";
+            var flashvars = {};
+            flashvars.src = encodeURIComponent("http://dashas.castlabs.com/videos/bytes/bbb/Manifest.mpd");
+            flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../demo/production/dashas.swf?t=" + timestamp);
 
-      swfobject.embedSWF("./demo/debug/StrobeMediaPlayback.swf?=" + timestamp, "placeholder", "480", "270", "10.1",
-              "./demo/swfobject/expressInstall.swf", flashvars, params, {});
+            var params = {};
+            params.allowfullscreen = "true";
+            params.allownetworking = "true";
+            params.wmode = "direct";
+
+            swfobject.embedSWF("./demo/StrobeMediaPlayback.swf?=" + timestamp, "placeholder", "480", "270", "10.1",
+                  "./demo/swfobject/expressInstall.swf", flashvars, params, {});
+        }
     </script>
   </head>
   <body>
