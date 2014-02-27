@@ -7,11 +7,8 @@
  */
 
 package com.castlabs.dash.descriptors.index {
-import com.castlabs.dash.dash;
 
 public class SegmentIndexFactory {
-    use namespace dash;
-
     public function SegmentIndexFactory() {
     }
 

@@ -7,7 +7,6 @@
  */
 
 package com.castlabs.dash.handlers {
-import com.castlabs.dash.dash;
 import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.loaders.ManifestLoader;
@@ -17,8 +16,6 @@ import flash.events.TimerEvent;
 import flash.utils.Timer;
 
 public class ManifestHandler {
-    use namespace dash;
-
     private var _url:String;
 
     private var _live:Boolean;

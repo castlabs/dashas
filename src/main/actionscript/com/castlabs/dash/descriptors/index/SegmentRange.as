@@ -7,7 +7,6 @@
  */
 
 package com.castlabs.dash.descriptors.index {
-import com.castlabs.dash.dash;
 import com.castlabs.dash.descriptors.segments.DataSegment;
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.ReflexiveSegment;
@@ -17,8 +16,6 @@ import com.castlabs.dash.handlers.IndexSegmentHandler;
 import flash.utils.ByteArray;
 
 public class SegmentRange implements SegmentIndex {
-    use namespace dash;
-
     private var _baseUrl:String;
     private var _indexRange:String;
     private var _initializationRange:String;

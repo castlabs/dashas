@@ -7,14 +7,11 @@
  */
 
 package com.castlabs.dash.descriptors {
-import com.castlabs.dash.dash;
 import com.castlabs.dash.descriptors.index.SegmentIndex;
 import com.castlabs.dash.descriptors.index.SegmentIndexFactory;
 import com.castlabs.dash.descriptors.segments.Segment;
 
 public class Representation {
-    use namespace dash;
-
     private var _internalId:Number;
     private var _baseUrl:String;
     private var _duration:Number;

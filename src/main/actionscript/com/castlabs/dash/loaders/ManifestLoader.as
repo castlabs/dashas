@@ -37,8 +37,20 @@ public class ManifestLoader extends EventDispatcher {
     }
 
     private function onComplete(event:Event):void {
-        var xml:XML = new XML(URLLoader(event.target).data);
+        var response:String = URLLoader(event.target).data;
+        var xml:XML = removeNamespacesAndBuildXml(response);
         dispatchEvent(new ManifestEvent(ManifestEvent.LOADED, false, false, _url, xml));
+    }
+
+    private function removeNamespacesAndBuildXml(response:String):XML {
+
+        // define the regex pattern to remove the namespaces from the string
+        var xmlnsPattern:RegExp = new RegExp("(xmlns|xsi)[^\"]*\"[^\"]*\"", "gi");
+
+        // remove the namespaces from the string representation of the XML
+        var responseWithRemovedNamespaces:String = response.replace(xmlnsPattern, "");
+
+        return new XML(responseWithRemovedNamespaces);
     }
 }
 }

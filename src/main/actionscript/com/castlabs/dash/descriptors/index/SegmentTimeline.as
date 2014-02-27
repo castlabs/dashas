@@ -7,15 +7,12 @@
  */
 
 package com.castlabs.dash.descriptors.index {
-import com.castlabs.dash.dash;
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.descriptors.segments.WaitSegment;
 import com.castlabs.dash.utils.Manifest;
 
 public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
-    use namespace dash;
-
     private var _timeShiftBuffer:Number; // seconds
     private var _segments:Vector.<Object> = new Vector.<Object>();
 

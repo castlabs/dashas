@@ -7,15 +7,12 @@
  */
 
 package com.castlabs.dash.descriptors.index {
-import com.castlabs.dash.dash;
 import com.castlabs.dash.descriptors.segments.DataSegment;
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.NullSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 
 public class SegmentTemplate implements SegmentIndex {
-    use namespace dash;
-
     protected var _initializationSegmentFilename:String;
     protected var _segmentFilename:String;
     protected var _duration:Number; //TODO rename to avoid confusion with video duration
