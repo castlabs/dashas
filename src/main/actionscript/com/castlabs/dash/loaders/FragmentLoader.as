@@ -80,8 +80,8 @@ public class FragmentLoader extends EventDispatcher {
     public function seek(timestamp:Number):Number {
         close();
 
-        _audioSegment = MediaDataSegment(_iterator.getAudioSegment(timestamp));
         _videoSegment = MediaDataSegment(_iterator.getVideoSegment(timestamp));
+        _audioSegment = MediaDataSegment(_iterator.getAudioSegment(_videoSegment.startTimestamp));
 
         _audioOffset = _audioSegment.startTimestamp;
         _videoOffset = _videoSegment.startTimestamp;

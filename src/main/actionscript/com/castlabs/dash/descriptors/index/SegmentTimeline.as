@@ -13,12 +13,16 @@ import com.castlabs.dash.descriptors.segments.WaitSegment;
 import com.castlabs.dash.utils.Manifest;
 
 public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
+    private var _live:Boolean;
+    private var _minBufferTime:Number; // seconds
     private var _timeShiftBuffer:Number; // seconds
     private var _segments:Vector.<Object> = new Vector.<Object>();
 
     public function SegmentTimeline(representation:XML) {
         super(representation);
 
+        _live = traverseAndBuildLive(representation);
+        _minBufferTime = traverseAndBuildMinBufferTime(representation);
         _timeShiftBuffer = traverseAndBuildTimeShiftBufferDepth(representation);
 
         update(representation);
@@ -37,19 +41,19 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         var segment:Object = null;
 
         if (timestamp == 0) {
-            segment = _segments[0];
+            if (_live) {
+                var last:Object = _segments[_segments.length - 1];
+                timestamp = seconds(last.time + last.duration) - _minBufferTime;
+                segment = findSegment(timestamp);
+            } else {
+                segment = _segments[0];
+            }
         } else {
-            for (var i:uint = 0; i < _segments.length; i++) {
-                var end:Number = seconds(_segments[i].time) + seconds(_segments[i].duration);
-                if (timestamp < end) {
-                    segment = _segments[i];
-                    break;
-                }
-            }
+            segment = findSegment(timestamp);
+        }
 
-            if (segment == null) {
-                return null;
-            }
+        if (segment == null) {
+            return null;
         }
 
         var url:String = String(_segmentFilename);
@@ -61,6 +65,17 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         var endTimestamp:Number = startTimestamp + seconds(segment.duration);
 
         return new MediaDataSegment(internalRepresentationId, baseUrl + url, "0-", startTimestamp, endTimestamp);
+    }
+
+    private function findSegment(timestamp:Number):Object {
+        for (var i:uint = 0; i < _segments.length; i++) {
+            var end:Number = seconds(_segments[i].time) + seconds(_segments[i].duration);
+            if (timestamp < end) {
+                return _segments[i];
+            }
+        }
+
+        return null;
     }
 
     public override function update(xml:XML):void {
@@ -177,6 +192,32 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
 
         // go up one level in hierarchy, e.g. adaptionSet and period
         return traverseAndBuildTimeShiftBufferDepth(node.parent());
+    }
+
+    private static function traverseAndBuildLive(node:XML):Boolean {
+        if (node == null) {
+            throw new ArgumentError("Couldn't find type");
+        }
+
+        if (node.hasOwnProperty("@type")) {
+            return node.@type.toString() == "dynamic";
+        }
+
+        // go up one level in hierarchy, e.g. adaptionSet and period
+        return traverseAndBuildLive(node.parent());
+    }
+
+    private static function traverseAndBuildMinBufferTime(node:XML):Number {
+        if (node == null) {
+            throw new ArgumentError("Couldn't find minimum buffer time");
+        }
+
+        if (node.hasOwnProperty("@minBufferTime")) {
+            return  Manifest.toSeconds(node.@minBufferTime.toString());
+        }
+
+        // go up one level in hierarchy, e.g. adaptionSet and period
+        return traverseAndBuildMinBufferTime(node.parent());
     }
 
     protected override function traverseAndBuildDuration(node:XML):Number {
