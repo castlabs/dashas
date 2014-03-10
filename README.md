@@ -77,7 +77,7 @@ Convert media input files into DASH stream files.
 
 * common_transcoding-packager-encrypter is installed (`fixes` branch);
 
-#### Insturctions
+#### Instructions
 
 * Use following command to generate DASH stream with byte segments:
 		
@@ -91,7 +91,7 @@ Finally try dash.as locally.
 
 * apache2 is installed;
 
-#### Insturctions
+#### Instructions
 
 1. Create a virtual host for localhost;
 
