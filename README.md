@@ -46,7 +46,7 @@ Create media input files in different bitrates.
 * ffmpeg is installed with libfdk_aac and libx264 library;
 
 
-#### Insturctions
+#### Instructions
 
 1. Download source file:
 
