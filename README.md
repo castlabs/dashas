@@ -146,7 +146,7 @@ Finally try dash.as locally.
 * Build debug SWF package:
 
 		$ cd <project_workspace>
-		$ gradle -Pprofile=debug clean compile
+		$ gradle clean compile
 
 * Build production SWF package:
 

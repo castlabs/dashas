@@ -1,0 +1,1 @@
+script: gradle clean compile

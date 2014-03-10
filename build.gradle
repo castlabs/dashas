@@ -29,6 +29,11 @@ sdkAutoInstall {
     showPrompts = false
 }
 
+// if a profile isn't defined, a debug is default
+if (!project.hasProperty("profile")) {
+    project.ext.profile = "debug"
+}
+
 apply from: "${profile}-profile.gradle"
 
 task copySwfToDemo(type: Copy) {
