@@ -7,7 +7,7 @@
  */
 
 package com.castlabs.dash.loaders {
-import com.castlabs.dash.boxes.Mixer;
+import com.castlabs.dash.boxes.Muxer;
 import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
@@ -36,7 +36,7 @@ public class FragmentLoader extends EventDispatcher {
     private var _manifest:ManifestHandler;
     private var _iterator:AdaptiveSegmentDispatcher;
     private var _monitor:BandwidthMonitor;
-    private var _mixer:Mixer;
+    private var _mixer:Muxer;
 
     private var _initializationSegmentHandlers:Dictionary = new Dictionary();
     private var _indexSegmentFlags:Dictionary = new Dictionary();
@@ -59,7 +59,7 @@ public class FragmentLoader extends EventDispatcher {
     private var _waitTimer:Timer;
 
     public function FragmentLoader(manifest:ManifestHandler, iterator:AdaptiveSegmentDispatcher,
-                                   monitor:BandwidthMonitor, mixer:Mixer) {
+                                   monitor:BandwidthMonitor, mixer:Muxer) {
        _manifest = manifest;
        _iterator = iterator;
        _monitor = monitor;

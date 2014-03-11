@@ -8,7 +8,7 @@
 
 package com.castlabs.dash.handlers {
 import com.castlabs.dash.boxes.FLVTag;
-import com.castlabs.dash.boxes.Mixer;
+import com.castlabs.dash.boxes.Muxer;
 import com.castlabs.dash.boxes.MovieFragmentBox;
 import com.castlabs.dash.boxes.TrackFragmentHeaderBox;
 import com.castlabs.dash.boxes.TrackFragmentRunBox;
@@ -25,10 +25,10 @@ public class MediaSegmentHandler extends SegmentHandler {
     private var _movieFragmentBox:MovieFragmentBox;
     private var _defaultSampleDuration:uint;
 
-    private var _mixer:Mixer;
+    private var _mixer:Muxer;
 
     public function MediaSegmentHandler(ba:ByteArray, messages:Vector.<FLVTag>, defaultSampleDuration:uint,
-                                        timescale:uint, timestamp:Number, mixer:Mixer) {
+                                        timescale:uint, timestamp:Number, mixer:Muxer) {
         _messages = messages;
         _defaultSampleDuration = defaultSampleDuration;
         _timescale = timescale;
@@ -62,7 +62,7 @@ public class MediaSegmentHandler extends SegmentHandler {
 
         processTrackBox(ba);
 
-        _bytes = _mixer.mix(_messages);
+        _bytes = _mixer.mux(_messages);
         _bytes.position = 0; // reset
     }
 
@@ -73,11 +73,10 @@ public class MediaSegmentHandler extends SegmentHandler {
         var runBoxes:Vector.<TrackFragmentRunBox> = _movieFragmentBox.trafs[0].truns;
 
         for each (var runBox:TrackFragmentRunBox in runBoxes) {
-            var sampleDurations:Vector.<uint> = runBox.sampleDuration;
             var baseDataOffset:Number = loadBaseDataOffset(headerBox);
 
-            setDefaultDurationIfNeeded(runBox, headerBox, sampleDurations);
-            loadMessages(runBox, baseDataOffset, sampleDurations, ba);
+            setDefaultDurationIfNeeded(runBox, headerBox);
+            loadMessages(runBox, baseDataOffset, ba);
         }
     }
 
@@ -87,32 +86,35 @@ public class MediaSegmentHandler extends SegmentHandler {
         return (headerBox.baseDataOffsetPresent) ? headerBox.baseDataOffset : _movieFragmentBox.offset;
     }
 
-    private function setDefaultDurationIfNeeded(runBox:TrackFragmentRunBox, headerBox:TrackFragmentHeaderBox,
-                                                sampleDurations:Vector.<uint>):void {
+    private function setDefaultDurationIfNeeded(runBox:TrackFragmentRunBox, headerBox:TrackFragmentHeaderBox):void {
+        var sampleDuration:Vector.<uint> = runBox.sampleDuration;
 
         // check tfhd for default duration
         if (!runBox.sampleDurationPresent && headerBox.defaultSampleDurationPresent) {
-            for (var h:uint = 0; h < sampleDurations.length; h++) {
-                sampleDurations[h] = headerBox.defaultSampleDuration;
+            for (var h:uint = 0; h < sampleDuration.length; h++) {
+                sampleDuration[h] = headerBox.defaultSampleDuration;
             }
         }
 
         // check trex for default duration
         if (!runBox.sampleDurationPresent && _defaultSampleDuration) {
-            for (var k:uint = 0; k < sampleDurations.length; k++) {
-                sampleDurations[k] = _defaultSampleDuration;
+            for (var k:uint = 0; k < sampleDuration.length; k++) {
+                sampleDuration[k] = _defaultSampleDuration;
             }
         }
     }
 
-    private function loadMessages(runBox:TrackFragmentRunBox, baseDataOffset:Number,
-                                  sampleDurations:Vector.<uint>, ba:ByteArray):void {
+    private function loadMessages(runBox:TrackFragmentRunBox, baseDataOffset:Number, ba:ByteArray):void {
         var dataOffset:uint = runBox.dataOffset + baseDataOffset;
         var sampleSizes:Vector.<uint> = runBox.sampleSize;
 
         for (var i:uint = 0; i < sampleSizes.length; i++) {
+            var sampleDuration:uint = loadSampleDuration(runBox, i);
             var compositionTimeOffset:int = loadCompositionTimeOffset(runBox, i);
-            var message:FLVTag = buildMessage(sampleDurations[i], sampleSizes[i],
+            var sampleDependsOn:uint = loadSampleDependsOn(runBox, i);
+            var sampleIsDependedOn:uint = loadSampleIsDependedOn(runBox, i);
+
+            var message:FLVTag = buildMessage(sampleDuration, sampleSizes[i], sampleDependsOn, sampleIsDependedOn,
                     compositionTimeOffset, dataOffset, ba);
 
             _messages.push(message);
@@ -121,12 +123,24 @@ public class MediaSegmentHandler extends SegmentHandler {
         }
     }
 
-    private function loadCompositionTimeOffset(runBox:TrackFragmentRunBox, i:uint):int {
-        var compositionTimeOffsets:Vector.<int> = runBox.sampleCompositionTimeOffset;
-        return (compositionTimeOffsets.length > 0) ? compositionTimeOffsets[i] : NaN;
+    private function loadSampleDuration(runBox:TrackFragmentRunBox, i:uint):uint {
+        return runBox.sampleDuration[i];
     }
 
-    protected function buildMessage(sampleDuration:uint, sampleSize:uint, compositionTimeOffset:Number,
+    private function loadCompositionTimeOffset(runBox:TrackFragmentRunBox, i:uint):int {
+        return i < runBox.sampleCompositionTimeOffset.length ? runBox.sampleCompositionTimeOffset[i] : NaN;
+    }
+
+    private function loadSampleDependsOn(runBox:TrackFragmentRunBox, i:uint):uint {
+        return i < runBox.sampleDependsOn.length ? runBox.sampleDependsOn[i] : 0;
+    }
+
+    private function loadSampleIsDependedOn(runBox:TrackFragmentRunBox, i:uint):uint {
+        return i < runBox.sampleIsDependedOn.length ? runBox.sampleIsDependedOn[i] : 0;
+    }
+
+    protected function buildMessage(sampleDuration:uint, sampleSize:uint, sampleDependsOn:uint,
+                                    sampleIsDependedOn:uint, compositionTimeOffset:Number,
                                     dataOffset:uint, ba:ByteArray):FLVTag {
         throw new IllegalOperationError("Method isn't implemented");
     }

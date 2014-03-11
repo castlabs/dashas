@@ -12,6 +12,8 @@ import flash.utils.ByteArray;
 public class TrackFragmentRunBox extends FullBox {
     private var _sampleDurationPresent:Boolean = false;
     private var _sampleDuration:Vector.<uint> = new Vector.<uint>();
+    private var _sampleDependsOn:Vector.<uint> = new Vector.<uint>();
+    private var _sampleIsDependedOn:Vector.<uint> = new Vector.<uint>();
     private var _sampleSize:Vector.<uint> = new Vector.<uint>();
     private var _sampleCompositionTimeOffset:Vector.<int> = new Vector.<int>();
     private var _dataOffset:int;
@@ -38,6 +40,14 @@ public class TrackFragmentRunBox extends FullBox {
 
     public function get sampleDuration():Vector.<uint> {
         return _sampleDuration;
+    }
+
+    public function get sampleDependsOn():Vector.<uint> {
+        return _sampleDependsOn;
+    }
+
+    public function get sampleIsDependedOn():Vector.<uint> {
+        return _sampleIsDependedOn;
     }
 
     override protected function parseBox(ba:ByteArray):void {
@@ -78,7 +88,7 @@ public class TrackFragmentRunBox extends FullBox {
         for (var i:uint = 0; i < sampleCount; i++) {
             parseSampleDurationIfNeeded(i, ba);
             parseSampleSizeIfNeeded(sampleSizePresent, i, ba);
-            skipNumberIfNeeded(secondSampleFlagsPresent, ba);
+            parseSampleFlagsIfNeeded(secondSampleFlagsPresent, i, ba);
             parseSampleCompositionTimeOffsetsIfNeeded(sampleCompositionTimeOffsetsPresent, i, ba);
         }
     }
@@ -124,6 +134,14 @@ public class TrackFragmentRunBox extends FullBox {
     private function parseSampleDurationIfNeeded(i:uint, ba:ByteArray):void {
         if (_sampleDurationPresent) {
             _sampleDuration[i] = readNumber(ba);
+        }
+    }
+
+    private function parseSampleFlagsIfNeeded(present:Boolean, i:uint, ba:ByteArray):void {
+        if (present) {
+            var sampleFlags:uint = ba.readUnsignedInt();
+            _sampleDependsOn[i] = (sampleFlags >> 24) & 0x03;
+            _sampleIsDependedOn[i] = (sampleFlags >> 22) & 0x03;
         }
     }
 }

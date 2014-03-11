@@ -7,8 +7,7 @@
  */
 
 package com.castlabs.dash {
-import com.castlabs.dash.boxes.Mixer;
-import com.castlabs.dash.boxes.NalUnit;
+import com.castlabs.dash.boxes.Muxer;
 import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.FragmentLoader;
 import com.castlabs.dash.utils.AdaptiveSegmentDispatcher;
@@ -25,7 +24,7 @@ public class Factory {
     public static function createFragmentLoader(manifest:ManifestHandler):FragmentLoader {
         var monitor:BandwidthMonitor = new BandwidthMonitor();
         var iterator:AdaptiveSegmentDispatcher = new AdaptiveSegmentDispatcher(manifest, monitor, smoothMonitor);
-        var mixer:Mixer = new Mixer(new NalUnit());
+        var mixer:Muxer = new Muxer();
         return new FragmentLoader(manifest, iterator, monitor, mixer);
     }
 }

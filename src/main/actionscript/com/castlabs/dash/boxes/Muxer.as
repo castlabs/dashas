@@ -10,14 +10,11 @@ package com.castlabs.dash.boxes {
 
 import flash.utils.ByteArray;
 
-public class Mixer {
-    private var _nalUnit:NalUnit;
-
-    public function Mixer(nalUnit:NalUnit) {
-        _nalUnit = nalUnit;
+public class Muxer {
+    public function Muxer() {
     }
 
-    public function mix(messages:Vector.<FLVTag>):ByteArray {
+    public function mux(messages:Vector.<FLVTag>):ByteArray {
         var ba:ByteArray = new ByteArray();
 
         while (messages.length > 0) {
@@ -114,23 +111,21 @@ public class Mixer {
     }
 
     private function writeVideoHeader(message:FLVTag, ba:ByteArray):void {
-        var sampleType:uint = _nalUnit.parse(message.data);
-
-        switch (sampleType) {
-            case NalUnit.I:
-                ba.writeByte((1 << 4) + 7);
+        switch (message.frameType) {
+            case FLVTag.I_FRAME:
+                ba.writeByte(0x17);
                 ba.writeByte(1);
                 break;
-            case NalUnit.P:
-                ba.writeByte((2 << 4) + 7);
+            case FLVTag.P_FRAME:
+                ba.writeByte(0x27);
                 ba.writeByte(1);
                 break;
-            case NalUnit.B:
-                ba.writeByte((3 << 4) + 7);
+            case FLVTag.B_FRAME:
+                ba.writeByte(0x37);
                 ba.writeByte(1);
                 break;
             default:
-                ba.writeByte((1 << 4) + 7);
+                ba.writeByte(0x17);
                 ba.writeByte(0);
         }
     }
