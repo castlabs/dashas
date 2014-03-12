@@ -21,12 +21,15 @@ public class InitializationAudioSegmentHandler extends InitializationSegmentHand
         var message:FLVTag = new FLVTag();
 
         message.markAsAudio();
+
         message.timestamp = 0;
+
         message.length = sampleEntry.data.length;
-        message.setup = true;
 
         message.data = new ByteArray();
         sampleEntry.data.readBytes(message.data, 0, sampleEntry.data.length);
+
+        message.setup = true;
 
         return message;
     }

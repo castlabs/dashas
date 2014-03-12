@@ -21,13 +21,19 @@ public class InitializationVideoSegmentHandler extends InitializationSegmentHand
         var message:FLVTag = new FLVTag();
 
         message.markAsVideo();
+
         message.timestamp = 0;
-        message.compositionTimestamp = 0;
+
         message.length = sampleEntry.data.length;
-        message.setup = true;
 
         message.data = new ByteArray();
         sampleEntry.data.readBytes(message.data, 0, sampleEntry.data.length);
+
+        message.frameType = FLVTag.UNKNOWN;
+
+        message.compositionTimestamp = 0;
+
+        message.setup = true;
 
         return message;
     }

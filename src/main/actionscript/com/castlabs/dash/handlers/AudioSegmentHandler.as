@@ -29,9 +29,10 @@ public class AudioSegmentHandler extends MediaSegmentHandler {
         _timestamp = message.timestamp + sampleDuration * 1000 / _timescale;
 
         message.length = sampleSize;
-        message.dataOffset = dataOffset;
-        message.data = new ByteArray();
 
+        message.dataOffset = dataOffset;
+
+        message.data = new ByteArray();
         ba.position = message.dataOffset;
         ba.readBytes(message.data, 0, sampleSize);
 
