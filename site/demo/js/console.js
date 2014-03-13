@@ -88,7 +88,7 @@ function appendConsole() {
     var node = document.createElement("div");
 
     node.className = 'console';
-    node.innerHTML = '<h4>User\'s Bandwidth</h4><div id="userBandwidthChart" class="chart"></div><h4>Media Bandwidth</h4><div id="mediaBandwidthChart" class="chart"></div><h4>Console</h4><div class="log"><div class="buttons"><label for="error"><input id="error" type="checkbox" checked="checked" value=""> Error </label><label for="warn"><input id="warn" type="checkbox" checked="checked" value="">Warn</label><label for="info"><input id="info" type="checkbox" checked="checked" value="">Info</label><label for="debug"><input id="debug" type="checkbox" value="">Debug</label></div><div id="screen"></div></div>';
+    node.innerHTML = '<p class="performance-warning">Player is in a debug mode. Dropped frames during playback can occur.</p><h4>User\'s Bandwidth</h4><div id="userBandwidthChart" class="chart"></div><h4>Media Bandwidth</h4><div id="mediaBandwidthChart" class="chart"></div><h4>Console</h4><div class="log"><div class="buttons"><label for="error"><input id="error" type="checkbox" checked="checked" value=""> Error </label><label for="warn"><input id="warn" type="checkbox" checked="checked" value="">Warn</label><label for="info"><input id="info" type="checkbox" checked="checked" value="">Info</label><label for="debug"><input id="debug" type="checkbox" value="">Debug</label></div><div id="screen"></div></div>';
 
     document.body.appendChild(node);
 }

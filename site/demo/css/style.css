@@ -50,3 +50,11 @@
     width: 640px;
 }
 
+.performance-warning {
+    border: 1px solid transparent;
+    padding: 10px;
+    width: 620px;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    color: #8a6d3b;
+}
