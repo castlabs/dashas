@@ -70,7 +70,7 @@ public class SegmentTemplate implements SegmentIndex {
     }
 
     private function calculateIndex(timestamp:Number):Number {
-        return int(timestamp / segmentDuration);
+        return Math.round(timestamp / segmentDuration);
     }
 
     private function isOutOfRange(index:Number, duration:Number):Boolean {

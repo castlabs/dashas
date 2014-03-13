@@ -87,20 +87,8 @@ public class MediaSegmentHandler extends SegmentHandler {
     }
 
     private function setDefaultDurationIfNeeded(runBox:TrackFragmentRunBox, headerBox:TrackFragmentHeaderBox):void {
-        var sampleDuration:Vector.<uint> = runBox.sampleDuration;
-
-        // check tfhd for default duration
         if (!runBox.sampleDurationPresent && headerBox.defaultSampleDurationPresent) {
-            for (var h:uint = 0; h < sampleDuration.length; h++) {
-                sampleDuration[h] = headerBox.defaultSampleDuration;
-            }
-        }
-
-        // check trex for default duration
-        if (!runBox.sampleDurationPresent && _defaultSampleDuration) {
-            for (var k:uint = 0; k < sampleDuration.length; k++) {
-                sampleDuration[k] = _defaultSampleDuration;
-            }
+            _defaultSampleDuration = headerBox.defaultSampleDuration;
         }
     }
 
@@ -124,7 +112,7 @@ public class MediaSegmentHandler extends SegmentHandler {
     }
 
     private function loadSampleDuration(runBox:TrackFragmentRunBox, i:uint):uint {
-        return runBox.sampleDuration[i];
+        return i < runBox.sampleDuration.length ? runBox.sampleDuration[i] : _defaultSampleDuration;
     }
 
     private function loadCompositionTimeOffset(runBox:TrackFragmentRunBox, i:uint):int {

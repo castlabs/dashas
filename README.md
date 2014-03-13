@@ -77,13 +77,13 @@ Convert media input files into DASH stream files.
 		
 #### Prerequisites
 
-* common_transcoding-packager-encrypter is installed (`fixes` branch);
+* MP4Box is installed (at least version 0.5.1r5152);
 
 #### Instructions
 
-* Use following command to generate DASH stream with byte segments:
+* Use following command to generate DASH stream:
 		
-		$ dash -o <output directory> <input video files> <input audio files>
+		$ MP4Box -dash 3000 -bs-switching no -segment-name %s_ -url-template -out sintel.mpd avc1-sintel-436p-250k.mp4 avc1-sintel-436p-500k.mp4 avc1-sintel-436p-1000k.mp4 mp4a-sintel-69k.mp4
 		
 ### Page
 
@@ -99,11 +99,11 @@ Finally try dash.as locally.
 
 1. Copy DASH stream files into a document root;
 
-1. Copy [crossdomain.xml](https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml) and [.htaccess](https://github.com/castlabs/dashas/blob/master/utils/.htaccess) files into a document root;
+1. Copy [crossdomain.xml](https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml) file into a document root;
 
 1. Copy contents of the [demo](https://github.com/castlabs/dashas/tree/master/site/demo/) directory into a document root;
 
-1. Create `index.html` file in a document root (type absolute URL to a `Manifest.mpd` file):
+1. Create `index.html` file in a document root (type absolute URL to a `sintel.mpd` file):
 
 		<html>
 		<head>
@@ -111,18 +111,18 @@ Finally try dash.as locally.
 		<script type="text/javascript">
 		    var flashvars = {};
 		
-		    // absolut URL to Manifest.mpd file
-		    flashvars.src = encodeURIComponent("<absolute URL to Manifest.mpd file>");
+		    // absolut URL to sintel.mpd file
+		    flashvars.src = encodeURIComponent("<absolute URL to sintel.mpd file>");
 		
 		    // absolut URL to dashas.swf file
-		    flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/dashas.swf");
+		    flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/production/dashas.swf");
 		
 		    var params = {};
 		    params.allowfullscreen = "true";
 		    params.allownetworking = "true";
 		    params.wmode = "direct";
 		
-		    swfobject.embedSWF("/debug/StrobeMediaPlayback.swf", "placeholder", "640", "360", "10.1", "/swfobject/expressInstall.swf", flashvars, params, {});
+		    swfobject.embedSWF("/StrobeMediaPlayback.swf", "placeholder", "640", "360", "10.1", "/swfobject/expressInstall.swf", flashvars, params, {});
 		</script>
 		</head>
 		

@@ -58,7 +58,7 @@ public class SegmentList implements SegmentIndex {
     }
 
     private function calculateIndex(timestamp:Number):Number {
-        return int(timestamp / segmentDuration);
+        return Math.round(timestamp / segmentDuration);
     }
 
     private static function buildAndTraverseSegmentFilenames(node:XML):Vector.<String> {
