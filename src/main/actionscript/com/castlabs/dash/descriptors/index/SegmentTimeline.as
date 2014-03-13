@@ -22,8 +22,10 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         super(representation);
 
         _live = traverseAndBuildLive(representation);
-        _minBufferTime = traverseAndBuildMinBufferTime(representation);
-        _timeShiftBuffer = traverseAndBuildTimeShiftBufferDepth(representation);
+        if (_live) {
+            _minBufferTime = traverseAndBuildMinBufferTime(representation);
+            _timeShiftBuffer = traverseAndBuildTimeShiftBufferDepth(representation);
+        }
 
         update(representation);
     }
@@ -79,7 +81,10 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
     }
 
     public override function update(xml:XML):void {
-        removeOutdatedSegments();
+        if (_live) {
+            removeOutdatedSegments();
+        }
+
         appendNewSegments(xml);
     }
 
