@@ -37,7 +37,7 @@ footer {
   padding-top: 5px;
 }
 
-.features span {
+.features > div > span {
   font-size: 32px;
 }
 
