@@ -1,3 +1,2 @@
 language: java
-install: TERM=dumb gradle cleanSdks
-script: TERM=dumb gradle clean compile --stacktrace
+script: TERM=dumb gradle cleanSdks && gradle clean compile --stacktrace 
