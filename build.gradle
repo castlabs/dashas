@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.11.0', ext: 'tar.gz'
+    flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.12.0', ext: 'tar.gz'
 }
 
 sdkAutoInstall {
