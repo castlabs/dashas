@@ -1,5 +1,5 @@
 language: java
 before_script:
-  - gradle cleanSdks
-  - gradle clean
-script: gradle compile
+  - gradle cleanSdks --stacktrace
+  - gradle clean --stacktrace
+script: gradle compile --stacktrace
