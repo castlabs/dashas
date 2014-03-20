@@ -7,6 +7,8 @@
  */
 
 package com.castlabs.dash {
+import com.castlabs.dash.utils.Console;
+
 import flash.display.Sprite;
 
 import org.osmf.elements.VideoElement;
@@ -19,6 +21,7 @@ public class DashPlugin extends Sprite {
 
     public function DashPlugin() {
         super();
+        Console.enabled = this.root.loaderInfo.parameters.log == "true";
         _pluginInfo = new DashPluginInfo();
     }
 

@@ -26,7 +26,7 @@
 
             var flashvars = {};
             flashvars.src = encodeURIComponent("http://ec2-46-137-139-183.eu-west-1.compute.amazonaws.com/live/channel2/channel2.isml/channel2.mpd");
-            flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../debug/dashas.swf?t=" + timestamp);
+            flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../"  + (isDebug() ? "debug" : "production") + "/dashas.swf?t=" + timestamp + "&log=true");
 
             var params = {};
             params.allowfullscreen = "true";

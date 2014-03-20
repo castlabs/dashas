@@ -10,6 +10,8 @@ package com.castlabs.dash.utils {
 import flash.external.ExternalInterface;
 
 public class Console {
+    public static var enabled:Boolean = false;
+
     private static const ERROR:String = "error";
     private static const WARN:String = "warn";
     private static const INFO:String = "info";
@@ -36,7 +38,7 @@ public class Console {
     }
 
     public static function log(level:String, message:String):void {
-        CONFIG::LOGGING {
+        if (enabled) {
             trace(message);
             ExternalInterface.call("log", level, message);
         }
@@ -51,7 +53,7 @@ public class Console {
     }
 
     public static function appendUserBandwidth(type:String, bandwidth:Number):void {
-        CONFIG::LOGGING {
+        if (enabled) {
             ExternalInterface.call("appendUserBandwidth", type, bandwidth);
         }
     }
@@ -65,7 +67,7 @@ public class Console {
     }
 
     public static function appendMediaBandwidth(type:String, bandwidth:Number):void {
-        CONFIG::LOGGING {
+        if (enabled) {
             ExternalInterface.call("appendMediaBandwidth", type, bandwidth);
         }
     }

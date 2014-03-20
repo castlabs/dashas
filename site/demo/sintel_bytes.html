@@ -26,7 +26,7 @@
 
             var flashvars = {};
             flashvars.src = encodeURIComponent("http://dashas.castlabs.com/videos/bytes/sintel/Manifest.mpd");
-            flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../debug/dashas.swf?t=" + timestamp);
+            flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../"  + (isDebug() ? "debug" : "production") + "/dashas.swf?t=" + timestamp + "&log=true");
 
             var params = {};
             params.allowfullscreen = "true";
