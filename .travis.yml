@@ -1,2 +1,5 @@
 language: java
-script: gradle cleanSdks && gradle clean compile
+before_script:
+  - gradle cleanSdks
+  - gradle clean
+script: gradle compile
