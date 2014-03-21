@@ -70,7 +70,7 @@ public class ManifestHandler {
         loader.addEventListener(ManifestEvent.LOADED, onLoad);
 
         function onLoad(event:ManifestEvent):void {
-            Console.info("Updated manifest");
+            Console.getInstance().info("Updated manifest");
 
             for each (var representation1:Representation in _videoRepresentations) {
                 representation1.update(event.xml..AdaptationSet.(@mimeType == "video/mp4")[0]);

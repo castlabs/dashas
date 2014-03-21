@@ -15,6 +15,24 @@ function showOrHideMessages(level) {
     }
 }
 
+function handleEvents(events) {
+    for (var i = 0; i < events.length; i++) {
+        var event = events[i];
+
+        if (event.event == "log") {
+            log(event.level, event.message);
+        }
+
+        if (event.event == "appendUserBandwidth") {
+            appendUserBandwidth(event.type, event.bandwidth);
+        }
+
+        if (event.event == "appendMediaBandwidth") {
+            appendMediaBandwidth(event.type, event.bandwidth);
+        }
+    }
+}
+
 function log(level, message) {
     var node = document.createElement("p");
 

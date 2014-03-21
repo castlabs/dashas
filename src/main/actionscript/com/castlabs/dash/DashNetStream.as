@@ -239,36 +239,36 @@ public class DashNetStream extends NetStream {
     private function updateState(action:Number):void {
         switch (action) {
             case PLAY:
-                Console.debug("Received PLAY action and changed to PLAYING state");
+                Console.getInstance().debug("Received PLAY action and changed to PLAYING state");
                 _state = PLAYING;
                 break;
             case PAUSE:
-                Console.debug("Received PAUSE action and changed to PAUSED state");
+                Console.getInstance().debug("Received PAUSE action and changed to PAUSED state");
                 _state = PAUSED;
                 break;
             case RESUME:
-                Console.debug("Received RESUME action and changed to PLAYING state");
+                Console.getInstance().debug("Received RESUME action and changed to PLAYING state");
                 _state = PLAYING;
                 break;
             case STOP:
-                Console.debug("Received STOP action and changed to STOPPED state");
+                Console.getInstance().debug("Received STOP action and changed to STOPPED state");
                 _state = STOPPED;
                 break;
             case SEEK:
                 switch (_state) {
                     case PAUSED:
-                        Console.debug("Received SEEK action and changed to SEEKING state");
+                        Console.getInstance().debug("Received SEEK action and changed to SEEKING state");
                         _state = SEEKING;
                         break;
                     case PLAYING:
                     case BUFFERING:
-                        Console.debug("Received SEEK action and changed to PLAYING state");
+                        Console.getInstance().debug("Received SEEK action and changed to PLAYING state");
                         _state = PLAYING;
                         break;
                 }
                 break;
             case BUFFER:
-                Console.debug("Received BUFFER action and changed to BUFFERING state");
+                Console.getInstance().debug("Received BUFFER action and changed to BUFFERING state");
                 _state = BUFFERING;
                 break;
         }

@@ -49,7 +49,7 @@ public class BandwidthMonitor {
                 _history.shift();
             }
 
-            Console.appendRealUserBandwidth(bandwidth);
+            Console.getInstance().appendRealUserBandwidth(bandwidth);
 
             var sum:Number = 0;
             for (var i:uint = 0; i < _history.length; i++) {
@@ -60,7 +60,7 @@ public class BandwidthMonitor {
                 _lastBandwidth = sum / _history.length;
             }
 
-            Console.appendAverageUserBandwidth(_lastBandwidth);
+            Console.getInstance().appendAverageUserBandwidth(_lastBandwidth);
         }
 
         //URLLoader events

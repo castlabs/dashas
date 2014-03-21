@@ -75,7 +75,7 @@ public class DashNetLoader extends NetLoader {
 
         function onLoad(event:ManifestEvent):void {
             stream.manifest = new ManifestHandler(event.url, event.xml);
-            Console.info("Loaded manifest");
+            Console.getInstance().info("Loaded manifest");
         }
 
         function onError(event:ManifestEvent):void {

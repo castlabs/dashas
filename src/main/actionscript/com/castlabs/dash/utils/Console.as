@@ -7,69 +7,121 @@
  */
 
 package com.castlabs.dash.utils {
+import flash.events.TimerEvent;
 import flash.external.ExternalInterface;
+import flash.utils.Timer;
 
 public class Console {
-    public static var enabled:Boolean = false;
+    private static var instance:Console;
 
     private static const ERROR:String = "error";
     private static const WARN:String = "warn";
     private static const INFO:String = "info";
     private static const DEBUG:String = "debug";
 
+    private var enabled:Boolean = false;
+    private var events:Array = [];
+
     public function Console() {
-        throw new Error("It's static class");
     }
 
-    public static function error(message:String):void {
+    public static function getInstance():Console {
+        if (instance == null) {
+            instance = new Console();
+        }
+
+        return instance;
+    }
+
+    public function enable():void {
+        enabled = true;
+
+        var timer = new Timer(2000); // 2 second
+        timer.addEventListener(TimerEvent.TIMER, send);
+        timer.start();
+    }
+
+
+    private function send(event:TimerEvent):void {
+        if (events.length == 0) {
+            return;
+        }
+
+        ExternalInterface.call("handleEvents", events);
+
+        while (events.length > 0) {
+            events.pop();
+        }
+    }
+
+    public function error(message:String):void {
         log(ERROR, message);
     }
 
-    public static function warn(message:String):void {
+    public function warn(message:String):void {
         log(WARN, message);
     }
 
-    public static function info(message:String):void {
+    public function info(message:String):void {
         log(INFO, message);
     }
 
-    public static function debug(message:String):void {
+    public function debug(message:String):void {
         log(DEBUG, message);
     }
 
-    public static function log(level:String, message:String):void {
-        if (enabled) {
-            trace(message);
-            ExternalInterface.call("log", level, message);
+    public function log(level:String, message:String):void {
+        if (!enabled) {
+            return;
         }
+
+        trace(message);
+
+        events.push({
+            event: "log",
+            level: level,
+            message: message
+        });
     }
 
-    public static function appendRealUserBandwidth(bandwidth:Number):void {
+    public function appendRealUserBandwidth(bandwidth:Number):void {
         appendUserBandwidth("real", bandwidth);
     }
 
-    public static function appendAverageUserBandwidth(bandwidth:Number):void {
+    public function appendAverageUserBandwidth(bandwidth:Number):void {
         appendUserBandwidth("average", bandwidth);
     }
 
-    public static function appendUserBandwidth(type:String, bandwidth:Number):void {
-        if (enabled) {
-            ExternalInterface.call("appendUserBandwidth", type, bandwidth);
+    public function appendUserBandwidth(type:String, bandwidth:Number):void {
+        if (!enabled) {
+            return;
         }
+
+        events.push({
+            event: "appendUserBandwidth",
+            type: type,
+            bandwidth: bandwidth
+        });
     }
 
-    public static function appendVideoBandwidth(bandwidth:Number):void {
+    public function appendVideoBandwidth(bandwidth:Number):void {
         appendMediaBandwidth("video", bandwidth);
     }
 
-    public static function appendAudioBandwidth(bandwidth:Number):void {
+    public function appendAudioBandwidth(bandwidth:Number):void {
         appendMediaBandwidth("audio", bandwidth);
     }
 
-    public static function appendMediaBandwidth(type:String, bandwidth:Number):void {
-        if (enabled) {
-            ExternalInterface.call("appendMediaBandwidth", type, bandwidth);
+    public function appendMediaBandwidth(type:String, bandwidth:Number):void {
+        if (!enabled) {
+            return;
         }
+
+        events.push({
+            event: "appendMediaBandwidth",
+            type: type,
+            bandwidth: bandwidth
+        });
     }
 }
 }

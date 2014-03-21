@@ -54,7 +54,7 @@ public class AdaptiveSegmentDispatcher {
         }
 
         if (index != oldIndex) {
-            Console.warn("Downgrade quality, originalBandwidth='" + representations[oldIndex].bandwidth
+            Console.getInstance().warn("Downgrade quality, originalBandwidth='" + representations[oldIndex].bandwidth
                     + "', newBandwidth='" + representations[index].bandwidth + "'");
         }
 

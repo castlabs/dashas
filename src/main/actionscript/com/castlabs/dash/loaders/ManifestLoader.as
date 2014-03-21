@@ -42,7 +42,7 @@ public class ManifestLoader extends EventDispatcher {
     }
 
     private function onError(event:Event):void {
-        Console.error("Connection was interrupted: " + event.toString());
+        Console.getInstance().error("Connection was interrupted: " + event.toString());
         dispatchEvent(new ManifestEvent(ManifestEvent.ERROR, false, false));
     }
 

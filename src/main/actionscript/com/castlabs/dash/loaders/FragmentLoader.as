@@ -86,8 +86,8 @@ public class FragmentLoader extends EventDispatcher {
         _audioOffset = _audioSegment.startTimestamp;
         _videoOffset = _videoSegment.startTimestamp;
 
-        Console.info("Seek to audio segment: " + _audioSegment);
-        Console.info("Seek to video segment: " + _videoSegment);
+        Console.getInstance().info("Seek to audio segment: " + _audioSegment);
+        Console.getInstance().info("Seek to video segment: " + _videoSegment);
 
         return _videoSegment.startTimestamp; // offset
     }
@@ -122,7 +122,7 @@ public class FragmentLoader extends EventDispatcher {
 
             if (segment1 is WaitSegment) {
                 _waitTimer.start();
-                Console.warn("Received wait segment.");
+                Console.getInstance().warn("Received wait segment.");
                 return;
             }
 
@@ -134,7 +134,7 @@ public class FragmentLoader extends EventDispatcher {
 
             if (segment2 is WaitSegment) {
                 _waitTimer.start();
-                Console.warn("Received wait segment.");
+                Console.getInstance().warn("Received wait segment.");
                 return;
             }
 
@@ -150,12 +150,12 @@ public class FragmentLoader extends EventDispatcher {
         logMediaBandwidth();
 
         if (!_audioSegmentLoaded) {
-            Console.info("Next audio segment: " + _audioSegment);
+            Console.getInstance().info("Next audio segment: " + _audioSegment);
             _audioSegmentLoader = loadSegment(_audioSegment, onAudioSegmentLoaded);
         }
 
         if (!_videoSegmentLoaded) {
-            Console.info("Next video segment: " + _videoSegment);
+            Console.getInstance().info("Next video segment: " + _videoSegment);
             _videoSegmentLoader = loadSegment(_videoSegment, onVideoSegmentLoaded);
         }
     }
@@ -163,14 +163,14 @@ public class FragmentLoader extends EventDispatcher {
     private function logMediaBandwidth():void {
         for each (var representation1:Representation in _manifest.audioRepresentations) {
             if (representation1.internalId == _audioSegment.internalRepresentationId) {
-                Console.appendAudioBandwidth(representation1.bandwidth);
+                Console.getInstance().appendAudioBandwidth(representation1.bandwidth);
                 break;
             }
         }
 
         for each (var representation2:Representation in _manifest.videoRepresentations) {
             if (representation2.internalId == _videoSegment.internalRepresentationId) {
-                Console.appendVideoBandwidth(representation2.bandwidth);
+                Console.getInstance().appendVideoBandwidth(representation2.bandwidth);
                 break;
             }
         }

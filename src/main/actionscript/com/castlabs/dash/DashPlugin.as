@@ -21,7 +21,11 @@ public class DashPlugin extends Sprite {
 
     public function DashPlugin() {
         super();
-        Console.enabled = this.root.loaderInfo.parameters.log == "true";
+
+        if (this.root.loaderInfo.parameters.log == "true") {
+            Console.getInstance().enable();
+        }
+
         _pluginInfo = new DashPluginInfo();
     }
 
