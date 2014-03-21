@@ -1,5 +1,7 @@
+<!---
 [![Build Status](https://travis-ci.org/castlabs/dashas.png?branch=master)](https://travis-ci.org/castlabs/dashas)
- 
+-->
+
 dash.as
 =======
 
