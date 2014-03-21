@@ -1,5 +1,19 @@
 var userBandwidthChart, realUserBandwidths = [], averageUserBandwidths = [], mediaBandwidthChart, videoBandwidths = [], audioBandwidths = [];
 
+var chartEmptyData = {
+    labels : [],
+    datasets : [{
+        data : []
+    }]
+};
+
+var chartOptions = {
+    animation : false,
+    bezierCurve: false,
+    datasetFill: false,
+    scaleShowGridLines: false
+};
+
 function showOrHideMessage(level, node) {
     if (document.getElementById(level).checked) {
         node.style.display = "block";
@@ -19,16 +33,16 @@ function handleEvents(events) {
     for (var i = 0; i < events.length; i++) {
         var event = events[i];
 
-        if (event.event == "log") {
+        if (event.id == "log") {
             log(event.level, event.message);
         }
 
-        if (event.event == "appendUserBandwidth") {
-            appendUserBandwidth(event.type, event.bandwidth);
+        if (event.id == "appendUserBandwidth") {
+            appendUserBandwidth(event.dataset, event.bandwidth);
         }
 
-        if (event.event == "appendMediaBandwidth") {
-            appendMediaBandwidth(event.type, event.bandwidth);
+        if (event.id == "appendMediaBandwidth") {
+            appendMediaBandwidth(event.dataset, event.bandwidth);
         }
     }
 }
@@ -43,70 +57,95 @@ function log(level, message) {
     document.getElementById("screen").appendChild(node);
 }
 
-function appendUserBandwidth(type, bandwidth) {
-    if (type == 'real') {
+function appendUserBandwidth(dataset, bandwidth) {
+    if (dataset == 'real') {
         realUserBandwidths.push(bandwidth);
     }
 
-    if (type == 'average') {
+    if (dataset == 'average') {
         averageUserBandwidths.push(bandwidth);
     }
 
-    userBandwidthChart.load({
-        columns: [
-            ['real'].concat(realUserBandwidths),
-            ['average'].concat(averageUserBandwidths)
+    limitTo15Entries(realUserBandwidths);
+    limitTo15Entries(averageUserBandwidths);
+
+    var data = {
+        labels : buildArrayWithEmptyValues(Math.max(realUserBandwidths.length, averageUserBandwidths.length)),
+        datasets : [
+            {
+                strokeColor : "rgba(220,220,220,1)",
+                pointColor : "rgba(220,220,220,1)",
+                pointStrokeColor : "#fff",
+                data : realUserBandwidths
+            },
+            {
+                pointColor : "rgba(151,187,205,1)",
+                pointStrokeColor : "#fff",
+                strokeColor : "rgba(151,187,205,1)",
+                data : averageUserBandwidths
+            }
         ]
-    });
+    };
+
+    var context = document.getElementById("userBandwidthChart").getContext("2d");
+    new Chart(context).Line(data, chartOptions);
 }
 
-function appendMediaBandwidth(type, bandwidth) {
-    if (type == 'video') {
+function buildArrayWithEmptyValues(length) {
+    var array = [];
+
+    for (var i = 0; i < length; i++) {
+        array[i] = "";
+    }
+
+    return array;
+}
+
+function limitTo15Entries(array) {
+    while (array.length > 15) {
+        array.shift();
+    }
+}
+
+function appendMediaBandwidth(dataset, bandwidth) {
+    if (dataset == 'video') {
         videoBandwidths.push(bandwidth);
     }
 
-    if (type == 'audio') {
+    if (dataset == 'audio') {
         audioBandwidths.push(bandwidth);
     }
 
-    mediaBandwidthChart.load({
-        columns: [
-            ['video'].concat(videoBandwidths),
-            ['audio'].concat(audioBandwidths)
-        ]
-    });
-}
+    limitTo15Entries(videoBandwidths);
+    limitTo15Entries(audioBandwidths);
 
-function loadCharts() {
-    var options = {
-        padding: {
-            left: 75
-        },
-        data: {
-            columns: []
-        },
-        axis: {
-            y: {
-                label: 'Bandwidth [b/s]'
+    var data = {
+        labels : buildArrayWithEmptyValues(Math.max(videoBandwidths.length, audioBandwidths.length)),
+        datasets : [
+            {
+                strokeColor : "rgba(151,187,205,1)",
+                pointStrokeColor : "#fff",
+                pointColor : "rgba(151,187,205,1)",
+                data : videoBandwidths
+            },
+            {
+                strokeColor : "rgba(220,220,220,1)",
+                pointStrokeColor : "#fff",
+                pointColor : "rgba(220,220,220,1)",
+                data : audioBandwidths
             }
-        },
-        legend: {
-            show: true
-        }
+        ]
     };
 
-    options.bindto = '#userBandwidthChart';
-    userBandwidthChart = c3.generate(options);
-
-    options.bindto = '#mediaBandwidthChart';
-    mediaBandwidthChart = c3.generate(options);
+    var context = document.getElementById("mediaBandwidthChart").getContext("2d");
+    new Chart(context).Line(data, chartOptions);
 }
 
 function appendConsole() {
     var node = document.createElement("div");
 
     node.className = 'console';
-    node.innerHTML = '<h4>User\'s Bandwidth</h4><div id="userBandwidthChart" class="chart"></div><h4>Media Bandwidth</h4><div id="mediaBandwidthChart" class="chart"></div><h4>Console</h4><div class="log"><div class="buttons"><label for="error"><input id="error" type="checkbox" checked="checked" value=""> Error </label><label for="warn"><input id="warn" type="checkbox" checked="checked" value="">Warn</label><label for="info"><input id="info" type="checkbox" checked="checked" value="">Info</label><label for="debug"><input id="debug" type="checkbox" value="">Debug</label></div><div id="screen"></div></div><h4>Debug</h4><div>Use a debug SWF file: <button id="enableOrDisableDebug" type="button">Enable</button></div>';
+    node.innerHTML = '<h4>User\'s Bandwidth</h4><div class="legend"><span class="legend1">average</span><span class="legend2">real</span></div><canvas id="userBandwidthChart" width="640" height="300"></canvas><h4>Media Bandwidth</h4><div class="legend"><span class="legend1">video</span><span class="legend2">audio</span></div><canvas id="mediaBandwidthChart" width="640" height="300"></canvas><h4>Console</h4><div class="log"><div class="buttons"><label for="error"><input id="error" type="checkbox" checked="checked" value=""> Error </label><label for="warn"><input id="warn" type="checkbox" checked="checked" value="">Warn</label><label for="info"><input id="info" type="checkbox" checked="checked" value="">Info</label><label for="debug"><input id="debug" type="checkbox" value="">Debug</label></div><div id="screen"></div></div><h4>Debug</h4><div>Use a debug SWF file: <button id="enableOrDisableDebug" type="button">Enable</button></div>';
     document.body.appendChild(node);
 }
 
@@ -116,7 +155,7 @@ function isDebug() {
 
 function enableDebug() {
     var date = new Date();
-    date.setTime(date.getTime() + (365*24*60*60*1000));
+    date.setTime(date.getTime() + (365*24*60*60*1000)); // 1 year
 
     var expires = date.toGMTString();
 
@@ -143,9 +182,20 @@ function initEnableOrDisableDebug() {
     }
 }
 
+function initCharts() {
+    var context = null;
+
+    context = document.getElementById("userBandwidthChart").getContext("2d");
+    new Chart(context).Line(chartEmptyData, chartOptions);
+
+    context = document.getElementById("mediaBandwidthChart").getContext("2d");
+    new Chart(context).Line(chartEmptyData, chartOptions);
+}
+
 window.addEventListener("load", function() {
     appendConsole();
-    loadCharts();
+
+    initCharts();
 
     document.getElementById("error").onchange = function() {
         showOrHideMessages("error");

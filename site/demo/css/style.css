@@ -45,9 +45,25 @@
     border: solid 1px #7F8C8D;
 }
 
-.console .chart {
-    margin-top: 20px;
-    width: 640px;
+.console .legend {
+    font-size: small;
+    margin-bottom: 20px;
+}
+
+.console .legend1 {
+    margin-right: 10px;
+}
+
+.console .legend1:before {
+    content: ' \25CF';
+    margin-right: 5px;
+    color: rgba(151,187,205,1);
+}
+
+.console .legend2:before {
+    content: ' \25CF';
+    margin-right: 5px;
+    color: rgba(220,220,220,1);
 }
 
 .performance-warning {

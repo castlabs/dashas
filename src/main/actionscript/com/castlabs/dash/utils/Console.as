@@ -78,7 +78,7 @@ public class Console {
         trace(message);
 
         events.push({
-            event: "log",
+            id: "log",
             level: level,
             message: message
         });
@@ -98,8 +98,8 @@ public class Console {
         }
 
         events.push({
-            event: "appendUserBandwidth",
-            type: type,
+            id: "appendUserBandwidth",
+            dataset: type,
             bandwidth: bandwidth
         });
     }
@@ -118,8 +118,8 @@ public class Console {
         }
 
         events.push({
-            event: "appendMediaBandwidth",
-            type: type,
+            id: "appendMediaBandwidth",
+            dataset: type,
             bandwidth: bandwidth
         });
     }
