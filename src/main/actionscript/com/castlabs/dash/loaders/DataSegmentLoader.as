@@ -42,7 +42,9 @@ public class DataSegmentLoader extends SegmentLoader {
 
         _monitor.appendListeners(http);
 
-        http.load(new URLRequest(buildUrl()));
+        Console.getInstance().debug("Loading segment, url='" + getUrl() + "'");
+
+        http.load(new URLRequest(getUrl()));
     }
 
     override public function close():void {
@@ -54,11 +56,13 @@ public class DataSegmentLoader extends SegmentLoader {
         dispatchEvent(new SegmentEvent(SegmentEvent.ERROR, false, false));
     }
 
-    protected function buildUrl():String {
+    protected function getUrl():String {
         return DataSegment(_segment).url;
     }
 
     protected function onComplete(event:Event):void {
+        Console.getInstance().debug("Loaded segment, url='" + getUrl() + "'");
+
         var bytes:ByteArray = URLLoader(event.target).data;
         dispatchEvent(new SegmentEvent(SegmentEvent.LOADED, false, false, _segment, bytes));
     }

@@ -38,6 +38,8 @@ public class ManifestLoader extends EventDispatcher {
         http.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onError);
         http.addEventListener(IOErrorEvent.IO_ERROR, onError);
 
+        Console.getInstance().debug("Loading manifest, url='" + _url + "'");
+
         http.load(new URLRequest(_url));
     }
 
@@ -47,6 +49,8 @@ public class ManifestLoader extends EventDispatcher {
     }
 
     private function onComplete(event:Event):void {
+        Console.getInstance().debug("Loaded manifest, url='" + _url + "'");
+
         var response:String = URLLoader(event.target).data;
         var xml:XML = removeNamespacesAndBuildXml(response);
         dispatchEvent(new ManifestEvent(ManifestEvent.LOADED, false, false, _url, xml));

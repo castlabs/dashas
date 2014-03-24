@@ -7,6 +7,7 @@
  */
 
 package com.castlabs.dash.descriptors.index {
+import com.castlabs.dash.utils.Console;
 
 public class SegmentIndexFactory {
     public function SegmentIndexFactory() {
@@ -18,24 +19,39 @@ public class SegmentIndexFactory {
 
     static private function traverseAndCreate(node:XML, representation:XML):SegmentIndex {
         if (node == null) {
-            throw new ArgumentError("Couldn't find media segment");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'SegmentTimeline', 'SegmentTemplate', " +
+                    "'SegmentTemplate', 'SegmentList' or 'BaseURL' tag"));
         }
+
+        var segmentIndex:SegmentIndex = null;
 
         if (node.SegmentTemplate.length() == 1
                 && node.SegmentTemplate.SegmentTimeline.length() == 1) {
-            return new SegmentTimeline(representation);
+            Console.getInstance().info("Creating segment time line...");
+            segmentIndex = new SegmentTimeline(representation);
+            Console.getInstance().info("Created segment time line, " + segmentIndex.toString());
+            return segmentIndex;
         }
 
         if (node.SegmentTemplate.length() == 1) {
-            return new SegmentTemplate(representation);
+            Console.getInstance().info("Creating segment template...");
+            segmentIndex = new SegmentTemplate(representation);
+            Console.getInstance().info("Created segment template, " + segmentIndex.toString());
+            return segmentIndex;
         }
 
         if (node.SegmentList.length() == 1) {
-            return new SegmentList(representation);
+            Console.getInstance().info("Creating segment list...");
+            segmentIndex = new SegmentList(representation);
+            Console.getInstance().info("Created segment list, " + segmentIndex.toString());
+            return segmentIndex;
         }
 
         if (node.BaseURL.length() == 1) {
-            return new SegmentRange(representation);
+            Console.getInstance().info("Creating segment base URL...");
+            segmentIndex = new SegmentRange(representation);
+            Console.getInstance().info("Created segment base URL, " + segmentIndex.toString());
+            return segmentIndex;
         }
 
         return traverseAndCreate(node.parent(), representation);

@@ -8,6 +8,8 @@
 
 package com.castlabs.dash.boxes {
 
+import com.castlabs.dash.utils.Console;
+
 import flash.utils.ByteArray;
 
 public class SampleEntry extends Box {
@@ -86,7 +88,7 @@ public class SampleEntry extends Box {
             }
         }
 
-        throw new ArgumentError("Couldn't find " + type + " box");
+        throw Console.getInstance().logError(new Error("Couldn't find any '" + type + "' box"));
     }
 
     private function parseMp4aData(ba:ByteArray):ByteArray {

@@ -10,6 +10,7 @@ package com.castlabs.dash {
 import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.events.StreamEvent;
 import com.castlabs.dash.handlers.ManifestHandler;
+import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.ManifestLoader;
 import com.castlabs.dash.utils.Console;
 import com.castlabs.dash.utils.SmoothMonitor;
@@ -74,8 +75,13 @@ public class DashNetLoader extends NetLoader {
         loader.addEventListener(ManifestEvent.ERROR, onError);
 
         function onLoad(event:ManifestEvent):void {
-            stream.manifest = new ManifestHandler(event.url, event.xml);
-            Console.getInstance().info("Loaded manifest");
+            Console.getInstance().info("Creating manifest...");
+
+            var manifest:ManifestHandler = new ManifestHandler(event.url, event.xml);
+
+            Console.getInstance().info("Created manifest, " + manifest.toString());
+
+            stream.manifest = manifest;
         }
 
         function onError(event:ManifestEvent):void {

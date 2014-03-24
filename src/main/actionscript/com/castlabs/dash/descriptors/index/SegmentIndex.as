@@ -20,5 +20,7 @@ public interface SegmentIndex {
                         internalRepresentationId:Number):Segment;
 
     function update(xml:XML):void;
+
+    function toString():String;
 }
 }

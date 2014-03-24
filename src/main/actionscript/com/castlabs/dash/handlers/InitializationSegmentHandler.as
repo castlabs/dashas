@@ -73,5 +73,10 @@ public class InitializationSegmentHandler extends SegmentHandler {
     protected function buildMessage(sampleEntry:SampleEntry):FLVTag {
         throw new IllegalOperationError("Method isn't implemented");
     }
+
+    public function toString():String {
+        return "timescale='" + _timescale + "', defaultSampleDuration='" + _defaultSampleDuration
+                + "', messagesCount='" + _messages.length + "'";
+    }
 }
 }

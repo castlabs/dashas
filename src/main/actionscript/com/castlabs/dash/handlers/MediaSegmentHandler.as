@@ -25,16 +25,16 @@ public class MediaSegmentHandler extends SegmentHandler {
     private var _movieFragmentBox:MovieFragmentBox;
     private var _defaultSampleDuration:uint;
 
-    private var _mixer:Muxer;
+    private var _muxer:Muxer;
 
     public function MediaSegmentHandler(ba:ByteArray, messages:Vector.<FLVTag>, defaultSampleDuration:uint,
-                                        timescale:uint, timestamp:Number, mixer:Muxer) {
+                                        timescale:uint, timestamp:Number, muxer:Muxer) {
         _messages = messages;
         _defaultSampleDuration = defaultSampleDuration;
         _timescale = timescale;
         _timestamp = timestamp;
 
-        _mixer = mixer;
+        _muxer = muxer;
 
         parseMovieFragmentBox(ba);
         parseMediaDataBox(ba);
@@ -62,7 +62,7 @@ public class MediaSegmentHandler extends SegmentHandler {
 
         processTrackBox(ba);
 
-        _bytes = _mixer.mux(_messages);
+        _bytes = _muxer.mux(_messages);
         _bytes.position = 0; // reset
     }
 

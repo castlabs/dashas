@@ -10,6 +10,7 @@ package com.castlabs.dash.descriptors.index {
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.descriptors.segments.WaitSegment;
+import com.castlabs.dash.utils.Console;
 import com.castlabs.dash.utils.Manifest;
 
 public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
@@ -42,6 +43,7 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
 
         var segment:Object = null;
 
+        //TODO simplify this condition
         if (timestamp == 0) {
             if (_live) {
                 var last:Object = _segments[_segments.length - 1];
@@ -158,22 +160,9 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         return seconds(_segments[last].time) == timestmap;
     }
 
-    private static function traverseAndBuildId(node:XML):String {
-        if (node == null) {
-            throw new ArgumentError("Couldn't find ID");
-        }
-
-        if (node.hasOwnProperty("@id")) {
-            return node.@id.toString();
-        }
-
-        // go up one level in hierarchy, e.g. adaptionSet and period
-        return traverseAndBuildId(node.parent());
-    }
-
     private static function traverseAndBuildTimeline(node:XML):XMLList {
         if (node == null) {
-            throw new ArgumentError("Couldn't find segments");
+            throw Console.getInstance().logError(new Error("Couldn't find any S tag"));
         }
 
         if (node.SegmentTemplate.length() == 1
@@ -188,7 +177,7 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
 
     private static function traverseAndBuildTimeShiftBufferDepth(node:XML):Number {
         if (node == null) {
-            throw new ArgumentError("Couldn't find time shift buffer depth");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'timeShiftBufferDepth' attribute"));
         }
 
         if (node.hasOwnProperty("@timeShiftBufferDepth")) {
@@ -201,7 +190,7 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
 
     private static function traverseAndBuildLive(node:XML):Boolean {
         if (node == null) {
-            throw new ArgumentError("Couldn't find type");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'type' attribute"));
         }
 
         if (node.hasOwnProperty("@type")) {
@@ -214,7 +203,7 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
 
     private static function traverseAndBuildMinBufferTime(node:XML):Number {
         if (node == null) {
-            throw new ArgumentError("Couldn't find minimum buffer time");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'minBufferTime' attribute"));
         }
 
         if (node.hasOwnProperty("@minBufferTime")) {
@@ -231,6 +220,18 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
 
     protected override function traverseAndBuildStartNumber(node:XML):Number {
         return NaN;
+    }
+
+    override public function toString():String {
+        var a:String = "isLive='" + _live;
+        var b:String = "";
+        var c:String = "', segmentsCount='" + _segments.length + "'";
+
+        if (_live) {
+            b = ", minBufferTime[s]='" + _minBufferTime + ", timeShiftBuffer[s]='" + _timeShiftBuffer;
+        }
+
+        return a + b + c;
     }
 }
 }

@@ -11,6 +11,7 @@ import com.castlabs.dash.descriptors.segments.DataSegment;
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.NullSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
+import com.castlabs.dash.utils.Console;
 
 public class SegmentTemplate implements SegmentIndex {
     protected var _initializationSegmentFilename:String;
@@ -80,7 +81,8 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildInitializationFilename(node:XML):String {
         if (node == null) {
-            throw new ArgumentError("Couldn't find initialization segment");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'sourceURL' or " +
+                    "'initialization' attribute"));
         }
 
         if (node.SegmentBase.length() == 1
@@ -106,7 +108,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildSegmentFilename(node:XML):String {
         if (node == null) {
-            throw new ArgumentError("Couldn't find media segment");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'media' attribute"));
         }
 
         if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@media")) {
@@ -119,7 +121,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     protected function traverseAndBuildDuration(node:XML):Number {
         if (node == null) {
-            throw new ArgumentError("Couldn't find duration");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'duration' attribute"));
         }
 
         if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@duration")) {
@@ -132,7 +134,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildTimescale(node:XML):Number {
         if (node == null) {
-            throw new ArgumentError("Couldn't find timescale");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'timescale' attribute"));
         }
 
         if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@timescale")) {
@@ -145,7 +147,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     protected function traverseAndBuildStartNumber(node:XML):Number {
         if (node == null) {
-            throw new ArgumentError("Couldn't find start number");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'startNumber' attribute"));
         }
 
         if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@startNumber")) {
@@ -154,6 +156,12 @@ public class SegmentTemplate implements SegmentIndex {
 
         // go up one level in hierarchy, e.g. adaptionSet and period
         return traverseAndBuildStartNumber(node.parent());
+    }
+
+    public function toString():String {
+        return "segmentDuration[u]='" + _duration + ", timescale='" + _timescale + "', initializationFilename='"
+                + _initializationSegmentFilename + "', segmentFilename='" + _segmentFilename
+                + "', startNumber='" + _startNumber + "'";
     }
 }
 }

@@ -12,6 +12,7 @@ import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.ReflexiveSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.handlers.IndexSegmentHandler;
+import com.castlabs.dash.utils.Console;
 
 import flash.utils.ByteArray;
 
@@ -68,12 +69,17 @@ public class SegmentRange implements SegmentIndex {
     public function onIndexSegmentLoaded(bytes:ByteArray):void {
         var match:Array = _indexRange.match(/([\d.]+)-/);
         var begin:Number = match ? Number(match[1]) : 0;
+
+        Console.getInstance().debug("Creating index segment...");
+
         _indexSegmentHandler = new IndexSegmentHandler(bytes, begin);
+
+        Console.getInstance().debug("Created index segment, " + _indexSegmentHandler.toString());
     }
 
     private static function traverseAndBuildBaseUrl(node:XML):String {
         if (node == null) {
-            throw new ArgumentError("Couldn't find base URL element");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'BaseURL' tag"));
         }
 
         if (node.BaseURL.length() == 1) {
@@ -86,11 +92,10 @@ public class SegmentRange implements SegmentIndex {
 
     private static function traverseAndBuildIndexRange(node:XML):String {
         if (node == null) {
-            throw new ArgumentError("Couldn't find index range attribute");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'indexRange' attribute"));
         }
 
-        if (node.SegmentBase.length() == 1
-                && node.SegmentBase.@indexRange != null) {
+        if (node.SegmentBase.length() == 1 && node.SegmentBase.hasOwnProperty("@indexRange")) {
             return node.SegmentBase.@indexRange.toString();
         }
 
@@ -100,17 +105,22 @@ public class SegmentRange implements SegmentIndex {
 
     private static function traverseAndBuildInitializationRange(node:XML):String {
         if (node == null) {
-            throw new ArgumentError("Couldn't find initialization range attribute");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'range' attribute"));
         }
 
         if (node.SegmentBase.length() == 1
                 && node.SegmentBase.Initialization.length() == 1
-                && node.SegmentBase.Initialization.@range != null) {
+                && node.SegmentBase.Initialization.hasOwnProperty("@range")) {
             return node.SegmentBase.Initialization.@range.toString();
         }
 
         // go up one level in hierarchy, e.g. adaptionSet and period
         return traverseAndBuildInitializationRange(node.parent());
+    }
+
+    public function toString():String {
+        return "baseUrl='" + _baseUrl + ", initializationRange='" + _initializationRange + "', indexRange='"
+                + _indexRange + "'";
     }
 }
 }

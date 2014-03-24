@@ -8,6 +8,8 @@
 
 package com.castlabs.dash.handlers {
 
+import com.castlabs.dash.utils.Console;
+
 import flash.utils.ByteArray;
 
 public class IndexSegmentHandler {
@@ -64,7 +66,8 @@ public class IndexSegmentHandler {
             } else {
                 //TODO implement base on:
                 //https://github.com/Dash-Industry-Forum/dash.js/blob/4500a17d6eee2832ba8a328b58f3791a5c0bb828/app/js/dash/BaseURLExtensions.js
-                throw new ArgumentError("Unsupported version");
+
+                throw Console.getInstance().logError(new Error("Unsupported 'sidx' box version"));
             }
 
             firstOffset += size + indexSegmentRangeBegin;
@@ -99,6 +102,10 @@ public class IndexSegmentHandler {
 
     public function get references():Vector.<Object> {
         return _references;
+    }
+
+    public function toString():String {
+        return "referencesCount='" + _references.length + "'";
     }
 }
 }

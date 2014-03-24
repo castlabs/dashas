@@ -7,6 +7,8 @@
  */
 
 package com.castlabs.dash.handlers {
+import com.castlabs.dash.utils.Console;
+
 import flash.utils.ByteArray;
 
 public class SegmentHandler {
@@ -35,24 +37,24 @@ public class SegmentHandler {
 
     protected function validateType(expectedType:String, actualType:String):void {
         if (actualType != expectedType) {
-            throw ArgumentError("Couldn't find `" + expectedType + "` box");
+            throw Console.getInstance().logError(new Error("Couldn't find any '" + expectedType + "' box"));
         }
     }
 
     protected function validateSize(size:uint):void {
         if (size == 1) {
             // don't support "large box", because default size is sufficient for fragmented movie
-            throw ArgumentError("Large box isn't supported");
+            throw Console.getInstance().logError(new Error("Large box isn't supported"));
         }
     }
 
     protected function validateTracksNumber(number:int):void {
         if (number > 1) {
-            throw new ArgumentError("Multiple tracks aren't supported");
+            throw Console.getInstance().logError(new Error("Multiple tracks aren't supported"));
         }
 
         if (number < 1) {
-            throw new ArgumentError("Track isn't defined");
+            throw Console.getInstance().logError(new Error("Track isn't defined"));
         }
     }
 }

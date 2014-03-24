@@ -36,11 +36,10 @@ public class Console {
     public function enable():void {
         enabled = true;
 
-        var timer = new Timer(2000); // 2 second
+        var timer:Timer = new Timer(2000); // 2 second
         timer.addEventListener(TimerEvent.TIMER, send);
         timer.start();
     }
-
 
     private function send(event:TimerEvent):void {
         if (events.length == 0) {
@@ -68,6 +67,11 @@ public class Console {
 
     public function debug(message:String):void {
         log(DEBUG, message);
+    }
+
+    public function logError(error:Error):Error {
+        log(ERROR, error.message);
+        return error;
     }
 
     public function log(level:String, message:String):void {

@@ -122,7 +122,7 @@ public class FragmentLoader extends EventDispatcher {
 
             if (segment1 is WaitSegment) {
                 _waitTimer.start();
-                Console.getInstance().warn("Received wait segment.");
+                Console.getInstance().debug("Received wait segment.");
                 return;
             }
 
@@ -134,7 +134,7 @@ public class FragmentLoader extends EventDispatcher {
 
             if (segment2 is WaitSegment) {
                 _waitTimer.start();
-                Console.getInstance().warn("Received wait segment.");
+                Console.getInstance().debug("Received wait segment.");
                 return;
             }
 
@@ -191,14 +191,26 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     private function onInitializationAudioSegmentLoaded(event:SegmentEvent):void {
-        _initializationSegmentHandlers[event.segment.internalRepresentationId] =
-                new InitializationAudioSegmentHandler(event.bytes);
+        Console.getInstance().debug("Creating audio initialization segment...");
+
+        var handler:InitializationSegmentHandler = new InitializationAudioSegmentHandler(event.bytes);
+
+        Console.getInstance().debug("Created audio initialization segment, " + handler.toString());
+
+        _initializationSegmentHandlers[event.segment.internalRepresentationId] = handler;
+
         notifyReadyIfNeeded();
     }
 
     private function onInitializationVideoSegmentLoaded(event:SegmentEvent):void {
-        _initializationSegmentHandlers[event.segment.internalRepresentationId] =
-                new InitializationVideoSegmentHandler(event.bytes);
+        Console.getInstance().debug("Creating video initialization segment...");
+
+        var handler:InitializationSegmentHandler = new InitializationVideoSegmentHandler(event.bytes);
+
+        Console.getInstance().debug("Created video initialization segment, " + handler.toString());
+
+        _initializationSegmentHandlers[event.segment.internalRepresentationId] = handler;
+
         notifyReadyIfNeeded();
     }
 
@@ -247,9 +259,13 @@ public class FragmentLoader extends EventDispatcher {
 
         var offset:Number = findSmallerOffset();
 
+        Console.getInstance().debug("Processing audio segment...");
+
         _audioSegmentHandler = new AudioSegmentHandler(event.bytes, _initializationSegmentHandler.messages,
                 _initializationSegmentHandler.defaultSampleDuration, _initializationSegmentHandler.timescale,
                 (_audioSegment.startTimestamp - offset) * 1000, _mixer);
+
+        Console.getInstance().debug("Processed audio segment");
 
         _audioSegmentLoaded = true;
 
@@ -262,9 +278,13 @@ public class FragmentLoader extends EventDispatcher {
 
         var offset:Number = findSmallerOffset();
 
+        Console.getInstance().debug("Processing video segment...");
+
         _videoSegmentHandler = new VideoSegmentHandler(event.bytes, _initializationSegmentHandler.messages,
                 _initializationSegmentHandler.defaultSampleDuration, _initializationSegmentHandler.timescale,
                 (_videoSegment.startTimestamp - offset) * 1000, _mixer);
+
+        Console.getInstance().debug("Processed video segment");
 
         _videoSegmentLoaded = true;
 

@@ -9,7 +9,7 @@
 package com.castlabs.dash.utils {
 public class Manifest {
     public function Manifest() {
-        throw new Error("It's static class");
+        throw new Error("It's a static class");
     }
 
     public static function toSeconds(value:String):Number {

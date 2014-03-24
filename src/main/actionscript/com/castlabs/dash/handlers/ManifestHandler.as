@@ -8,6 +8,7 @@
 
 package com.castlabs.dash.handlers {
 import com.castlabs.dash.descriptors.Representation;
+import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.loaders.ManifestLoader;
 import com.castlabs.dash.utils.Console;
@@ -30,8 +31,6 @@ public class ManifestHandler {
 
     public function ManifestHandler(url:String, xml:XML) {
         _url = url;
-
-        _live = buildLive(xml);
         _duration = buildDuration(xml);
 
         var baseUrl:String = buildBaseUrl(url);
@@ -41,11 +40,15 @@ public class ManifestHandler {
         sortByBandwidth(_audioRepresentations);
         sortByBandwidth(_videoRepresentations);
 
-        var minimumUpdatePeriod:Number = buildMinimumUpdatePeriod(xml);
-        if (_live && minimumUpdatePeriod) {
-            _updateTimer = new Timer(minimumUpdatePeriod * 1000);
-            _updateTimer.addEventListener(TimerEvent.TIMER, onUpdate);
-            _updateTimer.start();
+        _live = buildLive(xml);
+        if (_live) {
+            var minimumUpdatePeriod:Number = buildMinimumUpdatePeriod(xml);
+
+            if (minimumUpdatePeriod) {
+                _updateTimer = new Timer(minimumUpdatePeriod * 1000);
+                _updateTimer.addEventListener(TimerEvent.TIMER, onUpdate);
+                _updateTimer.start();
+            }
         }
     }
 
@@ -70,7 +73,7 @@ public class ManifestHandler {
         loader.addEventListener(ManifestEvent.LOADED, onLoad);
 
         function onLoad(event:ManifestEvent):void {
-            Console.getInstance().info("Updated manifest");
+            Console.getInstance().info("Loaded changed manifest. Updating representations...");
 
             for each (var representation1:Representation in _videoRepresentations) {
                 representation1.update(event.xml..AdaptationSet.(@mimeType == "video/mp4")[0]);
@@ -79,6 +82,8 @@ public class ManifestHandler {
             for each (var representation2:Representation in _audioRepresentations) {
                 representation2.update(event.xml..AdaptationSet.(@mimeType == "audio/mp4")[0]);
             }
+
+            Console.getInstance().info("Updated representations");
         }
 
         loader.load();
@@ -89,6 +94,7 @@ public class ManifestHandler {
             return Manifest.toSeconds(xml.@minimumUpdatePeriod.toString());
         }
 
+        Console.getInstance().warn("Couldn't find minimum update period");
         return NaN;
     }
 
@@ -101,6 +107,7 @@ public class ManifestHandler {
             return Manifest.toSeconds(xml.@mediaPresentationDuration.toString());
         }
 
+        Console.getInstance().warn("Couldn't find media presentation duration");
         return NaN;
     }
 
@@ -108,6 +115,7 @@ public class ManifestHandler {
         if (xml.hasOwnProperty("@type")) {
             return xml.@type.toString() == "dynamic";
         }
+
         return false;
     }
 
@@ -132,7 +140,11 @@ public class ManifestHandler {
         var representations:Vector.<Representation> = new Vector.<Representation>();
 
         for each (var node:XML in nodes) {
-            representations.push(new Representation(_nextInternalRepresentationId++, baseUrl, duration, node));
+            Console.getInstance().debug("Processing next representation...");
+            var representation:Representation = new Representation(_nextInternalRepresentationId++, baseUrl, duration, node);
+            Console.getInstance().info("Created representation, " + representation.toString());
+
+            representations.push(representation);
         }
 
         return representations;
@@ -150,6 +162,11 @@ public class ManifestHandler {
 
             return 0; // a equals b
         });
+    }
+
+    public function toString():String {
+        return "isLive='" + _live + "', duration[s]='" + _duration + "', videoRepresentationsCount='"
+                + _videoRepresentations.length + "', audioRepresentationsCount='" + _audioRepresentations.length + "'";
     }
 }
 }

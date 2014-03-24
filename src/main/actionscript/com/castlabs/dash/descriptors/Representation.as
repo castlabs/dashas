@@ -60,5 +60,9 @@ public class Representation {
     private static function buildBandwidth(xml:XML):Number {
         return Number(xml.@bandwidth);
     }
+
+    public function toString():String {
+        return "id='" + _id + "', bandwidth='" + _bandwidth + "'";
+    }
 }
 }

@@ -12,6 +12,7 @@ import com.castlabs.dash.descriptors.segments.NullSegment;
 import com.castlabs.dash.descriptors.segments.ReflexiveSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.utils.BandwidthMonitor;
+import com.castlabs.dash.utils.Console;
 
 public class SegmentLoaderFactory {
     public function SegmentLoaderFactory() {
@@ -30,7 +31,7 @@ public class SegmentLoaderFactory {
             return new NullSegmentLoader(segment, monitor);
         }
 
-        throw new ArgumentError("Unknown segment type");
+        throw Console.getInstance().logError(new Error("Unknown segment type"));
     }
 }
 }

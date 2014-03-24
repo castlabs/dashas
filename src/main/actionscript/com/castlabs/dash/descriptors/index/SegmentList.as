@@ -11,6 +11,7 @@ import com.castlabs.dash.descriptors.segments.DataSegment;
 import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.NullSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
+import com.castlabs.dash.utils.Console;
 
 public class SegmentList implements SegmentIndex {
     private var _initializationSegmentFilename:String;
@@ -63,10 +64,10 @@ public class SegmentList implements SegmentIndex {
 
     private static function buildAndTraverseSegmentFilenames(node:XML):Vector.<String> {
         if (node == null) {
-            throw new ArgumentError("Couldn't find media segment");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'SegmentURL' tag"));
         }
 
-        if (node.SegmentList.length() == 1 && node.SegmentList.length() > 0) {
+        if (node.SegmentList.length() == 1 && node.SegmentList.SegmentURL.length() > 0) {
             var segments:Vector.<String> = new Vector.<String>();
 
             for each (var item:XML in node.SegmentList.SegmentURL) {
@@ -81,18 +82,18 @@ public class SegmentList implements SegmentIndex {
 
     private static function traverseAndBuildInitializationSegmentFilename(node:XML):String {
         if (node == null) {
-            throw new ArgumentError("Couldn't find initialization segment");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'sourceURL' attribute"));
         }
 
         if (node.SegmentBase.length() == 1
                 && node.SegmentBase.Initialization.length() == 1
-                && node.SegmentBase.Initialization.@sourceURL != null) {
+                && node.SegmentBase.Initialization.hasOwnProperty("@sourceURL")) {
             return node.SegmentBase.Initialization.@sourceURL.toString();
         }
 
         if (node.SegmentList.length() == 1
                 && node.SegmentList.Initialization.length() == 1
-                && node.SegmentList.Initialization.@sourceURL != null) {
+                && node.SegmentList.Initialization.hasOwnProperty("@sourceURL")) {
             return node.SegmentList.Initialization.@sourceURL.toString();
         }
 
@@ -102,10 +103,10 @@ public class SegmentList implements SegmentIndex {
 
     private static function traverseAndBuildDuration(node:XML):Number {
         if (node == null) {
-            throw new ArgumentError("Couldn't find duration");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'duration' attribute"));
         }
 
-        if (node.SegmentList.length() == 1 && node.SegmentList.@duration != null) {
+        if (node.SegmentList.length() == 1 && node.SegmentList.hasOwnProperty("@duration")) {
             return Number(node.SegmentList.@duration.toString());
         }
 
@@ -115,15 +116,20 @@ public class SegmentList implements SegmentIndex {
 
     private static function traverseAndBuildTimescale(node:XML):Number {
         if (node == null) {
-            throw new ArgumentError("Couldn't find timescale");
+            throw Console.getInstance().logError(new Error("Couldn't find any 'timescale' attribute"));
         }
 
-        if (node.SegmentList.length() == 1 && node.SegmentList.@timescale != null) {
+        if (node.SegmentList.length() == 1 && node.SegmentList.hasOwnProperty("@timescale")) {
             return Number(node.SegmentList.@timescale.toString());
         }
 
         // go up one level in hierarchy, e.g. adaptionSet and period
         return traverseAndBuildTimescale(node.parent());
+    }
+
+    public function toString():String {
+        return "segmentDuration[u]='" + _duration + ", timescale='" + _timescale + "', initializationFilename='"
+                + _initializationSegmentFilename + "', segmentsCount='" + _segmentsFilenames.length + "'";
     }
 }
 }
