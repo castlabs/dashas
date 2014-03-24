@@ -1,3 +1,5 @@
+if(!window.console){ window.console = {log: function(){} }; }
+
 var userBandwidthChart, realUserBandwidths = [], averageUserBandwidths = [], mediaBandwidthChart, videoBandwidths = [], audioBandwidths = [];
 
 var chartEmptyData = {
@@ -48,6 +50,23 @@ function handleEvents(events) {
 }
 
 function log(level, message) {
+    logToPageConsole(level, message);
+    logToBrowserConsole(level, message);
+}
+
+function logToPageConsole(level, message) {
+    if (level == 'error') {
+        console.error(message);
+    }
+    if (level == 'warn') {
+        console.warn(message);
+    }
+    if (level == 'info' || level == 'debug') {
+        console.info(message);
+    }
+}
+
+function logToBrowserConsole(level, message) {
     var node = document.createElement("p");
 
     node.className = level;
