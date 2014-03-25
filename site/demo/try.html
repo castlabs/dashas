@@ -1,0 +1,106 @@
+<!--
+  ~ Copyright (c) 2014 castLabs GmbH
+  ~
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<html>
+<head>
+    <link href="css/console.css" rel="stylesheet">
+    <link href="css/try.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="bar">
+    <span class="actions push-right">
+        <button id="load">Load</button>
+        or
+        <select id="examples">
+            <option value="">Examples</option>
+            <option value="http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd">Files: Big Buck Bunny</option>
+            <option value="http://dashas.castlabs.com/videos/bytes/bbb/Manifest.mpd">Bytes: Big Buck Bunny (video: 450p, 250k/500k/1000k; audio: stereo, 69k)</option>
+            <option value="http://dashas.castlabs.com/videos/bytes/sintel/Manifest.mpd">Bytes: Sintel (video: 436p, 250k/500k/1000k; audio: stereo, 69k)</option>
+            <option value="http://dashas.castlabs.com/videos/bytes/tos/Manifest.mpd">Bytes: Tears of Steel (video: 534p, 500k/1000k/2000k; audio: stereo, 69k)</option>
+            <option value="http://ec2-46-137-139-183.eu-west-1.compute.amazonaws.com/live/channel1/channel1.isml/channel1.mpd">Live: Big Buck Bunny (from t=0)</option>
+            <option value="http://ec2-46-137-139-183.eu-west-1.compute.amazonaws.com/live/channel2/channel2.isml/channel2.mpd">Live: Big Buck Bunny (loop with continuous timestamps)</option>
+        </select>
+    </span>
+    <span class="stretch"><input id="url" type="text" placeholder="Address to manifest file" value="http://dashas.castlabs.com/videos/bytes/bbb/Manifest.mpd"/></span>
+</div>
+
+<p class="alert info user-server">Upload <a href="https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml">crossdomain.xml</a> file to your hosting <a class="close push-right" href="#">&times;</a><a href="https://github.com/castlabs/dashas/wiki/crossdomain" class="push-right">Why? and How fix?</a></p>
+<p class="alert info user-server">Upload <a href="https://github.com/castlabs/dashas/blob/master/utils/.htaccess">.htaccess</a> file to your hosting <a class="close push-right" href="#">&times;</a><a href="https://github.com/castlabs/dashas/wiki/htaccess" class="push-right">Why? and How fix?</a></p>
+
+<div id="placeholder-wrapper"></div>
+
+<script src="./js/chart.min.js"></script>
+<script src="./js/console.js"></script>
+
+<script type="text/javascript" src="./swfobject/swfobject.js"></script>
+<script type="text/javascript">
+    window.addEventListener("load", function() {
+
+        // hide alerts if press close button
+        var elements = document.getElementsByClassName("close");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].onclick = function() {
+                this.parentNode.style.display = 'none';
+                return false;
+            };
+        }
+
+        // on click load button
+        document.getElementById("load").onclick = function() {
+            load();
+            return false;
+        };
+
+        // on change examples selects
+        document.getElementById("examples").onchange = function() {
+            document.getElementById("url").value = this.value;
+            load();
+
+            // select "Examples" option
+            this.selectedIndex = 0;
+        };
+
+        // load typed URL if any
+        load();
+    }, false);
+
+    function load() {
+        loadManifest(document.getElementById("url").value);
+    }
+
+    function loadManifest(url) {
+        unloadSwf();
+        resetChartsAndLogs();
+        loadSwf(url);
+    }
+
+    function unloadSwf() {
+        swfobject.removeSWF("placeholder");
+    }
+
+    function loadSwf(manifestUrl) {
+        document.getElementById("placeholder-wrapper").innerHTML = "<div id='placeholder'><p><span>Please install <a href='http://get.adobe.com/flashplayer/'>Adobe Flash Player</a></span></p></div>";
+
+        var timestamp = new Date().getTime();
+
+        var flashvars = {};
+        flashvars.src = encodeURIComponent(manifestUrl);
+        flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../"  + (isDebug() ? "debug" : "production") + "/dashas.swf?t=" + timestamp + "&log=true");
+
+        var params = {};
+        params.allowfullscreen = "true";
+        params.allownetworking = "true";
+        params.wmode = "direct";
+
+        swfobject.embedSWF("./StrobeMediaPlayback.swf?=" + timestamp, "placeholder", "640", "360", "10.1", "./swfobject/expressInstall.swf", flashvars, params, {});
+    }
+</script>
+</body>
+</html>

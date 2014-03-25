@@ -1,6 +1,6 @@
 if(!window.console){ window.console = {log: function(){} }; }
 
-var userBandwidthChart, realUserBandwidths = [], averageUserBandwidths = [], mediaBandwidthChart, videoBandwidths = [], audioBandwidths = [];
+var realUserBandwidths = [], averageUserBandwidths = [], videoBandwidths = [], audioBandwidths = [];
 
 var chartEmptyData = {
     labels : [],
@@ -192,10 +192,10 @@ function initEnableOrDisableDebug() {
         e.textContent = "Disable";
 
         var n = document.createElement("p");
-        n.className = "performance-warning";
-        n.innerHTML = "You're using a debug SWF file. Dropped frames during playback can occur.";
+        n.className = "alert warn";
+        n.innerHTML = "You're using a debug SWF file. Dropped frames during playback can occur. <a class='close push-right' href='#'>&times;</a>";
 
-        document.body.insertBefore(n, document.getElementsByClassName("console")[0]);
+        document.body.insertBefore(n, document.getElementById("placeholder-wrapper"));
     } else {
         e.textContent = "Enable";
     }
@@ -209,6 +209,24 @@ function initCharts() {
 
     context = document.getElementById("mediaBandwidthChart").getContext("2d");
     new Chart(context).Line(chartEmptyData, chartOptions);
+}
+
+function resetChartsAndLogs() {
+
+    // charts
+    realUserBandwidths = [];
+    averageUserBandwidths = [];
+    videoBandwidths = [];
+    audioBandwidths = [];
+
+    appendUserBandwidth(null, null);
+    appendMediaBandwidth(null, null);
+
+    // logs
+    var node = document.getElementById("screen");
+    while (node.firstChild) {
+        node.removeChild(node.firstChild);
+    }
 }
 
 window.addEventListener("load", function() {

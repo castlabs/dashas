@@ -6,14 +6,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#placeholder p {
-    background-color: #ECF0F1;
-    color: #2C3E50;
-    height: 360px;
-    text-align: center;
-    line-height: 350px;
-}
-
 .console .log #screen {
     overflow:scroll;
     width: 640px;
@@ -64,13 +56,4 @@
     content: ' \25CF';
     margin-right: 5px;
     color: rgba(220,220,220,1);
-}
-
-.performance-warning {
-    border: 1px solid transparent;
-    padding: 10px;
-    width: 620px;
-    background-color: #fcf8e3;
-    border-color: #faebcc;
-    color: #8a6d3b;
 }

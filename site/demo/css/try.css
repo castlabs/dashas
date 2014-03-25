@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2014 castLabs GmbH
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.close {
+    margin-left: 10px;
+    position: relative;
+    top: -1px;
+    text-decoration: none;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    color: inherit;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+}
+
+.stretch {
+    display: block;
+    overflow: hidden;
+}
+
+.stretch input[type=text] {
+    width: 100%;
+}
+
+.push-right {
+    float: right;
+}
+
+#bar {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 640px;
+}
+
+#bar > span.actions {
+    padding-left: 10px;
+}
+
+#bar > span.actions > button {
+    margin-right: 5px;
+}
+
+#bar > span.actions > select {
+    margin-left: 5px;
+    width: 8em;
+}
+
+.alert {
+    border: 1px solid transparent;
+    padding: 10px;
+    width: 620px;
+}
+
+.alert.warn {
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    color: #8a6d3b;
+}
+
+.alert.info {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
+}
+
+#placeholder {
+    display: block;
+}
+
+#placeholder p {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+    height: 360px;
+    text-align: center;
+    line-height: 350px;
+}
