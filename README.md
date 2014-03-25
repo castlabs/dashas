@@ -12,7 +12,7 @@ This project is an extension for [Open Source Media Framework](http://osmf.org/)
 
 ## Demo
 
-For more information visit [examples page](http://dashas.castlabs.com/demo/index.html).
+For more information visit [examples page](http://dashas.castlabs.com/demo/try.html).
 
 ## Features
 
