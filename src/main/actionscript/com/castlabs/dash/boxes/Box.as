@@ -12,7 +12,6 @@ import flash.utils.ByteArray;
 
 internal class Box {
     protected const SIZE_AND_TYPE:uint = 8;
-    private const NUMBER:uint = 4;
 
     private var _end:uint;
 
@@ -45,23 +44,6 @@ internal class Box {
 
     protected function parseChildBox(type:String, offset:uint, size:uint, ba:ByteArray):Boolean {
         throw new IllegalOperationError("Method not implemented");
-    }
-
-    protected function readNumber(ba:ByteArray, length:uint = NUMBER):uint {
-        var number:uint = 0;
-
-        for (var i:uint = 0; i < length; i++) {
-            number = number << 8;
-            number += ba.readUnsignedByte();
-        }
-
-        return number;
-    }
-
-    protected function skipNumberIfNeeded(condition:Boolean, ba:ByteArray):void {
-        if (condition) {
-            ba.position += NUMBER;
-        }
     }
 }
 }

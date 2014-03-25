@@ -7,6 +7,8 @@
  */
 
 package com.castlabs.dash.boxes {
+import com.castlabs.dash.utils.Bytes;
+
 import flash.utils.ByteArray;
 
 public class TrackFragmentRunBox extends FullBox {
@@ -80,10 +82,10 @@ public class TrackFragmentRunBox extends FullBox {
             sampleCompositionTimeOffsetsPresent = true;
         }
 
-        var sampleCount:uint = readNumber(ba);
+        var sampleCount:uint = Bytes.readNumber(ba);
 
         parseDataOffsetIfNeeded(dataOffsetPresent, ba);
-        skipNumberIfNeeded(firstSampleFlagsPresent, ba);
+        Bytes.skipNumberIfNeeded(firstSampleFlagsPresent, ba);
 
         for (var i:uint = 0; i < sampleCount; i++) {
             parseSampleDurationIfNeeded(i, ba);
@@ -95,7 +97,7 @@ public class TrackFragmentRunBox extends FullBox {
 
     private function parseDataOffsetIfNeeded(present:Boolean, ba:ByteArray):void {
         if (present) {
-            _dataOffset = readNumber(ba);
+            _dataOffset = Bytes.readNumber(ba);
         }
     }
 
@@ -112,7 +114,7 @@ public class TrackFragmentRunBox extends FullBox {
     }
 
     private function parseSampleCompositionTimeOffsetsVersion1(i:uint, ba:ByteArray):void {
-        var cts:uint = readNumber(ba);
+        var cts:uint = Bytes.readNumber(ba);
 
         if (((cts >> 31) & 0x1) == 1) {
             _sampleCompositionTimeOffset[i] = cts - 0xffffffff;
@@ -122,18 +124,18 @@ public class TrackFragmentRunBox extends FullBox {
     }
 
     private function parseSampleCompositionTimeOffsetsVersion0(i:uint, ba:ByteArray):void {
-        _sampleCompositionTimeOffset[i] = readNumber(ba);
+        _sampleCompositionTimeOffset[i] = Bytes.readNumber(ba);
     }
 
     private function parseSampleSizeIfNeeded(present:Boolean, i:uint, ba:ByteArray):void {
         if (present) {
-            _sampleSize[i] = readNumber(ba);
+            _sampleSize[i] = Bytes.readNumber(ba);
         }
     }
 
     private function parseSampleDurationIfNeeded(i:uint, ba:ByteArray):void {
         if (_sampleDurationPresent) {
-            _sampleDuration[i] = readNumber(ba);
+            _sampleDuration[i] = Bytes.readNumber(ba);
         }
     }
 

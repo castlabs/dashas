@@ -7,6 +7,9 @@
  */
 
 package com.castlabs.dash.boxes {
+
+import com.castlabs.dash.utils.Bytes;
+
 import flash.utils.ByteArray;
 
 public class TrackFragmentHeaderBox extends FullBox {
@@ -50,16 +53,16 @@ public class TrackFragmentHeaderBox extends FullBox {
         }
 
         // trafId
-        readNumber(ba);
+        Bytes.readNumber(ba);
 
         if (_baseDataOffsetPresent) {
-            _baseDataOffset = readNumber(ba, 8);
+            _baseDataOffset = Bytes.readNumber(ba, 8);
         }
 
-        skipNumberIfNeeded(sampleDescriptionIndexPresent, ba);
+        Bytes.skipNumberIfNeeded(sampleDescriptionIndexPresent, ba);
 
         if (_defaultSampleDurationPresent) {
-            _defaultSampleDuration = readNumber(ba);
+            _defaultSampleDuration = Bytes.readNumber(ba);
         }
     }
 }

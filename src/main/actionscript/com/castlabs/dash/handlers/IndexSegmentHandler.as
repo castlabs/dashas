@@ -8,6 +8,7 @@
 
 package com.castlabs.dash.handlers {
 
+import com.castlabs.dash.utils.Bytes;
 import com.castlabs.dash.utils.Console;
 
 import flash.utils.ByteArray;
@@ -64,10 +65,8 @@ public class IndexSegmentHandler {
                 earliestPresentationTime = box.readUnsignedInt();
                 firstOffset = box.readUnsignedInt();
             } else {
-                //TODO implement base on:
-                //https://github.com/Dash-Industry-Forum/dash.js/blob/4500a17d6eee2832ba8a328b58f3791a5c0bb828/app/js/dash/BaseURLExtensions.js
-
-                throw Console.getInstance().logError(new Error("Unsupported 'sidx' box version"));
+                earliestPresentationTime = Bytes.readNumber(box, 8);
+                firstOffset = Bytes.readNumber(box, 8);
             }
 
             firstOffset += size + indexSegmentRangeBegin;
@@ -95,8 +94,6 @@ public class IndexSegmentHandler {
                 offset += referenceSize;
                 time += referenceDuration;
             }
-
-            //TODO check if box.position == box.size
         }
     }
 
