@@ -1,4 +1,4 @@
-if(!window.console){ window.console = {log: function(){} }; }
+if(!window.console){ window.console = { log: function() {} }; }
 
 var realUserBandwidths = [], averageUserBandwidths = [], videoBandwidths = [], audioBandwidths = [];
 
@@ -16,21 +16,8 @@ var chartOptions = {
     scaleShowGridLines: false
 };
 
-function showOrHideMessage(level, node) {
-    if (document.getElementById(level).checked) {
-        node.style.display = "block";
-    } else {
-        node.style.display = "none";
-    }
-}
-
-function showOrHideMessages(level) {
-    var nodes = document.getElementsByClassName(level);
-    for (var i = 0; i < nodes.length; i++) {
-        showOrHideMessage(level, nodes[i]);
-    }
-}
-
+// call from ActionScript
+var flag = true;
 function handleEvents(events) {
     for (var i = 0; i < events.length; i++) {
         var event = events[i];
@@ -76,7 +63,21 @@ function logToBrowserConsole(level, message) {
     document.getElementById("screen").appendChild(node);
 }
 
+// workaround: firefox can't handle width and height properly
+function fixChartSize(chart) {
+    chart.width = 640;
+    chart.height = 300;
+}
+
+function initChart(chart) {
+    fixChartSize(chart);
+    var context = chart.getContext("2d");
+    new Chart(context).Line(chartEmptyData, chartOptions);
+}
+
 function appendUserBandwidth(dataset, bandwidth) {
+    fixChartSize(document.getElementById("userBandwidthChart"));
+
     if (dataset == 'real') {
         realUserBandwidths.push(bandwidth);
     }
@@ -110,23 +111,9 @@ function appendUserBandwidth(dataset, bandwidth) {
     new Chart(context).Line(data, chartOptions);
 }
 
-function buildArrayWithEmptyValues(length) {
-    var array = [];
-
-    for (var i = 0; i < length; i++) {
-        array[i] = "";
-    }
-
-    return array;
-}
-
-function limitTo15Entries(array) {
-    while (array.length > 15) {
-        array.shift();
-    }
-}
-
 function appendMediaBandwidth(dataset, bandwidth) {
+    fixChartSize(document.getElementById("mediaBandwidthChart"));
+
     if (dataset == 'video') {
         videoBandwidths.push(bandwidth);
     }
@@ -160,12 +147,20 @@ function appendMediaBandwidth(dataset, bandwidth) {
     new Chart(context).Line(data, chartOptions);
 }
 
-function appendConsole() {
-    var node = document.createElement("div");
+function limitTo15Entries(array) {
+    while (array.length > 15) {
+        array.shift();
+    }
+}
 
-    node.className = 'console';
-    node.innerHTML = '<h4>User\'s Bandwidth</h4><div class="legend"><span class="legend1">average</span><span class="legend2">real</span></div><canvas id="userBandwidthChart" width="640" height="300"></canvas><h4>Media Bandwidth</h4><div class="legend"><span class="legend1">video</span><span class="legend2">audio</span></div><canvas id="mediaBandwidthChart" width="640" height="300"></canvas><h4>Console</h4><div class="log"><div class="buttons"><label for="error"><input id="error" type="checkbox" checked="checked" value=""> Error </label><label for="warn"><input id="warn" type="checkbox" checked="checked" value="">Warn</label><label for="info"><input id="info" type="checkbox" checked="checked" value="">Info</label><label for="debug"><input id="debug" type="checkbox" value="">Debug</label></div><div id="screen"></div></div><h4>Debug</h4><div>Use a debug SWF file: <button id="enableOrDisableDebug" type="button">Enable</button></div>';
-    document.body.appendChild(node);
+function buildArrayWithEmptyValues(length) {
+    var array = [];
+
+    for (var i = 0; i < length; i++) {
+        array[i] = "";
+    }
+
+    return array;
 }
 
 function isDebug() {
@@ -190,25 +185,25 @@ function initEnableOrDisableDebug() {
 
     if (isDebug()) {
         e.textContent = "Disable";
-
-        var n = document.createElement("p");
-        n.className = "alert warn";
-        n.innerHTML = "You're using a debug SWF file. Dropped frames during playback can occur. <a class='close push-right' href='#'>&times;</a>";
-
-        document.body.insertBefore(n, document.getElementById("placeholder-wrapper"));
+        document.getElementById("performance-issue").style.display = "block";
     } else {
         e.textContent = "Enable";
     }
 }
 
-function initCharts() {
-    var context = null;
+function showOrHideMessages(level) {
+    var nodes = document.getElementById("screen").getElementsByClassName(level);
+    for (var i = 0; i < nodes.length; i++) {
+        showOrHideMessage(level, nodes[i]);
+    }
+}
 
-    context = document.getElementById("userBandwidthChart").getContext("2d");
-    new Chart(context).Line(chartEmptyData, chartOptions);
-
-    context = document.getElementById("mediaBandwidthChart").getContext("2d");
-    new Chart(context).Line(chartEmptyData, chartOptions);
+function showOrHideMessage(level, node) {
+    if (document.getElementById(level).checked) {
+        node.style.display = "block";
+    } else {
+        node.style.display = "none";
+    }
 }
 
 function resetChartsAndLogs() {
@@ -229,10 +224,36 @@ function resetChartsAndLogs() {
     }
 }
 
-window.addEventListener("load", function() {
-    appendConsole();
+function load() {
+    unloadSwf();
+    resetChartsAndLogs();
+    loadSwf(document.getElementById("url").value);
+}
 
-    initCharts();
+function unloadSwf() {
+    swfobject.removeSWF("placeholder");
+}
+
+function loadSwf(manifestUrl) {
+    document.getElementById("placeholder-wrapper").innerHTML = "<div id='placeholder'><p><span>Please install <a href='http://get.adobe.com/flashplayer/'>Adobe Flash Player</a></span></p></div>";
+
+    var timestamp = new Date().getTime();
+
+    var flashvars = {};
+    flashvars.src = encodeURIComponent(manifestUrl);
+    flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../"  + (isDebug() ? "debug" : "production") + "/dashas.swf?t=" + timestamp + "&log=true");
+
+    var params = {};
+    params.allowfullscreen = "true";
+    params.allownetworking = "true";
+    params.wmode = "direct";
+
+    swfobject.embedSWF("./StrobeMediaPlayback.swf?=" + timestamp, "placeholder", "640", "360", "10.1", "./swfobject/expressInstall.swf", flashvars, params, {});
+}
+
+window.addEventListener("load", function() {
+    initChart(document.getElementById("userBandwidthChart"));
+    initChart(document.getElementById("mediaBandwidthChart"));
 
     document.getElementById("error").onchange = function() {
         showOrHideMessages("error");
@@ -256,5 +277,33 @@ window.addEventListener("load", function() {
         }
 
         location.reload();
+    };
+
+    // hide alerts if press close button
+    var elements = document.getElementsByClassName("close");
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].onclick = function() {
+            this.parentNode.style.display = 'none';
+            return false;
+        };
     }
+
+    // on click load button
+    document.getElementById("load").onclick = function() {
+        load();
+        return false;
+    };
+
+    // on change examples selects
+    document.getElementById("examples").onchange = function() {
+        document.getElementById("url").value = this.value;
+        load();
+
+        // select "Examples" option
+        this.selectedIndex = 0;
+    };
+
+    // load manifest if any
+    load();
+
 }, false);

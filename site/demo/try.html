@@ -6,14 +6,15 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<html>
-<head>
-    <link href="css/console.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8"/>
     <link href="css/try.css" rel="stylesheet">
+
+    <script type="text/javascript" src="js/chart.min.js"></script>
+    <script type="text/javascript" src="swfobject/swfobject.js"></script>
 </head>
-
 <body>
-
 <div id="bar">
     <span class="actions push-right">
         <button id="load">Load</button>
@@ -31,76 +32,38 @@
     <span class="stretch"><input id="url" type="text" placeholder="Address to manifest file" value="http://dashas.castlabs.com/videos/bytes/bbb/Manifest.mpd"/></span>
 </div>
 
-<p class="alert info user-server">Upload <a href="https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml">crossdomain.xml</a> file to your hosting <a class="close push-right" href="#">&times;</a><a href="https://github.com/castlabs/dashas/wiki/crossdomain" class="push-right">Why? and How fix?</a></p>
-<p class="alert info user-server">Upload <a href="https://github.com/castlabs/dashas/blob/master/utils/.htaccess">.htaccess</a> file to your hosting <a class="close push-right" href="#">&times;</a><a href="https://github.com/castlabs/dashas/wiki/htaccess" class="push-right">Why? and How fix?</a></p>
+<p class="alert info">Upload <a href="https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml" target="_blank">crossdomain.xml</a> file to your hosting <a class="close push-right" href="#">&times;</a><a class="push-right" href="https://github.com/castlabs/dashas/wiki/crossdomain" target="_blank">Why? and How fix?</a></p>
+<p class="alert info">Upload <a href="https://github.com/castlabs/dashas/blob/master/utils/.htaccess" target="_blank">.htaccess</a> file to your hosting <a class="close push-right" href="#">&times;</a><a class="push-right" href="https://github.com/castlabs/dashas/wiki/htaccess" target="_blank">Why? and How fix?</a></p>
+<p id="performance-issue" class="alert warn" style="display: none;">You're using a debug SWF file. Dropped frames during playback can occur. <a class='close push-right' href='#'>&times;</a></p>
 
 <div id="placeholder-wrapper"></div>
 
-<script src="./js/chart.min.js"></script>
-<script src="./js/console.js"></script>
+<div class="console">
+    <h4>User's Bandwidth</h4>
+    <div class="legend"><span class="legend1">average</span><span class="legend2">real</span></div>
+    <canvas id="userBandwidthChart" width="640" height="300"></canvas>
 
-<script type="text/javascript" src="./swfobject/swfobject.js"></script>
-<script type="text/javascript">
-    window.addEventListener("load", function() {
+    <h4>Media Bandwidth</h4>
+    <div class="legend"><span class="legend1">video</span><span class="legend2">audio</span></div>
+    <canvas id="mediaBandwidthChart" width="640" height="300"></canvas>
 
-        // hide alerts if press close button
-        var elements = document.getElementsByClassName("close");
-        for (var i = 0; i < elements.length; i++) {
-            elements[i].onclick = function() {
-                this.parentNode.style.display = 'none';
-                return false;
-            };
-        }
+    <h4>Console</h4>
+    <div class="log">
+        <div class="buttons">
+            <label for="error"><input id="error" type="checkbox" checked="checked" value=""> Error</label>
+            <label for="warn"><input id="warn" type="checkbox" checked="checked" value="">Warn</label>
+            <label for="info"><input id="info" type="checkbox" checked="checked" value="">Info</label>
+            <label for="debug"><input id="debug" type="checkbox" value="">Debug</label>
+        </div>
+        <div id="screen"></div>
+    </div>
 
-        // on click load button
-        document.getElementById("load").onclick = function() {
-            load();
-            return false;
-        };
+    <h4>Debug</h4>
+    <div>Use a debug SWF file:
+        <button id="enableOrDisableDebug" type="button">Enable</button>
+    </div>
+</div>
 
-        // on change examples selects
-        document.getElementById("examples").onchange = function() {
-            document.getElementById("url").value = this.value;
-            load();
-
-            // select "Examples" option
-            this.selectedIndex = 0;
-        };
-
-        // load typed URL if any
-        load();
-    }, false);
-
-    function load() {
-        loadManifest(document.getElementById("url").value);
-    }
-
-    function loadManifest(url) {
-        unloadSwf();
-        resetChartsAndLogs();
-        loadSwf(url);
-    }
-
-    function unloadSwf() {
-        swfobject.removeSWF("placeholder");
-    }
-
-    function loadSwf(manifestUrl) {
-        document.getElementById("placeholder-wrapper").innerHTML = "<div id='placeholder'><p><span>Please install <a href='http://get.adobe.com/flashplayer/'>Adobe Flash Player</a></span></p></div>";
-
-        var timestamp = new Date().getTime();
-
-        var flashvars = {};
-        flashvars.src = encodeURIComponent(manifestUrl);
-        flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../"  + (isDebug() ? "debug" : "production") + "/dashas.swf?t=" + timestamp + "&log=true");
-
-        var params = {};
-        params.allowfullscreen = "true";
-        params.allownetworking = "true";
-        params.wmode = "direct";
-
-        swfobject.embedSWF("./StrobeMediaPlayback.swf?=" + timestamp, "placeholder", "640", "360", "10.1", "./swfobject/expressInstall.swf", flashvars, params, {});
-    }
-</script>
+<script type="text/javascript" src="js/try.js"></script>
 </body>
 </html>

@@ -25,7 +25,7 @@
 }
 
 .stretch input[type=text] {
-    width: 100%;
+    width: 98%;
 }
 
 .push-right {
@@ -79,4 +79,56 @@
     height: 360px;
     text-align: center;
     line-height: 350px;
+}
+
+.console .log #screen {
+    overflow:scroll;
+    width: 640px;
+    height: 450px;
+}
+
+.console .log #screen p {
+    margin: 0;
+    padding: 5px;
+}
+
+.console .log #screen p:nth-child(even) {
+    background: #ECF0F1
+}
+
+.console .log .buttons {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #95A5A6;
+}
+
+.console .log .buttons label {
+    margin-right: 10px;
+}
+
+.console .log {
+    margin-top: 20px;
+    width: 640px;
+    border: solid 1px #7F8C8D;
+}
+
+.console .legend {
+    font-size: small;
+    margin-bottom: 20px;
+}
+
+.console .legend1 {
+    margin-right: 10px;
+}
+
+.console .legend1:before {
+    content: ' \25CF';
+    margin-right: 5px;
+    color: rgba(151,187,205,1);
+}
+
+.console .legend2:before {
+    content: ' \25CF';
+    margin-right: 5px;
+    color: rgba(220,220,220,1);
 }
