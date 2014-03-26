@@ -102,7 +102,9 @@ Finally try dash.as locally.
 
 1. Copy DASH stream files into a document root;
 
-1. Copy [crossdomain.xml](https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml) file into a document root;
+1. Copy [crossdomain.xml](https://github.com/castlabs/dashas/blob/master/utils/crossdomain.xml) file into a document root (for more information visit [crossdomain page](https://github.com/castlabs/dashas/wiki/crossdomain));
+
+1. Copy [.htaccess](https://github.com/castlabs/dashas/blob/master/utils/.htaccess) file into a document root (for more information visit [htaccess page](https://github.com/castlabs/dashas/wiki/htaccess));
 
 1. Copy contents of the [demo](https://github.com/castlabs/dashas/tree/master/site/demo/) directory into a document root;
 
