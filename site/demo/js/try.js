@@ -17,7 +17,6 @@ var chartOptions = {
 };
 
 // call from ActionScript
-var flag = true;
 function handleEvents(events) {
     for (var i = 0; i < events.length; i++) {
         var event = events[i];
