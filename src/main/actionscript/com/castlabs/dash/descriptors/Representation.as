@@ -10,6 +10,7 @@ package com.castlabs.dash.descriptors {
 import com.castlabs.dash.descriptors.index.SegmentIndex;
 import com.castlabs.dash.descriptors.index.SegmentIndexFactory;
 import com.castlabs.dash.descriptors.segments.Segment;
+import com.castlabs.dash.utils.Console;
 
 public class Representation {
     private var _internalId:Number;
@@ -27,6 +28,10 @@ public class Representation {
         _id = buildId(xml);
         _bandwidth = buildBandwidth(xml);
         _segmentIndex = SegmentIndexFactory.create(xml);
+    }
+
+    public function get id():String {
+        return _id;
     }
 
     public function get internalId():Number {
@@ -54,7 +59,11 @@ public class Representation {
     }
 
     private static function buildId(xml:XML):String {
-        return xml.@id;
+        if (xml.hasOwnProperty("@id")) {
+            return xml.@id;
+        }
+
+        throw Console.getInstance().logError(new Error("Representation doesn't have 'id' attribute"));
     }
 
     private static function buildBandwidth(xml:XML):Number {

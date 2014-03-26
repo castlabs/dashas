@@ -76,11 +76,11 @@ public class ManifestHandler {
             Console.getInstance().info("Loaded changed manifest. Updating representations...");
 
             for each (var representation1:Representation in _videoRepresentations) {
-                representation1.update(event.xml..AdaptationSet.(@mimeType == "video/mp4")[0]);
+                representation1.update(event.xml..Representation.(@id == representation1.id)[0]);
             }
 
             for each (var representation2:Representation in _audioRepresentations) {
-                representation2.update(event.xml..AdaptationSet.(@mimeType == "audio/mp4")[0]);
+                representation2.update(event.xml..Representation.(@id == representation2.id)[0]);
             }
 
             Console.getInstance().info("Updated representations");
@@ -120,20 +120,28 @@ public class ManifestHandler {
     }
 
     private static function findVideoRepresentationNodes(xml:XML):* {
-        return findAdaptionSetNode("video/mp4", xml).Representation;
+        return findRepresentationNodes("video/mp4", xml);
     }
 
     private static function findAudioRepresentationNodes(xml:XML):* {
-        return findAdaptionSetNode("audio/mp4", xml).Representation;
+        return findRepresentationNodes("audio/mp4", xml);
     }
 
-    private static function findAdaptionSetNode(mimeType:String, xml:XML):* {
-        var adaptationSet:* = xml..AdaptationSet.(attribute('mimeType') == mimeType);
-        if (adaptationSet.length() == 1) {
-            return adaptationSet;
-        } else {
-            return xml..Representation.(@mimeType == mimeType)[0].parent();
+    private static function findRepresentationNodes(mimeType:String, xml:XML):* {
+        var representations:* = null;
+
+        representations = xml..AdaptationSet.(attribute('mimeType') == mimeType).Representation;
+        if (representations.length() > 0) {
+            return representations;
         }
+
+        representations = xml..Representation.(@mimeType == mimeType);
+        if (representations.length() > 0) {
+            return representations;
+        }
+
+        throw Console.getInstance().logError(new Error("Couldn't find any representations, " +
+                "mimeType='" + mimeType + "'"));
     }
 
     private function buildRepresentations(baseUrl:String, duration:Number, nodes:XMLList):Vector.<Representation> {
