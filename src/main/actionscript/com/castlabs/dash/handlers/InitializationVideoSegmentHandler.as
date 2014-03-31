@@ -17,6 +17,10 @@ public class InitializationVideoSegmentHandler extends InitializationSegmentHand
         super(ba);
     }
 
+    override protected function get expectedTrackType():String {
+        return 'vide';
+    }
+
     protected override function buildMessage(sampleEntry:SampleEntry):FLVTag {
         var message:FLVTag = new FLVTag();
 

@@ -11,6 +11,8 @@ import com.castlabs.dash.boxes.FLVTag;
 import com.castlabs.dash.boxes.MovieBox;
 import com.castlabs.dash.boxes.SampleEntry;
 import com.castlabs.dash.boxes.TrackBox;
+import com.castlabs.dash.boxes.TrackExtendsBox;
+import com.castlabs.dash.utils.Console;
 
 import flash.errors.IllegalOperationError;
 import flash.utils.ByteArray;
@@ -41,29 +43,49 @@ public class InitializationSegmentHandler extends SegmentHandler {
         var offset:uint = offsetAndSize.offset;
         var size:uint = offsetAndSize.size;
 
-        var movieBox:MovieBox = new MovieBox(offset, size);
-        movieBox.parse(ba);
+        var movie:MovieBox = new MovieBox(offset, size);
+        movie.parse(ba);
 
-        loadMessagesAndTimescale(movieBox);
-        loadDefaultSampleDuration(movieBox);
+        var track:TrackBox = findTrackWithSpecifiedType(movie);
+
+        loadTimescale(track);
+        loadMessages(track);
+        loadDefaultSampleDuration(movie, track.tkhd.id);
     }
 
-    private function loadMessagesAndTimescale(movieBox:MovieBox):void {
-        validateTracksNumber(movieBox.traks.length);
+    private function findTrackWithSpecifiedType(movie:MovieBox):TrackBox {
+        for each (var track:TrackBox in movie.traks) {
+            if (track.mdia.hdlr.type == expectedTrackType) {
+                return track;
+            }
+        }
 
-        var track:TrackBox = movieBox.traks[0];
+        throw Console.getInstance().logError(new Error("Track isn't defined, type='" + expectedTrackType + "'"));
+    }
+
+    protected function get expectedTrackType():String {
+        throw new IllegalOperationError("Method isn't implemented");
+    }
+
+    private function loadTimescale(track:TrackBox):void {
+        _timescale = track.mdia.mdhd.timescale;
+    }
+
+    private function loadMessages(track:TrackBox):void {
         var sampleEntry:SampleEntry = buildSampleEntry(track);
         var message:FLVTag = buildMessage(sampleEntry);
-
-        _timescale = track.mdia.mdhd.timescale;
         _messages.push(message);
     }
 
-    private function loadDefaultSampleDuration(movieBox:MovieBox):void {
-        if (movieBox.mvex != null) {
-            validateTracksNumber(movieBox.mvex.trexs.length);
-            _defaultSampleDuration = movieBox.mvex.trexs[0].defaultSampleDuration;
+    private function loadDefaultSampleDuration(movie:MovieBox, trackId:uint):void {
+        for each (var trex:TrackExtendsBox in movie.mvex.trexs) {
+            if (trackId == trex.trackId) {
+                _defaultSampleDuration = trex.defaultSampleDuration;
+                return;
+            }
         }
+
+        Console.getInstance().warn("Default sample duration isn't defined, trackId='" + trackId + "'");
     }
 
     private function buildSampleEntry(track:TrackBox):SampleEntry {

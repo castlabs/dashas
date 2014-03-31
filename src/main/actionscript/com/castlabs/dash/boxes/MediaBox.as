@@ -12,6 +12,7 @@ import flash.utils.ByteArray;
 
 public class MediaBox extends Box {
     private var _mdhd:MediaHeaderBox;
+    private var _hdlr:HandlerReferenceBox;
     private var _minf:MediaInformationBox;
 
     public function MediaBox(offset:uint, size:uint) {
@@ -22,6 +23,10 @@ public class MediaBox extends Box {
         return _mdhd;
     }
 
+    public function get hdlr():HandlerReferenceBox {
+        return _hdlr;
+    }
+
     public function get minf():MediaInformationBox {
         return _minf;
     }
@@ -29,6 +34,11 @@ public class MediaBox extends Box {
     override protected function parseChildBox(type:String, offset:uint, size:uint, ba:ByteArray):Boolean {
         if (type == "mdhd") {
             parseMediaHeaderBox(offset, size, ba);
+            return true;
+        }
+
+        if (type == "hdlr") {
+            parseHandlerReferenceBox(offset, size, ba);
             return true;
         }
 
@@ -43,6 +53,11 @@ public class MediaBox extends Box {
     private function parseMediaInformationBox(offset:uint, size:uint, ba:ByteArray):void {
         _minf = new MediaInformationBox(offset, size);
         _minf.parse(ba);
+    }
+
+    private function parseHandlerReferenceBox(offset:uint, size:uint, ba:ByteArray):void {
+        _hdlr = new HandlerReferenceBox(offset, size);
+        _hdlr.parse(ba);
     }
 
     private function parseMediaHeaderBox(offset:uint, size:uint, ba:ByteArray):void {

@@ -17,6 +17,10 @@ public class InitializationAudioSegmentHandler extends InitializationSegmentHand
         super(ba);
     }
 
+    override protected function get expectedTrackType():String {
+        return 'soun';
+    }
+
     protected override function buildMessage(sampleEntry:SampleEntry):FLVTag {
         var message:FLVTag = new FLVTag();
 

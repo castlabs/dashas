@@ -109,10 +109,14 @@ public class SegmentList implements SegmentIndex {
             filename = traverseAndBuildBaseUrl(node);
         }
 
-        var range:String = "0-";
+        var range:String;
 
         if (node.hasOwnProperty("@range")) {
             range = node.@range.toString();
+        } else if (node.hasOwnProperty("@mediaRange")) {
+            range = node.@mediaRange.toString();
+        } else {
+            range = "0-";
         }
 
         return { filename: filename, range: range };
