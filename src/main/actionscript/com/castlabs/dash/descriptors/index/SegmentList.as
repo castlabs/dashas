@@ -14,21 +14,22 @@ import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.utils.Console;
 
 public class SegmentList implements SegmentIndex {
-    private var _initializationSegmentFilename:String;
-    private var _segmentsFilenames:Vector.<String>;
+    private var _initializationSegment:Object;
+    private var _segments:Vector.<Object>;
     private var _duration:Number; //TODO rename to avoid confusion with video duration
     private var _timescale:Number;
 
     public function SegmentList(representation:XML) {
-        _initializationSegmentFilename = traverseAndBuildInitializationSegmentFilename(representation);
-        _segmentsFilenames = buildAndTraverseSegmentFilenames(representation);
+        _initializationSegment = traverseAndBuildInitializationSegment(representation);
+        _segments = traverseAndBuildSegments(representation);
         _duration = traverseAndBuildDuration(representation);
         _timescale = traverseAndBuildTimescale(representation);
     }
 
     public function getInitializationSegment(representationId:String, bandwidth:Number, baseUrl:String,
                                              internalRepresentationId:Number):Segment {
-        return new DataSegment(internalRepresentationId, baseUrl + _initializationSegmentFilename);
+        return new DataSegment(internalRepresentationId, baseUrl + _initializationSegment.filename,
+                _initializationSegment.range);
     }
 
     public function getIndexSegment(representationId:String, bandwidth:Number, baseUrl:String,
@@ -40,15 +41,15 @@ public class SegmentList implements SegmentIndex {
                                duration:Number, internalRepresentationId:Number):Segment {
         var index:Number = calculateIndex(timestamp);
 
-        if (index < 0 || index >= _segmentsFilenames.length) {
+        if (index < 0 || index >= _segments.length) {
             return null;
         }
 
         var startTimestamp:Number = index * segmentDuration;
         var endTimestamp:Number = startTimestamp + segmentDuration;
 
-        return new MediaDataSegment(internalRepresentationId, baseUrl + _segmentsFilenames[index], "0-",
-                startTimestamp, endTimestamp);
+        return new MediaDataSegment(internalRepresentationId, baseUrl + _segments[index].filename,
+                _segments[index].range, startTimestamp, endTimestamp);
     }
 
     public function update(xml:XML):void {
@@ -62,43 +63,72 @@ public class SegmentList implements SegmentIndex {
         return Math.round(timestamp / segmentDuration);
     }
 
-    private static function buildAndTraverseSegmentFilenames(node:XML):Vector.<String> {
+    private static function traverseAndBuildSegments(node:XML):Vector.<Object> {
         if (node == null) {
             throw Console.getInstance().logError(new Error("Couldn't find any 'SegmentURL' tag"));
         }
 
         if (node.SegmentList.length() == 1 && node.SegmentList.SegmentURL.length() > 0) {
-            var segments:Vector.<String> = new Vector.<String>();
+            var segments:Vector.<Object> = new Vector.<Object>();
 
             for each (var item:XML in node.SegmentList.SegmentURL) {
-                segments.push(item.@media.toString());
+                segments.push(buildSegment(item));
             }
 
             return segments;
         }
 
-        return buildAndTraverseSegmentFilenames(node.parent());
+        return traverseAndBuildSegments(node.parent());
     }
 
-    private static function traverseAndBuildInitializationSegmentFilename(node:XML):String {
+    private static function traverseAndBuildInitializationSegment(node:XML):Object {
         if (node == null) {
             throw Console.getInstance().logError(new Error("Couldn't find any 'sourceURL' attribute"));
         }
 
-        if (node.SegmentBase.length() == 1
-                && node.SegmentBase.Initialization.length() == 1
-                && node.SegmentBase.Initialization.hasOwnProperty("@sourceURL")) {
-            return node.SegmentBase.Initialization.@sourceURL.toString();
+        if (node.SegmentBase.length() == 1 && node.SegmentBase.Initialization.length() == 1) {
+            return buildSegment(node.SegmentBase.Initialization[0]);
         }
 
-        if (node.SegmentList.length() == 1
-                && node.SegmentList.Initialization.length() == 1
-                && node.SegmentList.Initialization.hasOwnProperty("@sourceURL")) {
-            return node.SegmentList.Initialization.@sourceURL.toString();
+        if (node.SegmentList.length() == 1 && node.SegmentList.Initialization.length() == 1) {
+            return buildSegment(node.SegmentList.Initialization[0]);
         }
 
         // go up one level in hierarchy, e.g. adaptionSet and period
-        return traverseAndBuildInitializationSegmentFilename(node.parent());
+        return traverseAndBuildInitializationSegment(node.parent());
+    }
+
+    private static function buildSegment(node:XML):Object {
+        var filename:String;
+
+        if (node.hasOwnProperty("@sourceURL")) {
+            filename = node.@sourceURL.toString();
+        } else if (node.hasOwnProperty("@media")) {
+            filename = node.@media.toString();
+        } else {
+            filename = traverseAndBuildBaseUrl(node);
+        }
+
+        var range:String = "0-";
+
+        if (node.hasOwnProperty("@range")) {
+            range = node.@range.toString();
+        }
+
+        return { filename: filename, range: range };
+    }
+
+    private static function traverseAndBuildBaseUrl(node:XML):String {
+        if (node == null) {
+            throw Console.getInstance().logError(new Error("Couldn't find any 'BaseURL' tag"));
+        }
+
+        if (node.BaseURL.length() == 1) {
+            return node.BaseURL;
+        }
+
+        // go up one level in hierarchy, e.g. adaptionSet and period
+        return traverseAndBuildBaseUrl(node.parent());
     }
 
     private static function traverseAndBuildDuration(node:XML):Number {
@@ -129,7 +159,7 @@ public class SegmentList implements SegmentIndex {
 
     public function toString():String {
         return "segmentDuration[u]='" + _duration + ", timescale='" + _timescale + "', initializationFilename='"
-                + _initializationSegmentFilename + "', segmentsCount='" + _segmentsFilenames.length + "'";
+                + _initializationSegment + "', segmentsCount='" + _segments.length + "'";
     }
 }
 }
