@@ -34,7 +34,7 @@ public class TrackExtendsBox extends FullBox {
 //        ba.readUnsignedInt(); // 4 bytes
 
         // skip
-        ba.position += 8;
+        ba.position += 4;
 
         _defaultSampleDuration = ba.readUnsignedInt();
     }
