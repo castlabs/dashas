@@ -80,13 +80,13 @@ Convert media input files into DASH stream files.
 		
 #### Prerequisites
 
-* Download latest [dash.encrypt release](https://github.com/castlabs/dashencrypt/releases)
+* MP4Box is installed (at least version 0.5.1r5152);
 
 #### Instructions
 
 * Use following command to generate DASH stream:
 		
-		$ java -jar dash.fragmencrypter-1.X.X.jar dash mp4a-sintel-69k.mp4 avc1-sintel-436p-1000k.mp4 avc1-sintel-436p-500k.mp4 avc1-sintel-436p-250k.mp4
+		$ MP4Box -dash 3000 -bs-switching no -segment-name %s_ -url-template -out sintel.mpd avc1-sintel-436p-250k.mp4 avc1-sintel-436p-500k.mp4 avc1-sintel-436p-1000k.mp4 mp4a-sintel-69k.mp4
 		
 ### Page
 
