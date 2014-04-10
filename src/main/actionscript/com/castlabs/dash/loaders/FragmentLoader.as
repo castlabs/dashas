@@ -15,13 +15,9 @@ import com.castlabs.dash.descriptors.segments.WaitSegment;
 import com.castlabs.dash.events.FragmentEvent;
 import com.castlabs.dash.events.SegmentEvent;
 import com.castlabs.dash.events.StreamEvent;
-import com.castlabs.dash.handlers.AudioSegmentHandler;
-import com.castlabs.dash.handlers.InitializationAudioSegmentHandler;
 import com.castlabs.dash.handlers.InitializationSegmentHandler;
-import com.castlabs.dash.handlers.InitializationVideoSegmentHandler;
 import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.handlers.MediaSegmentHandler;
-import com.castlabs.dash.handlers.VideoSegmentHandler;
 import com.castlabs.dash.utils.AdaptiveSegmentDispatcher;
 import com.castlabs.dash.utils.BandwidthMonitor;
 import com.castlabs.dash.utils.Console;
@@ -41,19 +37,14 @@ public class FragmentLoader extends EventDispatcher {
     private var _initializationSegmentHandlers:Dictionary = new Dictionary();
     private var _indexSegmentFlags:Dictionary = new Dictionary();
 
-    private var _audioSegmentHandler:MediaSegmentHandler;
     private var _videoSegmentHandler:MediaSegmentHandler;
 
-    private var _audioSegmentLoaded:Boolean = false;
     private var _videoSegmentLoaded:Boolean = false;
 
-    private var _audioSegmentLoader:SegmentLoader;
     private var _videoSegmentLoader:SegmentLoader;
 
-    private var _audioSegment:MediaDataSegment;
     private var _videoSegment:MediaDataSegment;
 
-    private var _audioOffset:Number = 0;
     private var _videoOffset:Number = 0;
 
     private var _waitTimer:Timer;
@@ -70,10 +61,8 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     public function init():void {
-        loadInitializationSegments(_manifest.audioRepresentations, onInitializationAudioSegmentLoaded);
         loadInitializationSegments(_manifest.videoRepresentations, onInitializationVideoSegmentLoaded);
 
-        loadIndexSegments(_manifest.audioRepresentations, onIndexSegmentLoaded);
         loadIndexSegments(_manifest.videoRepresentations, onIndexSegmentLoaded);
     }
 
@@ -81,12 +70,9 @@ public class FragmentLoader extends EventDispatcher {
         close();
 
         _videoSegment = MediaDataSegment(_iterator.getVideoSegment(timestamp));
-        _audioSegment = MediaDataSegment(_iterator.getAudioSegment(_videoSegment.startTimestamp));
 
-        _audioOffset = _audioSegment.startTimestamp;
         _videoOffset = _videoSegment.startTimestamp;
 
-        Console.getInstance().info("Seek to audio segment: " + _audioSegment);
         Console.getInstance().info("Seek to video segment: " + _videoSegment);
 
         return _videoSegment.startTimestamp; // offset
@@ -95,39 +81,13 @@ public class FragmentLoader extends EventDispatcher {
     public function loadFirstFragment():void {
         logMediaBandwidth();
 
-        _audioSegmentLoader = loadSegment(_audioSegment, onAudioSegmentLoaded);
         _videoSegmentLoader = loadSegment(_videoSegment, onVideoSegmentLoaded);
     }
 
     public function loadNextFragment(timerEvent:TimerEvent = null):void {
         _waitTimer.stop();
 
-        if (_videoSegment.endTimestamp < _audioSegment.endTimestamp) {
-            _videoSegmentLoaded = false;
-            _audioSegmentLoaded = true;
-        }
-
-        if (_videoSegment.endTimestamp > _audioSegment.endTimestamp) {
-            _videoSegmentLoaded = true;
-            _audioSegmentLoaded = false;
-        }
-
-        if (_videoSegment.endTimestamp == _audioSegment.endTimestamp) {
-            _videoSegmentLoaded = false;
-            _audioSegmentLoaded = false;
-        }
-
-        if (!_audioSegmentLoaded) {
-            var segment1:Segment = _iterator.getAudioSegment(_audioSegment.endTimestamp);
-
-            if (segment1 is WaitSegment) {
-                _waitTimer.start();
-                Console.getInstance().debug("Received wait segment.");
-                return;
-            }
-
-            _audioSegment = MediaDataSegment(segment1);
-        }
+        _videoSegmentLoaded = false;
 
         if (!_videoSegmentLoaded) {
             var segment2:Segment = _iterator.getVideoSegment(_videoSegment.endTimestamp);
@@ -141,18 +101,13 @@ public class FragmentLoader extends EventDispatcher {
             _videoSegment = MediaDataSegment(segment2);
         }
 
-        if (!_audioSegment || !_videoSegment) { // notify end
+        if (!_videoSegment) { // notify end
             dispatchEvent(new StreamEvent(StreamEvent.END));
             reset();
             return;
         }
 
         logMediaBandwidth();
-
-        if (!_audioSegmentLoaded) {
-            Console.getInstance().info("Next audio segment: " + _audioSegment);
-            _audioSegmentLoader = loadSegment(_audioSegment, onAudioSegmentLoaded);
-        }
 
         if (!_videoSegmentLoaded) {
             Console.getInstance().info("Next video segment: " + _videoSegment);
@@ -161,13 +116,6 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     private function logMediaBandwidth():void {
-        for each (var representation1:Representation in _manifest.audioRepresentations) {
-            if (representation1.internalId == _audioSegment.internalRepresentationId) {
-                Console.getInstance().appendAudioBandwidth(representation1.bandwidth);
-                break;
-            }
-        }
-
         for each (var representation2:Representation in _manifest.videoRepresentations) {
             if (representation2.internalId == _videoSegment.internalRepresentationId) {
                 Console.getInstance().appendVideoBandwidth(representation2.bandwidth);
@@ -177,10 +125,6 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     public function close():void {
-        if (_audioSegmentLoader != null) {
-            _audioSegmentLoader.close();
-        }
-
         if (_videoSegmentLoader != null) {
             _videoSegmentLoader.close();
         }
@@ -190,22 +134,10 @@ public class FragmentLoader extends EventDispatcher {
         reset();
     }
 
-    private function onInitializationAudioSegmentLoaded(event:SegmentEvent):void {
-        Console.getInstance().debug("Creating audio initialization segment...");
-
-        var handler:InitializationSegmentHandler = new InitializationAudioSegmentHandler(event.bytes);
-
-        Console.getInstance().debug("Created audio initialization segment, " + handler.toString());
-
-        _initializationSegmentHandlers[event.segment.internalRepresentationId] = handler;
-
-        notifyReadyIfNeeded();
-    }
-
     private function onInitializationVideoSegmentLoaded(event:SegmentEvent):void {
         Console.getInstance().debug("Creating video initialization segment...");
 
-        var handler:InitializationSegmentHandler = new InitializationVideoSegmentHandler(event.bytes);
+        var handler:InitializationSegmentHandler = new InitializationSegmentHandler(event.bytes);
 
         Console.getInstance().debug("Created video initialization segment, " + handler.toString());
 
@@ -234,7 +166,7 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     private function notifyReadyIfNeeded():void {
-        var expectedLength:Number = _manifest.audioRepresentations.length + _manifest.videoRepresentations.length;
+        var expectedLength:Number = _manifest.videoRepresentations.length;
         var initializationSegmentsLoaded:Boolean = getLength(_initializationSegmentHandlers) == expectedLength;
         var indexSegmentsLoaded:Boolean = getLength(_indexSegmentFlags) == expectedLength;
 
@@ -253,25 +185,6 @@ public class FragmentLoader extends EventDispatcher {
         return n;
     }
 
-    private function onAudioSegmentLoaded(event:SegmentEvent):void {
-        var _initializationSegmentHandler:InitializationSegmentHandler =
-                _initializationSegmentHandlers[event.segment.internalRepresentationId];
-
-        var offset:Number = findSmallerOffset();
-
-        Console.getInstance().debug("Processing audio segment...");
-
-        _audioSegmentHandler = new AudioSegmentHandler(event.bytes, _initializationSegmentHandler.messages,
-                _initializationSegmentHandler.defaultSampleDuration, _initializationSegmentHandler.timescale,
-                (_audioSegment.startTimestamp - offset) * 1000, _mixer);
-
-        Console.getInstance().debug("Processed audio segment");
-
-        _audioSegmentLoaded = true;
-
-        notifyLoadedIfNeeded();
-    }
-
     private function onVideoSegmentLoaded(event:SegmentEvent):void {
         var _initializationSegmentHandler:InitializationSegmentHandler =
                 _initializationSegmentHandlers[event.segment.internalRepresentationId];
@@ -280,8 +193,9 @@ public class FragmentLoader extends EventDispatcher {
 
         Console.getInstance().debug("Processing video segment...");
 
-        _videoSegmentHandler = new VideoSegmentHandler(event.bytes, _initializationSegmentHandler.messages,
-                _initializationSegmentHandler.defaultSampleDuration, _initializationSegmentHandler.timescale,
+        _videoSegmentHandler = new MediaSegmentHandler(event.bytes, _initializationSegmentHandler.messages,
+                _initializationSegmentHandler.videoDefaultSampleDuration, _initializationSegmentHandler.audioDefaultSampleDuration,
+                _initializationSegmentHandler.videoTimescale, _initializationSegmentHandler.audioTimescale,
                 (_videoSegment.startTimestamp - offset) * 1000, _mixer);
 
         Console.getInstance().debug("Processed video segment");
@@ -296,11 +210,7 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     private function findSmallerOffset():Number {
-        if (_videoOffset <= _audioOffset) {
-            return _videoOffset;
-        } else  {
-            return _audioOffset;
-        }
+        return _videoOffset
     }
 
     private function loadSegment(segment:Segment, callback:Function):SegmentLoader {
@@ -312,47 +222,29 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     private function notifyLoadedIfNeeded():void {
-        if (_audioSegmentLoaded && _videoSegmentLoaded) {
+        if (_videoSegmentLoaded) {
             var bytes:ByteArray = new ByteArray();
-
-            // _audioSegmentHandler is null if not loaded
-            if (_audioSegmentHandler != null) {
-                bytes.writeBytes(_audioSegmentHandler.bytes);
-            }
 
             // _videoSegmentHandler is null if not loaded
             if (_videoSegmentHandler != null) {
                 bytes.writeBytes(_videoSegmentHandler.bytes);
             }
 
-            _audioSegmentLoaded = false;
             _videoSegmentLoaded = false;
 
-            _audioSegmentHandler = null;
             _videoSegmentHandler = null;
 
             var endTimestamp:Number;
 
-            if (_videoSegment.endTimestamp <= _audioSegment.endTimestamp) {
-                endTimestamp = _videoSegment.endTimestamp;
-            }
-
-            if (_videoSegment.endTimestamp > _audioSegment.endTimestamp) {
-                endTimestamp = _audioSegment.endTimestamp;
-            }
+            endTimestamp = _videoSegment.endTimestamp;
 
             dispatchEvent(new FragmentEvent(FragmentEvent.LOADED, false, false, bytes, endTimestamp));
         }
     }
 
     private function reset():void {
-        _audioSegmentLoader = null;
         _videoSegmentLoader = null;
-
-        _audioSegmentHandler = null;
         _videoSegmentHandler = null;
-
-        _audioSegmentLoaded = false;
         _videoSegmentLoaded = false;
     }
 }

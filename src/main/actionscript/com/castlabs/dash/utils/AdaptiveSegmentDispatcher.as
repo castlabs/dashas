@@ -23,10 +23,6 @@ public class AdaptiveSegmentDispatcher {
         _smoothMonitor = smoothMonitor;
     }
 
-    public function getAudioSegment(timestamp:Number):Segment {
-        return findOptimalRepresentation(_manifest.audioRepresentations).getSegment(timestamp);
-    }
-
     public function getVideoSegment(timestamp:Number):Segment {
         return findOptimalRepresentation(_manifest.videoRepresentations).getSegment(timestamp);
     }

@@ -49,10 +49,6 @@ public class SegmentHandler {
     }
 
     protected function validateTracksNumber(number:int):void {
-        if (number > 1) {
-            throw Console.getInstance().logError(new Error("Multiple tracks aren't supported"));
-        }
-
         if (number < 1) {
             throw Console.getInstance().logError(new Error("Track isn't defined"));
         }

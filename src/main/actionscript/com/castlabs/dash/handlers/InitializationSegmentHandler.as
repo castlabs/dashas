@@ -18,20 +18,30 @@ import flash.errors.IllegalOperationError;
 import flash.utils.ByteArray;
 
 public class InitializationSegmentHandler extends SegmentHandler {
-    private var _timescale:Number = 0;
-    private var _defaultSampleDuration:uint = 0;
+    private var _videoTimescale:Number = 0;
+    private var _audioTimescale:Number = 0;
+    private var _videoDefaultSampleDuration:uint = 0;
+    private var _audioDefaultSampleDuration:uint = 0;
     private var _messages:Vector.<FLVTag> = new Vector.<FLVTag>();
 
     public function InitializationSegmentHandler(ba:ByteArray) {
         parseMovieBox(ba);
     }
 
-    public function get timescale():Number {
-        return _timescale;
+    public function get videoTimescale():Number {
+        return _videoTimescale;
     }
 
-    public function get defaultSampleDuration():Number {
-        return _defaultSampleDuration;
+    public function get audioTimescale():Number {
+        return _audioTimescale;
+    }
+
+    public function get videoDefaultSampleDuration():Number {
+        return _videoDefaultSampleDuration;
+    }
+
+    public function get audioDefaultSampleDuration():Number {
+        return _audioDefaultSampleDuration;
     }
 
     public function get messages():Vector.<FLVTag> {
@@ -46,59 +56,106 @@ public class InitializationSegmentHandler extends SegmentHandler {
         var movie:MovieBox = new MovieBox(offset, size);
         movie.parse(ba);
 
-        var track:TrackBox = findTrackWithSpecifiedType(movie);
+        var videoTrack:TrackBox = findTrackWithSpecifiedType(movie, videoTrackType());
+        _videoTimescale = getTimescale(videoTrack);
+        loadVideoMessages(videoTrack);
+        _videoDefaultSampleDuration = loadDefaultSampleDuration(movie, videoTrack.tkhd.id);
 
-        loadTimescale(track);
-        loadMessages(track);
-        loadDefaultSampleDuration(movie, track.tkhd.id);
+        var audioTrack:TrackBox = findTrackWithSpecifiedType(movie, audioTrackType());
+        _audioTimescale = getTimescale(audioTrack);
+        loadAudioMessages(audioTrack);
+        _audioDefaultSampleDuration = loadDefaultSampleDuration(movie, audioTrack.tkhd.id);
     }
 
-    private function findTrackWithSpecifiedType(movie:MovieBox):TrackBox {
+    private function findTrackWithSpecifiedType(movie:MovieBox, expectedTrackType:String):TrackBox {
         for each (var track:TrackBox in movie.traks) {
             if (track.mdia.hdlr.type == expectedTrackType) {
                 return track;
             }
         }
 
-        throw Console.getInstance().logError(new Error("Track isn't defined, type='" + expectedTrackType + "'"));
+        return null;
     }
 
-    protected function get expectedTrackType():String {
-        throw new IllegalOperationError("Method isn't implemented");
+    private function getTimescale(track:TrackBox):Number {
+        return track.mdia.mdhd.timescale;
     }
 
-    private function loadTimescale(track:TrackBox):void {
-        _timescale = track.mdia.mdhd.timescale;
-    }
-
-    private function loadMessages(track:TrackBox):void {
+    private function loadVideoMessages(track:TrackBox):void {
         var sampleEntry:SampleEntry = buildSampleEntry(track);
-        var message:FLVTag = buildMessage(sampleEntry);
+        var message:FLVTag = buildVideoMessage(sampleEntry);
         _messages.push(message);
     }
 
-    private function loadDefaultSampleDuration(movie:MovieBox, trackId:uint):void {
+    private function loadAudioMessages(track:TrackBox):void {
+        var sampleEntry:SampleEntry = buildSampleEntry(track);
+        var message:FLVTag = buildAudioMessage(sampleEntry);
+        _messages.push(message);
+    }
+
+    private function loadDefaultSampleDuration(movie:MovieBox, trackId:uint):uint {
         for each (var trex:TrackExtendsBox in movie.mvex.trexs) {
             if (trackId == trex.trackId) {
-                _defaultSampleDuration = trex.defaultSampleDuration;
-                return;
+                return trex.defaultSampleDuration;
             }
         }
 
-        Console.getInstance().warn("Default sample duration isn't defined, trackId='" + trackId + "'");
+        throw Console.getInstance().warn("Default sample duration isn't defined, trackId='" + trackId + "'");
     }
 
     private function buildSampleEntry(track:TrackBox):SampleEntry {
         return track.mdia.minf.stbl.stsd.sampleEntries[0];
     }
 
-    protected function buildMessage(sampleEntry:SampleEntry):FLVTag {
-        throw new IllegalOperationError("Method isn't implemented");
+    public function toString():String {
+        return "videoTimescale='" + _videoTimescale + "', videoDefaultSampleDuration='" + _videoDefaultSampleDuration
+                + "', messagesCount='" + _messages.length + "'";
     }
 
-    public function toString():String {
-        return "timescale='" + _timescale + "', defaultSampleDuration='" + _defaultSampleDuration
-                + "', messagesCount='" + _messages.length + "'";
+    private function audioTrackType():String {
+        return 'soun';
+    }
+
+    private function buildAudioMessage(sampleEntry:SampleEntry):FLVTag {
+        var message:FLVTag = new FLVTag();
+
+        message.markAsAudio();
+
+        message.timestamp = 0;
+
+        message.length = sampleEntry.data.length;
+
+        message.data = new ByteArray();
+        sampleEntry.data.readBytes(message.data, 0, sampleEntry.data.length);
+
+        message.setup = true;
+
+        return message;
+    }
+
+    private function videoTrackType():String {
+        return 'vide';
+    }
+
+    private function buildVideoMessage(sampleEntry:SampleEntry):FLVTag {
+        var message:FLVTag = new FLVTag();
+
+        message.markAsVideo();
+
+        message.timestamp = 0;
+
+        message.length = sampleEntry.data.length;
+
+        message.data = new ByteArray();
+        sampleEntry.data.readBytes(message.data, 0, sampleEntry.data.length);
+
+        message.frameType = FLVTag.UNKNOWN;
+
+        message.compositionTimestamp = 0;
+
+        message.setup = true;
+
+        return message;
     }
 }
 }
