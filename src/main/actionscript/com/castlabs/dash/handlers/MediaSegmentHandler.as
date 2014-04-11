@@ -23,7 +23,8 @@ public class MediaSegmentHandler extends SegmentHandler {
     protected var _messages:Vector.<FLVTag>;
     protected var _videoTimescale:uint;
     protected var _audioTimescale:uint;
-    protected var _timestamp:Number;
+    protected var _audioTimestamp:Number;
+    protected var _videoTimestamp:Number;
 
     private var _bytes:ByteArray;
     private var _movieFragmentBox:MovieFragmentBox;
@@ -40,7 +41,8 @@ public class MediaSegmentHandler extends SegmentHandler {
         _audioDefaultSampleDuration = audioDefaultSampleDuration;
         _videoTimescale = videoTimescale;
         _audioTimescale = audioTimescale;
-        _timestamp = timestamp;
+        _audioTimestamp = timestamp;
+        _videoTimestamp = timestamp;
 
         _muxer = muxer;
 
@@ -159,8 +161,8 @@ public class MediaSegmentHandler extends SegmentHandler {
 
         message.markAsVideo();
 
-        message.timestamp = _timestamp;
-        _timestamp = message.timestamp + sampleDuration * 1000 / _videoTimescale;
+        message.timestamp = _videoTimestamp;
+        _videoTimestamp = message.timestamp + sampleDuration * 1000 / _videoTimescale;
 
         message.length = sampleSize;
 
@@ -195,8 +197,8 @@ public class MediaSegmentHandler extends SegmentHandler {
 
         message.markAsAudio();
 
-        message.timestamp = _timestamp;
-        _timestamp = message.timestamp + sampleDuration * 1000 / _audioTimescale;
+        message.timestamp = _audioTimestamp;
+        _audioTimestamp = message.timestamp + sampleDuration * 1000 / _audioTimescale;
 
         message.length = sampleSize;
 
