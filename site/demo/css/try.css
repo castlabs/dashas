@@ -132,3 +132,19 @@
     margin-right: 5px;
     color: rgba(220,220,220,1);
 }
+
+body {
+	font-family: 'OpenSansRegular', arial, sans-serif;
+	font-size:14px;
+}
+
+@font-face {
+	font-family: 'OpenSansRegular';
+	src: url('http://castlabs.com/wordpress/wp-content/themes/castlabs/fonts/OpenSans-Regular-webfont.eot');
+	src: url('http://castlabs.com/wordpress/wp-content/themes/castlabs/fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('http://castlabs.com/wordpress/wp-content/themes/castlabs/fonts/OpenSans-Regular-webfont.woff') format('woff'),
+		 url('http://castlabs.com/wordpress/wp-content/themes/castlabs/fonts/OpenSans-Regular-webfont.ttf') format('truetype'),
+		 url('http://castlabs.com/wordpress/wp-content/themes/castlabs/fonts/OpenSans-Regular-webfont.svg#OpenSansRegular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
