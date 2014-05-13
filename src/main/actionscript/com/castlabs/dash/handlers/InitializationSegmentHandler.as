@@ -49,7 +49,7 @@ public class InitializationSegmentHandler extends SegmentHandler {
     }
 
     private function parseMovieBox(ba:ByteArray):void {
-        var offsetAndSize:Object = goToBox("moov", ba);
+        var offsetAndSize:Object = goToBox("moov", ba, 0);
         var offset:uint = offsetAndSize.offset;
         var size:uint = offsetAndSize.size;
 

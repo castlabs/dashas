@@ -15,8 +15,8 @@ public class SegmentHandler {
     public function SegmentHandler() {
     }
 
-    protected function goToBox(expectedType:String, ba:ByteArray):Object {
-        var offset:uint = 0;
+    protected function goToBox(expectedType:String, ba:ByteArray, startFrom:uint):Object {
+        var offset:uint = startFrom;
         var size:uint = 0;
         var type:String;
 

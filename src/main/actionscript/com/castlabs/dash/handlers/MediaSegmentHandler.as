@@ -46,16 +46,19 @@ public class MediaSegmentHandler extends SegmentHandler {
 
         _muxer = muxer;
 
-        parseMovieFragmentBox(ba);
-        parseMediaDataBox(ba);
+        while (ba.bytesAvailable > 0) {
+            parseMovieFragmentBox(ba, ba.position);
+            parseMediaDataBox(ba);
+        }
+        mux();
     }
 
     public function get bytes():ByteArray {
         return _bytes;
     }
 
-    private function parseMovieFragmentBox(ba:ByteArray):void {
-        var offsetAndSize:Object = goToBox("moof", ba);
+    private function parseMovieFragmentBox(ba:ByteArray, start:uint):void {
+        var offsetAndSize:Object = goToBox("moof", ba, start);
         var offset:uint = offsetAndSize.offset;
         var size:uint = offsetAndSize.size;
 
@@ -64,6 +67,7 @@ public class MediaSegmentHandler extends SegmentHandler {
     }
 
     private function parseMediaDataBox(ba:ByteArray):void {
+        var initPosition:Number = ba.position;
         var size:Number = ba.readUnsignedInt();
         var type:String = ba.readUTFBytes(4);
 
@@ -71,7 +75,10 @@ public class MediaSegmentHandler extends SegmentHandler {
         validateSize(size);
 
         processTrackBox(ba);
+        ba.position = initPosition + size;
+    }
 
+    private function mux():void {
         _bytes = _muxer.mux(_messages);
         _bytes.position = 0; // reset
     }
