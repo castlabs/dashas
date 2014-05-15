@@ -25,6 +25,7 @@ public class MediaSegmentHandler extends SegmentHandler {
     protected var _audioTimescale:uint;
     protected var _audioTimestamp:Number;
     protected var _videoTimestamp:Number;
+    private var _startTimestamp:Number;
 
     private var _bytes:ByteArray;
     private var _movieFragmentBox:MovieFragmentBox;
@@ -43,7 +44,7 @@ public class MediaSegmentHandler extends SegmentHandler {
         _audioTimescale = audioTimescale;
         _audioTimestamp = timestamp;
         _videoTimestamp = timestamp;
-
+        _startTimestamp = timestamp;
         _muxer = muxer;
 
         while (ba.bytesAvailable > 0) {
@@ -55,6 +56,10 @@ public class MediaSegmentHandler extends SegmentHandler {
 
     public function get bytes():ByteArray {
         return _bytes;
+    }
+
+    public function get startTimestamp():Number {
+        return _startTimestamp;
     }
 
     private function parseMovieFragmentBox(ba:ByteArray, start:uint):void {
@@ -74,7 +79,19 @@ public class MediaSegmentHandler extends SegmentHandler {
         validateType("mdat", type);
         validateSize(size);
 
-        processTrackBox(ba);
+        var videoTRunBox:TrackFragmentRunBox = _movieFragmentBox.trafs[0].truns[0];
+        var samplesDuration:uint = videoTRunBox.calcSamplesDuration(_videoDefaultSampleDuration) * 1000 / _videoTimescale;
+        if (_videoTimestamp + samplesDuration > 0) {
+            if (_videoTimestamp < 0) {
+                _startTimestamp = _videoTimestamp - _startTimestamp;
+                _videoTimestamp = 0;
+                _audioTimestamp = 0;
+            }
+            processTrackBox(ba);
+        } else {
+            _videoTimestamp += samplesDuration;
+        }
+
         ba.position = initPosition + size;
     }
 
