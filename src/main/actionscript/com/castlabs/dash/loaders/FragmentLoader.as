@@ -205,7 +205,7 @@ public class FragmentLoader extends EventDispatcher {
 
         if (_firstSegment) {
             _firstSegment = false;
-            _videoOffset = _videoSegment.startTimestamp + (_videoSegmentHandler.startTimestamp / 1000);
+            _videoOffset = _videoSegment.startTimestamp + (_videoSegmentHandler.startTimestamp / 1000.0);
         }
         _videoSegmentLoaded = true;
 
