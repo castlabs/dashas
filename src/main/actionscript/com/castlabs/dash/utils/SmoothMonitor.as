@@ -30,7 +30,8 @@ public class SmoothMonitor {
             Console.getInstance().warn("Registered buffering incident, bufferingCount='" + _bufferingCount + "'");
         }
 
-        if (event.info.code == NetStreamCodes.NETSTREAM_SEEK_NOTIFY) {
+        if (event.info.code == NetStreamCodes.NETSTREAM_SEEK_NOTIFY ||
+                event.info.code == NetStreamCodes.NETSTREAM_BUFFER_FULL) {
             _bufferingCount = 0;
             Console.getInstance().info("Reset buffering incidents counter");
         }
