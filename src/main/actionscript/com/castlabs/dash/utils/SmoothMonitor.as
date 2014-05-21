@@ -13,7 +13,7 @@ import flash.events.NetStatusEvent;
 import org.osmf.net.NetStreamCodes;
 
 public class SmoothMonitor {
-    private static const ACCEPTED_BUFFERING_COUNT:uint = 1;
+    private static const ACCEPTED_BUFFERING_COUNT:uint = 2;
 
     private var _bufferingCount:Number = 0;
 
@@ -30,8 +30,7 @@ public class SmoothMonitor {
             Console.getInstance().warn("Registered buffering incident, bufferingCount='" + _bufferingCount + "'");
         }
 
-        if (event.info.code == NetStreamCodes.NETSTREAM_SEEK_NOTIFY ||
-                event.info.code == NetStreamCodes.NETSTREAM_BUFFER_FULL) {
+        if (event.info.code == NetStreamCodes.NETSTREAM_SEEK_NOTIFY) {
             _bufferingCount = 0;
             Console.getInstance().info("Reset buffering incidents counter");
         }
