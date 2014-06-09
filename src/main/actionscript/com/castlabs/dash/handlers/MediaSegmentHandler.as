@@ -93,7 +93,7 @@ public class MediaSegmentHandler extends SegmentHandler {
                 _videoTimestamp = 0;
                 _audioTimestamp = 0;
             }
-            if (_lastOffset <= _videoTimestamp + videoSamplesDuration) {
+            if (_lastOffset < _videoTimestamp + videoSamplesDuration) {
                 processTrackBox(ba);
             } else {
                 _videoTimestamp += videoSamplesDuration;
