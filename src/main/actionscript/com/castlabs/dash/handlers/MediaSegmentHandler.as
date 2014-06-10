@@ -13,7 +13,6 @@ import com.castlabs.dash.boxes.Muxer;
 import com.castlabs.dash.boxes.NalUnit;
 import com.castlabs.dash.boxes.TrackFragmentHeaderBox;
 import com.castlabs.dash.boxes.TrackFragmentRunBox;
-import com.castlabs.dash.utils.Console;
 
 import flash.utils.ByteArray;
 
@@ -38,7 +37,7 @@ public class MediaSegmentHandler extends SegmentHandler {
 
     public function MediaSegmentHandler(ba:ByteArray, messages:Vector.<FLVTag>, videoDefaultSampleDuration:uint,
                                         audioDefaultSampleDuration:uint, videoTimescale:uint,
-                                        audioTimescale:uint, timestamp:Number, lastOffset:Number, muxer:Muxer) {
+                                        audioTimescale:uint, timestamp:Number, muxer:Muxer) {
         _messages = messages;
         _videoDefaultSampleDuration = videoDefaultSampleDuration;
         _audioDefaultSampleDuration = audioDefaultSampleDuration;
@@ -47,7 +46,6 @@ public class MediaSegmentHandler extends SegmentHandler {
         _audioTimestamp = timestamp;
         _videoTimestamp = timestamp;
         _startTimestamp = timestamp;
-        _lastOffset = lastOffset;
         _muxer = muxer;
 
         while (ba.bytesAvailable > 0) {
@@ -84,21 +82,13 @@ public class MediaSegmentHandler extends SegmentHandler {
 
         var videoTRunBox:TrackFragmentRunBox = _movieFragmentBox.trafs[0].truns[0];
         var videoSamplesDuration:uint = videoTRunBox.calcSamplesDuration(_videoDefaultSampleDuration) * 1000 / _videoTimescale;
-        var audioTRunBox:TrackFragmentRunBox = _movieFragmentBox.trafs.length > 1 ? _movieFragmentBox.trafs[1].truns[0] : null;
-        var audioSamplesDuration:uint = audioTRunBox != null ?
-                audioTRunBox.calcSamplesDuration(_audioDefaultSampleDuration) * 1000 / _audioTimescale : 0;
         if (_videoTimestamp + videoSamplesDuration > 0) {
             if (_videoTimestamp < 0) {
                 _startTimestamp = _videoTimestamp - _startTimestamp;
                 _videoTimestamp = 0;
                 _audioTimestamp = 0;
             }
-            if (_lastOffset < _videoTimestamp + videoSamplesDuration) {
-                processTrackBox(ba);
-            } else {
-                _videoTimestamp += videoSamplesDuration;
-                _audioTimestamp += audioSamplesDuration;
-            }
+            processTrackBox(ba);
         } else {
             _videoTimestamp += videoSamplesDuration;
         }

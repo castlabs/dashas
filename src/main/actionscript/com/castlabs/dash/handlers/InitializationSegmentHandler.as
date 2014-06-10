@@ -62,9 +62,11 @@ public class InitializationSegmentHandler extends SegmentHandler {
         _videoDefaultSampleDuration = loadDefaultSampleDuration(movie, videoTrack.tkhd.id);
 
         var audioTrack:TrackBox = findTrackWithSpecifiedType(movie, audioTrackType());
-        _audioTimescale = getTimescale(audioTrack);
-        loadAudioMessages(audioTrack);
-        _audioDefaultSampleDuration = loadDefaultSampleDuration(movie, audioTrack.tkhd.id);
+        if (audioTrack != null) {
+            _audioTimescale = getTimescale(audioTrack);
+            loadAudioMessages(audioTrack);
+            _audioDefaultSampleDuration = loadDefaultSampleDuration(movie, audioTrack.tkhd.id);
+        }
     }
 
     private function findTrackWithSpecifiedType(movie:MovieBox, expectedTrackType:String):TrackBox {
