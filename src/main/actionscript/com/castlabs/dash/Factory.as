@@ -12,18 +12,11 @@ import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.FragmentLoader;
 import com.castlabs.dash.utils.AdaptiveSegmentDispatcher;
 import com.castlabs.dash.utils.BandwidthMonitor;
-import com.castlabs.dash.utils.SmoothMonitor;
 
 public class Factory {
-    private static var smoothMonitor:SmoothMonitor = new SmoothMonitor();
-
-    public static function createSmoothMonitor():SmoothMonitor {
-        return smoothMonitor;
-    }
-
     public static function createFragmentLoader(manifest:ManifestHandler):FragmentLoader {
         var monitor:BandwidthMonitor = new BandwidthMonitor();
-        var iterator:AdaptiveSegmentDispatcher = new AdaptiveSegmentDispatcher(manifest, monitor, smoothMonitor);
+        var iterator:AdaptiveSegmentDispatcher = new AdaptiveSegmentDispatcher(manifest, monitor);
         var mixer:Muxer = new Muxer();
         return new FragmentLoader(manifest, iterator, monitor, mixer);
     }

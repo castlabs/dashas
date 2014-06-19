@@ -12,9 +12,9 @@ import flash.events.EventDispatcher;
 import flash.net.URLLoader;
 
 public class BandwidthMonitor {
-    private const HISTORY_LENGTH:Number = 20;
+    private const HISTORY_LENGTH:Number = 4;
 
-    private var _lastBandwidth:Number = 0;
+    private var _lastBandwidth:Number = 300000; // 300 kbit/sec
     private var _history:Vector.<Number> = new Vector.<Number>();
 
     public function BandwidthMonitor() {
@@ -36,7 +36,7 @@ public class BandwidthMonitor {
             var contentLengthBytes:Number = getContentLength(event);
 
             // bits
-            var contentLengthBits:Number = contentLengthBytes * 9;
+            var contentLengthBits:Number = contentLengthBytes * 8;
 
             if (duration < 0.01) { // avoid infinity
                 duration = 0.01;
