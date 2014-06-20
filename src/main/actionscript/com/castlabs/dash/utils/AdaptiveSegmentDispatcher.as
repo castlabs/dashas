@@ -19,7 +19,7 @@ public class AdaptiveSegmentDispatcher {
 
     private var _manifest:ManifestHandler;
     private var _bandwidthMonitor:BandwidthMonitor;
-    private var _oldIndex:uint = 0;
+    private var _oldIndex:int = 0;
 
     public function getVideoSegment(timestamp:Number):Segment {
         return findOptimalRepresentation(_manifest.videoRepresentations).getSegment(timestamp);
@@ -30,9 +30,9 @@ public class AdaptiveSegmentDispatcher {
             return null;
         }
 
-        var newIndex:uint = _oldIndex;
+        var newIndex:int = _oldIndex;
         while (true) {
-            if (newIndex < 0 || newIndex > representations.length) {
+            if (newIndex < 0 || newIndex >= representations.length) {
                 break;
             } else if (_bandwidthMonitor.userBandwidth < representations[newIndex].bandwidth) {
                 newIndex--;
@@ -45,7 +45,7 @@ public class AdaptiveSegmentDispatcher {
         }
 
         if (newIndex != _oldIndex) {
-            Console.getInstance().warn("Downgrade quality, originalBandwidth='" + representations[_oldIndex].bandwidth
+            Console.getInstance().warn("Updating quality, originalBandwidth='" + representations[_oldIndex].bandwidth
                     + "', newBandwidth='" + representations[newIndex].bandwidth + "'");
         }
         _oldIndex = newIndex;
