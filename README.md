@@ -179,13 +179,14 @@ Finally try dash.as locally.
 1. Download and extract Flash Player:
     * [Windows](http://download.macromedia.com/pub/flashplayer/updaters/10/flashplayer_10_sa_debug.exe)
     * [Linux](http://download.macromedia.com/pub/flashplayer/updaters/10/flashplayer_10_sa_debug.tar.gz)
-    * [Mac OS X](http://download.macromedia.com/pub/flashplayer/updaters/10/flashplayer_10_sa_debug.app.zip)
+    * [OS X](http://download.macromedia.com/pub/flashplayer/updaters/10/flashplayer_10_sa_debug.app.zip)
+
 1. Define global variable:
     
         $ export FLASH_PLAYER_EXE=Flash\ Player\ Debugger.app/Contents/MacOS/Flash\ Player\ Debugger
         
 1. Run test suites:
 
-		$ cd <project_workspace>
+        $ cd <project_workspace>
         $ gradle test
 
