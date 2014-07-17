@@ -167,3 +167,25 @@ Finally try dash.as locally.
 		$ gradle -Pprofile=production clean compile
 
 ... do you prefer developing in an IDE? Read how to [import project into the IntelliJ IDEA](https://github.com/castlabs/dashas/wiki/IntelliJ-IDEA).
+
+### Test
+
+#### Prerequisites
+
+* gradle is installed;
+
+#### Instructions
+
+1. Download and extract Flash Player:
+    * [Windows](http://download.macromedia.com/pub/flashplayer/updaters/10/flashplayer_10_sa_debug.exe)
+    * [Linux](http://download.macromedia.com/pub/flashplayer/updaters/10/flashplayer_10_sa_debug.tar.gz)
+    * [Mac OS X](http://download.macromedia.com/pub/flashplayer/updaters/10/flashplayer_10_sa_debug.app.zip)
+1. Define global variable:
+    
+        $ export FLASH_PLAYER_EXE=Flash\ Player\ Debugger.app/Contents/MacOS/Flash\ Player\ Debugger
+        
+1. Run test suites:
+
+		$ cd <project_workspace>
+        $ gradle test
+

@@ -19,10 +19,17 @@ repositories {
         name 'Apache'
         artifactPattern 'http://apache.cu.be/flex/[revision]/binaries/[module]-[revision]-bin.[ext]'
     }
+    maven {
+        url "http://dashas.castlabs.com/maven2/"
+    }
 }
 
 dependencies {
     flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.12.0', ext: 'tar.gz'
+    test group: 'org.flexunit', name: 'flexUnitTasks', version: '4.2.0', ext: 'jar'
+    test group: 'org.flexunit', name: 'flexunit', version: '4.2.0', ext: 'swc'
+    test group: 'org.flexunit', name: 'flexunit-cilistener', version: '4.2.0', ext: 'swc'
+    test group: 'org.flexunit', name: 'flexunit-uilistener', version: '4.2.0', ext: 'swc'
 }
 
 sdkAutoInstall {
