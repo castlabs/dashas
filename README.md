@@ -80,7 +80,7 @@ Convert media input files into DASH stream files.
 		
 #### Prerequisites
 
-* MP4Box is installed (at least version 0.5.1r5152);
+* MP4Box is installed (tested with version 0.5.1r5152);
 
 #### Instructions
 
