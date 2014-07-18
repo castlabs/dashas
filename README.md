@@ -9,6 +9,7 @@ MPEG-DASH (Dynamic Adaptive Streaming over HTTP) became an [International Standa
 
 This project is an extension for [Open Source Media Framework](http://osmf.org/) and released under the [Mozilla Public License 2.0](http://www.mozilla.org/MPL/2.0/).
 
+At the same time there is profersional edition of dash.as which integrates nicely with the Adobe Access. For more information please contact with sales department: "sales (at) castlabs (dot) com".
 
 ## Demo
 
