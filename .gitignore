@@ -19,3 +19,5 @@ build/
 .DS_Store
 unused/
 rsync.sh
+libs/
+Flash Player Debugger.app/

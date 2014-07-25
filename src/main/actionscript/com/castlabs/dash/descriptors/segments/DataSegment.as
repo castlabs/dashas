@@ -22,6 +22,10 @@ public class DataSegment extends Segment {
         return _url + "?bytes=" + _range;
     }
 
+    public function get isRange():Boolean {
+        return _range != null && _range != '0-';
+    }
+
     override public function toString():String {
         return "internalRepresentationId='" + _internalRepresentationId
                 + "', url='" + _url + "', range='" + _range + "'";

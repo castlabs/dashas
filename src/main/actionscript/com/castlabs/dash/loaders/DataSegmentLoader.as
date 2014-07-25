@@ -17,6 +17,7 @@ import flash.events.AsyncErrorEvent;
 import flash.events.ErrorEvent;
 
 import flash.events.Event;
+import flash.events.HTTPStatusEvent;
 import flash.events.IOErrorEvent;
 import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
@@ -25,6 +26,7 @@ import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
 public class DataSegmentLoader extends SegmentLoader {
+    private var status:int = 0;
     private var http:URLLoader = new URLLoader();
 
     public function DataSegmentLoader(segment:Segment, monitor:BandwidthMonitor) {
@@ -34,6 +36,7 @@ public class DataSegmentLoader extends SegmentLoader {
     override public function load():void {
         http.dataFormat = URLLoaderDataFormat.BINARY;
 
+        http.addEventListener(HTTPStatusEvent.HTTP_STATUS, onStatus);
         http.addEventListener(Event.COMPLETE, onComplete);
         http.addEventListener(ErrorEvent.ERROR, onError);
         http.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onError);
@@ -51,6 +54,10 @@ public class DataSegmentLoader extends SegmentLoader {
         http.close();
     }
 
+    private function onStatus(event:HTTPStatusEvent):void {
+        status = event.status;
+    }
+
     private function onError(event:Event):void {
         Console.getInstance().error("Connection was interrupted: " + event.toString());
         dispatchEvent(new SegmentEvent(SegmentEvent.ERROR, false, false));
@@ -61,7 +68,14 @@ public class DataSegmentLoader extends SegmentLoader {
     }
 
     protected function onComplete(event:Event):void {
-        Console.getInstance().debug("Loaded segment, url='" + getUrl() + "'");
+        Console.getInstance().debug("Loaded segment, url='" + getUrl() + "', status='" + status + "'");
+
+        if (DataSegment(_segment).isRange && status == 200) {
+            Console.getInstance().error("Partial content wasn't returned. Please make sure that range requests " +
+                    "are handle properly on the server side: https://github.com/castlabs/dashas/wiki/htaccess");
+            dispatchEvent(new SegmentEvent(SegmentEvent.ERROR, false, false));
+            return;
+        }
 
         var bytes:ByteArray = URLLoader(event.target).data;
         dispatchEvent(new SegmentEvent(SegmentEvent.LOADED, false, false, _segment, bytes));

@@ -140,7 +140,12 @@ Finally try dash.as locally.
 		</html>
 	
 1. Go to `http://localhost/index.html`;
+
+---
+
+**TIP:** The flash is very aggressive in caching. If you notice that player doesn't respond to your server side changes, please clean browser's cache (i.e. cached images and files). 
 	
+
 ## Development
 
 ### Build
