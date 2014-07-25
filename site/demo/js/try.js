@@ -16,6 +16,14 @@ var chartOptions = {
     scaleShowGridLines: false
 };
 
+var playerBridge = null;
+
+function onJavaScriptBridgeCreated(playerId) {
+    if (playerBridge == null) {
+        playerBridge = document.getElementById(playerId);
+    }
+}
+
 // call from ActionScript
 function handleEvents(events) {
     for (var i = 0; i < events.length; i++) {
@@ -241,6 +249,7 @@ function loadSwf(manifestUrl) {
     var flashvars = {};
     flashvars.src = encodeURIComponent(manifestUrl);
     flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../"  + (isDebug() ? "debug" : "production") + "/dashas.swf?t=" + timestamp + "&log=true");
+    flashvars.javascriptCallbackFunction = "onJavaScriptBridgeCreated";
 
     var params = {};
     params.allowfullscreen = "true";
