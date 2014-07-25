@@ -242,6 +242,10 @@ function unloadSwf() {
 }
 
 function loadSwf(manifestUrl) {
+
+    // reset bridge to allow initialization
+    playerBridge = null;
+
     document.getElementById("placeholder-wrapper").innerHTML = "<div id='placeholder'><p><span>Please install <a href='http://get.adobe.com/flashplayer/'>Adobe Flash Player</a></span></p></div>";
 
     var timestamp = new Date().getTime();
