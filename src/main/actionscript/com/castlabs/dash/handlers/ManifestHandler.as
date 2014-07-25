@@ -8,7 +8,6 @@
 
 package com.castlabs.dash.handlers {
 import com.castlabs.dash.descriptors.Representation;
-import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.loaders.ManifestLoader;
 import com.castlabs.dash.utils.Console;

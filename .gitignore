@@ -14,6 +14,7 @@ target/
 # Gradle
 build/
 .gradle/
+lib/
 
 # other
 .DS_Store
@@ -21,3 +22,4 @@ unused/
 rsync.sh
 libs/
 Flash Player Debugger.app/
+

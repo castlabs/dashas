@@ -30,6 +30,8 @@ dependencies {
     test group: 'org.flexunit', name: 'flexunit', version: '4.2.0', ext: 'swc'
     test group: 'org.flexunit', name: 'flexunit-cilistener', version: '4.2.0', ext: 'swc'
     test group: 'org.flexunit', name: 'flexunit-uilistener', version: '4.2.0', ext: 'swc'
+    test group: 'mockolate', name: 'mockolate', version: '0.12.4', ext: 'swc'
+    test group: 'org.hamcrest', name: 'hamcrest', version: '1.1.3', ext: 'swc'
 }
 
 sdkAutoInstall {
@@ -53,4 +55,15 @@ task copySwfToDemo(type: Copy) {
 task compile {
     dependsOn compileFlex
     dependsOn copySwfToDemo
+}
+
+def libDir="${rootProject.projectDir}/lib"
+
+task exportDependencies << {
+    ant.delete (dir:libDir, failonerror:false)
+    configurations.each { config ->
+        config.each { f ->
+            ant.copy (file: f, overwrite:true, todir:libDir)
+        }
+    }
 }
