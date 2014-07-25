@@ -243,7 +243,7 @@ function unloadSwf() {
 
 function loadSwf(manifestUrl) {
 
-    // reset bridge to allow initialization
+    // reset bridge to allow initialization after switching do different example
     playerBridge = null;
 
     document.getElementById("placeholder-wrapper").innerHTML = "<div id='placeholder'><p><span>Please install <a href='http://get.adobe.com/flashplayer/'>Adobe Flash Player</a></span></p></div>";
