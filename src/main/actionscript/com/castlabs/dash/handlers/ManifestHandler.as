@@ -28,7 +28,7 @@ public class ManifestHandler {
 
     private var _updateTimer:Timer;
 
-    public function ManifestHandler(url:String, xml:XML) {
+    public function ManifestHandler(url:String, xml:XML, ignoreUpdate:Boolean = false) {
         _url = url;
         _duration = buildDuration(xml);
 
@@ -43,7 +43,7 @@ public class ManifestHandler {
         if (_live) {
             var minimumUpdatePeriod:Number = buildMinimumUpdatePeriod(xml);
 
-            if (minimumUpdatePeriod) {
+            if (!ignoreUpdate && minimumUpdatePeriod) {
                 _updateTimer = new Timer(minimumUpdatePeriod * 1000);
                 _updateTimer.addEventListener(TimerEvent.TIMER, onUpdate);
                 _updateTimer.start();
