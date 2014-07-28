@@ -51,7 +51,7 @@ Create media input files in different bitrates.
 
 #### Prerequisites
 
-* ffmpeg is installed with libfdk_aac and libx264 library;
+* ffmpeg is installed with libfdk_aac and libx264 library (tested with version 2.1.3);
 
 
 #### Instructions
@@ -154,7 +154,7 @@ Finally try dash.as locally.
 
 #### Prerequisites
 
-* gradle is installed;
+* gradle is installed (tested with version 1.8);
 
 #### Instructions
 
@@ -174,7 +174,7 @@ Finally try dash.as locally.
 
 #### Prerequisites
 
-* gradle is installed;
+* gradle is installed (tested with version 1.8);
 
 #### Instructions
 
