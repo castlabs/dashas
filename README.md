@@ -37,6 +37,8 @@ For more information visit [examples page](http://dashas.castlabs.com/demo/try.h
 [2] A server has to have custom [.htaccess](https://github.com/castlabs/dashas/blob/master/utils/.htaccess) file in the root context.  
 [3] Adobe Flash Player supports only [H.264 (MPEG-4 Part 10)  and HE-AAC (MPEG-4 Part 3) codecs](http://helpx.adobe.com/flash/kb/supported-codecs-flash-player.html).
 
+For more information about which attributes and tags are required in a manifest please visit [unit tests](https://github.com/castlabs/dashas/blob/master/src/test/actionscript/com/castlabs/dash/ManifestHandlerTest.as).
+
 ### Known issues
 
 * [#2](https://github.com/castlabs/dashas/issues/2) Player doesn't resume downloading after reconnecting;
