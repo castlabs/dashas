@@ -1,5 +1,11 @@
 language: java
-install: TERM=dumb gradle assemble 
-script: 
-  - TERM=dumb gradle cleanSdks 
+before_install:
+  - TERM=dumb sudo add-apt-repository ppa:cwchien/gradle
+  - TERM=dumb sudo apt-get update
+  - TERM=dumb sudo apt-get install gradle-1.11
+install:
+  - TERM=dumb rm -Rf ~/.gradle/gradleFx/sdks/*
+  - TERM=dumb gradle assemble
+  - TERM=dumb ./fixFramework.sh
+script:
   - TERM=dumb gradle clean compile --stacktrace 
