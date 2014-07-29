@@ -17,7 +17,7 @@ mainClass = 'com/castlabs/dash/DashPlugin.as'
 repositories {
     ivy {
         name 'Apache'
-        artifactPattern 'http://apache.cu.be/flex/[revision]/binaries/[module]-[revision]-bin.[ext]'
+        artifactPattern 'http://archive.apache.org/dist/incubator/flex/[revision]-incubating/binaries/[module]-[revision]-incubating-bin.[ext]'
     }
     maven {
         url "http://dashas.castlabs.com/maven2/"
@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.12.1', ext: 'tar.gz'
+    flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.8.0', ext: 'tar.gz'
     test group: 'org.flexunit', name: 'flexUnitTasks', version: '4.2.0', ext: 'jar'
     test group: 'org.flexunit', name: 'flexunit', version: '4.2.0', ext: 'swc'
     test group: 'org.flexunit', name: 'flexunit-cilistener', version: '4.2.0', ext: 'swc'
