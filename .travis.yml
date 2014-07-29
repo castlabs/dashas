@@ -1,7 +1,7 @@
 language: groovy
+cache: false
 install:
   - TERM=dumb gradle --version
-  - TERM=dumb gradle cleanSdks
-  - TERM=dumb rm -Rf ~/.gradle/gradleFx/sdks/*
+  - TERM=dumb rm -Rf ~/.gradle
 script:
   - TERM=dumb gradle clean compile --stacktrace 
