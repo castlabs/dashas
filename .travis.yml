@@ -1,6 +1,6 @@
 language: java
 before_install:
-  - TERM=dumb sudo add-apt-repository ppa:cwchien/gradle
+  - TERM=dumb sudo add-apt-repository -y ppa:cwchien/gradle
   - TERM=dumb sudo apt-get update
   - TERM=dumb sudo apt-get install gradle-1.11
 install:
