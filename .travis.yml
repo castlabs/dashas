@@ -5,7 +5,7 @@ before_install:
   - TERM=dumb sudo apt-get -y install gradle-1.11
 install:
   - TERM=dumb rm -Rf ~/.gradle/gradleFx/sdks/*
-  - TERM=dumb gradle assemble
+  - TERM=dumb gradle assemble --debug
   - TERM=dumb ./fixFramework.sh
 script:
   - TERM=dumb gradle clean compile --stacktrace 
