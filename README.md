@@ -150,11 +150,13 @@ Finally try dash.as locally.
 
 ## Development
 
+At the moment project supports only Gradle 1.11. Please read [how to install Gradle 1.11 on Linux](https://github.com/castlabs/dashas/wiki/linux).
+
 ### Build
 
 #### Prerequisites
 
-* gradle is installed (tested with version 1.8);
+* gradle is installed (tested with version 1.11);
 
 #### Instructions
 
@@ -174,7 +176,7 @@ Finally try dash.as locally.
 
 #### Prerequisites
 
-* gradle is installed (tested with version 1.8);
+* gradle is installed (tested with version 1.11);
 
 #### Instructions
 
