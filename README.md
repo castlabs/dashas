@@ -11,6 +11,8 @@ This project is an extension for [Open Source Media Framework](http://osmf.org/)
 
 At the same time there is profersional edition of dash.as which integrates nicely with the [Adobe Access DRM](http://www.adobe.com/products/adobe-access.html). For more information please contact with sales department: "sales (at) castlabs (dot) com".
 
+Please visit [CHANGELOG](https://github.com/bundler/bundler/blob/master/CHANGELOG.md) for changes history.
+
 ## Demo
 
 For more information visit [examples page](http://dashas.castlabs.com/demo/try.html).
