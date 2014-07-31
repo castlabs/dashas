@@ -7,16 +7,17 @@
  */
 
 package com.castlabs.dash.handlers {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.loaders.ManifestLoader;
-import com.castlabs.dash.utils.Console;
 import com.castlabs.dash.utils.Manifest;
 
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 
 public class ManifestHandler {
+    private var _context:DashContext;
     private var _url:String;
 
     private var _live:Boolean;
@@ -28,7 +29,9 @@ public class ManifestHandler {
 
     private var _updateTimer:Timer;
 
-    public function ManifestHandler(url:String, xml:XML, ignoreUpdate:Boolean = false) {
+    public function ManifestHandler(context:DashContext, url:String, xml:XML, ignoreUpdate:Boolean = false) {
+        _context = context;
+
         _url = url;
         _duration = buildDuration(xml);
 
@@ -68,11 +71,11 @@ public class ManifestHandler {
     }
 
     private function onUpdate(timerEvent:TimerEvent):void {
-        var loader:ManifestLoader = new ManifestLoader(_url);
+        var loader:ManifestLoader = _context.buildManifestLoader(_url);
         loader.addEventListener(ManifestEvent.LOADED, onLoad);
 
         function onLoad(event:ManifestEvent):void {
-            Console.getInstance().info("Loaded changed manifest. Updating representations...");
+            _context.console.info("Loaded changed manifest. Updating representations...");
 
             for each (var representation1:Representation in _videoRepresentations) {
                 representation1.update(event.xml..Representation.(@id == representation1.id)[0]);
@@ -82,7 +85,7 @@ public class ManifestHandler {
                 representation2.update(event.xml..Representation.(@id == representation2.id)[0]);
             }
 
-            Console.getInstance().info("Updated representations");
+            _context.console.info("Updated representations");
         }
 
         loader.load();
@@ -93,7 +96,7 @@ public class ManifestHandler {
             return Manifest.toSeconds(xml.@minimumUpdatePeriod.toString());
         }
 
-        Console.getInstance().warn("Couldn't find minimum update period");
+        _context.console.warn("Couldn't find minimum update period");
         return NaN;
     }
 
@@ -101,12 +104,12 @@ public class ManifestHandler {
         return url.slice(0, url.lastIndexOf("/")) + "/";
     }
 
-    private static function buildDuration(xml:XML):Number {
+    private function buildDuration(xml:XML):Number {
         if (xml.hasOwnProperty("@mediaPresentationDuration")) {
             return Manifest.toSeconds(xml.@mediaPresentationDuration.toString());
         }
 
-        Console.getInstance().warn("Couldn't find media presentation duration");
+        _context.console.warn("Couldn't find media presentation duration");
         return NaN;
     }
 
@@ -118,15 +121,15 @@ public class ManifestHandler {
         return false;
     }
 
-    private static function findVideoRepresentationNodes(xml:XML):* {
+    private function findVideoRepresentationNodes(xml:XML):* {
         return findRepresentationNodes("video/mp4", xml);
     }
 
-    private static function findAudioRepresentationNodes(xml:XML):* {
+    private function findAudioRepresentationNodes(xml:XML):* {
         return findRepresentationNodes("audio/mp4", xml);
     }
 
-    private static function findRepresentationNodes(mimeType:String, xml:XML):* {
+    private function findRepresentationNodes(mimeType:String, xml:XML):* {
         var representations:* = null;
 
         representations = xml..AdaptationSet.(attribute('mimeType') == mimeType).Representation;
@@ -139,7 +142,7 @@ public class ManifestHandler {
             return representations;
         }
 
-        throw Console.getInstance().logError(new Error("Couldn't find any representations, " +
+        throw _context.console.logError(new Error("Couldn't find any representations, " +
                 "mimeType='" + mimeType + "'"));
     }
 
@@ -147,9 +150,10 @@ public class ManifestHandler {
         var representations:Vector.<Representation> = new Vector.<Representation>();
 
         for each (var node:XML in nodes) {
-            Console.getInstance().debug("Processing next representation...");
-            var representation:Representation = new Representation(_nextInternalRepresentationId++, baseUrl, duration, node);
-            Console.getInstance().info("Created representation, " + representation.toString());
+            _context.console.debug("Processing next representation...");
+            var representation:Representation = _context.buildRepresentation(_nextInternalRepresentationId++,
+                    baseUrl, duration, node);
+            _context.console.info("Created representation, " + representation.toString());
 
             representations.push(representation);
         }

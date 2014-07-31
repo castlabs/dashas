@@ -7,12 +7,15 @@
  */
 
 package com.castlabs.dash.handlers {
-import com.castlabs.dash.utils.Console;
+import com.castlabs.dash.DashContext;
 
 import flash.utils.ByteArray;
 
 public class SegmentHandler {
-    public function SegmentHandler() {
+    protected var _context:DashContext;
+
+    public function SegmentHandler(context:DashContext) {
+        _context = context;
     }
 
     protected function goToBox(expectedType:String, ba:ByteArray):Object {
@@ -37,24 +40,24 @@ public class SegmentHandler {
 
     protected function validateType(expectedType:String, actualType:String):void {
         if (actualType != expectedType) {
-            throw Console.getInstance().logError(new Error("Couldn't find any '" + expectedType + "' box"));
+            throw _context.console.logError(new Error("Couldn't find any '" + expectedType + "' box"));
         }
     }
 
     protected function validateSize(size:uint):void {
         if (size == 1) {
             // don't support "large box", because default size is sufficient for fragmented movie
-            throw Console.getInstance().logError(new Error("Large box isn't supported"));
+            throw _context.console.logError(new Error("Large box isn't supported"));
         }
     }
 
     protected function validateTracksNumber(number:int):void {
         if (number > 1) {
-            throw Console.getInstance().logError(new Error("Multiple tracks aren't supported"));
+            throw _context.console.logError(new Error("Multiple tracks aren't supported"));
         }
 
         if (number < 1) {
-            throw Console.getInstance().logError(new Error("Track isn't defined"));
+            throw _context.console.logError(new Error("Track isn't defined"));
         }
     }
 }

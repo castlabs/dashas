@@ -7,6 +7,8 @@
  */
 
 package com.castlabs.dash.boxes {
+import com.castlabs.dash.DashContext;
+
 import flash.utils.ByteArray;
 
 public class HandlerReferenceBox extends FullBox {
@@ -14,8 +16,8 @@ public class HandlerReferenceBox extends FullBox {
     // 'vide', 'soun' or other values
     private var _type:String;
 
-    public function HandlerReferenceBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function HandlerReferenceBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get type():String {

@@ -7,19 +7,19 @@
  */
 
 package com.castlabs.dash.loaders {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.descriptors.segments.Segment;
-import com.castlabs.dash.utils.BandwidthMonitor;
 
 import flash.errors.IllegalOperationError;
 import flash.events.EventDispatcher;
 
 public class SegmentLoader extends EventDispatcher {
+    protected var _context:DashContext;
     protected var _segment:Segment;
-    protected var _monitor:BandwidthMonitor;
 
-    public function SegmentLoader(segment:Segment, monitor:BandwidthMonitor) {
+    public function SegmentLoader(context:DashContext, segment:Segment) {
+        _context = context;
         _segment = segment;
-        _monitor = monitor;
     }
 
     public function load():void {

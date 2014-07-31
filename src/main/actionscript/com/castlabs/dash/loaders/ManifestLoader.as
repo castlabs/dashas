@@ -7,8 +7,8 @@
  */
 
 package com.castlabs.dash.loaders {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.events.ManifestEvent;
-import com.castlabs.dash.utils.Console;
 
 import flash.events.AsyncErrorEvent;
 import flash.events.ErrorEvent;
@@ -21,9 +21,11 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 
 public class ManifestLoader extends EventDispatcher {
+    private var _context:DashContext;
     private var _url:String;
 
-    public function ManifestLoader(url:String) {
+    public function ManifestLoader(context:DashContext, url:String) {
+        _context = context;
         _url = url;
     }
 
@@ -38,22 +40,22 @@ public class ManifestLoader extends EventDispatcher {
         http.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onError);
         http.addEventListener(IOErrorEvent.IO_ERROR, onError);
 
-        Console.getInstance().debug("Loading manifest, url='" + _url + "'");
+        _context.console.debug("Loading manifest, url='" + _url + "'");
 
         http.load(new URLRequest(_url));
     }
 
     private function onError(event:Event):void {
-        Console.getInstance().error("Connection was interrupted: " + event.toString());
-        dispatchEvent(new ManifestEvent(ManifestEvent.ERROR, false, false));
+        _context.console.error("Connection was interrupted: " + event.toString());
+        dispatchEvent(_context.buildManifestEvent(ManifestEvent.ERROR, false, false));
     }
 
     private function onComplete(event:Event):void {
-        Console.getInstance().debug("Loaded manifest, url='" + _url + "'");
+        _context.console.debug("Loaded manifest, url='" + _url + "'");
 
         var response:String = URLLoader(event.target).data;
         var xml:XML = removeNamespacesAndBuildXml(response);
-        dispatchEvent(new ManifestEvent(ManifestEvent.LOADED, false, false, _url, xml));
+        dispatchEvent(_context.buildManifestEvent(ManifestEvent.LOADED, false, false, _url, xml));
     }
 
     private static function removeNamespacesAndBuildXml(response:String):XML {

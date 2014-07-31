@@ -7,6 +7,8 @@
  */
 
 package com.castlabs.dash.utils {
+import com.castlabs.dash.DashContext;
+
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.net.URLLoader;
@@ -14,10 +16,13 @@ import flash.net.URLLoader;
 public class BandwidthMonitor {
     private const HISTORY_LENGTH:Number = 20;
 
+    private var _context:DashContext;
+
     private var _lastBandwidth:Number = 0;
     private var _history:Vector.<Number> = new Vector.<Number>();
 
-    public function BandwidthMonitor() {
+    public function BandwidthMonitor(context:DashContext) {
+        _context = context;
     }
 
     public function appendListeners(http:EventDispatcher):void {
@@ -49,7 +54,7 @@ public class BandwidthMonitor {
                 _history.shift();
             }
 
-            Console.getInstance().appendRealUserBandwidth(bandwidth);
+            _context.console.appendRealUserBandwidth(bandwidth);
 
             var sum:Number = 0;
             for (var i:uint = 0; i < _history.length; i++) {
@@ -60,7 +65,7 @@ public class BandwidthMonitor {
                 _lastBandwidth = sum / _history.length;
             }
 
-            Console.getInstance().appendAverageUserBandwidth(_lastBandwidth);
+            _context.console.appendAverageUserBandwidth(_lastBandwidth);
         }
 
         //URLLoader events

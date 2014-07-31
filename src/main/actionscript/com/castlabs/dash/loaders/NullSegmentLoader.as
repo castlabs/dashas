@@ -7,19 +7,19 @@
  */
 
 package com.castlabs.dash.loaders {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.events.SegmentEvent;
-import com.castlabs.dash.utils.BandwidthMonitor;
 
 import flash.utils.ByteArray;
 
 public class NullSegmentLoader extends SegmentLoader {
-    public function NullSegmentLoader(segment:Segment, monitor:BandwidthMonitor) {
-        super(segment, monitor);
+    public function NullSegmentLoader(context:DashContext, segment:Segment) {
+        super(context, segment);
     }
 
     override public function load():void {
-        dispatchEvent(new SegmentEvent(SegmentEvent.LOADED, false, false, _segment, new ByteArray()));
+        dispatchEvent(_context.buildSegmentEvent(SegmentEvent.LOADED, false, false, _segment, new ByteArray()));
     }
 }
 }

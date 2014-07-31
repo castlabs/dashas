@@ -8,14 +8,16 @@
 
 package com.castlabs.dash.boxes {
 
+import com.castlabs.dash.DashContext;
+
 import flash.utils.ByteArray;
 
 public class TrackFragmentBox extends Box {
     private var _truns:Vector.<TrackFragmentRunBox> = new Vector.<TrackFragmentRunBox>();
     private var _tfhd:TrackFragmentHeaderBox;
 
-    public function TrackFragmentBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function TrackFragmentBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get truns():Vector.<TrackFragmentRunBox> {
@@ -41,13 +43,13 @@ public class TrackFragmentBox extends Box {
     }
 
     private function parseTrackFragmentRunBox(offset:uint, size:uint, ba:ByteArray):void {
-        var trun:TrackFragmentRunBox = new TrackFragmentRunBox(offset, size);
+        var trun:TrackFragmentRunBox = _context.buildTrackFragmentRunBox(offset, size);
         trun.parse(ba);
         _truns.push(trun);
     }
 
     private function parseTrackFragmentHeaderBox(offset:uint, size:uint, ba:ByteArray):void {
-        _tfhd = new TrackFragmentHeaderBox(offset, size);
+        _tfhd = _context.buildTrackFragmentHeaderBox(offset, size);
         _tfhd.parse(ba);
     }
 }

@@ -7,14 +7,15 @@
  */
 
 package com.castlabs.dash.handlers {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.boxes.FLVTag;
 import com.castlabs.dash.boxes.SampleEntry;
 
 import flash.utils.ByteArray;
 
 public class InitializationAudioSegmentHandler extends InitializationSegmentHandler {
-    public function InitializationAudioSegmentHandler(ba:ByteArray) {
-        super(ba);
+    public function InitializationAudioSegmentHandler(context:DashContext, ba:ByteArray) {
+        super(context, ba);
     }
 
     override protected function get expectedTrackType():String {
@@ -22,7 +23,7 @@ public class InitializationAudioSegmentHandler extends InitializationSegmentHand
     }
 
     protected override function buildMessage(sampleEntry:SampleEntry):FLVTag {
-        var message:FLVTag = new FLVTag();
+        var message:FLVTag = _context.buildFLVTag();
 
         message.markAsAudio();
 

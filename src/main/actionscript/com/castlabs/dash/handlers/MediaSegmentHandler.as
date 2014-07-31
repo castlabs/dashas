@@ -7,8 +7,8 @@
  */
 
 package com.castlabs.dash.handlers {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.boxes.FLVTag;
-import com.castlabs.dash.boxes.Muxer;
 import com.castlabs.dash.boxes.MovieFragmentBox;
 import com.castlabs.dash.boxes.TrackFragmentHeaderBox;
 import com.castlabs.dash.boxes.TrackFragmentRunBox;
@@ -25,16 +25,14 @@ public class MediaSegmentHandler extends SegmentHandler {
     private var _movieFragmentBox:MovieFragmentBox;
     private var _defaultSampleDuration:uint;
 
-    private var _muxer:Muxer;
+    public function MediaSegmentHandler(context:DashContext, ba:ByteArray, messages:Vector.<FLVTag>,
+                                        defaultSampleDuration:uint, timescale:uint, timestamp:Number) {
+        super(context);
 
-    public function MediaSegmentHandler(ba:ByteArray, messages:Vector.<FLVTag>, defaultSampleDuration:uint,
-                                        timescale:uint, timestamp:Number, muxer:Muxer) {
         _messages = messages;
         _defaultSampleDuration = defaultSampleDuration;
         _timescale = timescale;
         _timestamp = timestamp;
-
-        _muxer = muxer;
 
         parseMovieFragmentBox(ba);
         parseMediaDataBox(ba);
@@ -49,7 +47,7 @@ public class MediaSegmentHandler extends SegmentHandler {
         var offset:uint = offsetAndSize.offset;
         var size:uint = offsetAndSize.size;
 
-        _movieFragmentBox = new MovieFragmentBox(offset, size);
+        _movieFragmentBox = _context.buildMovieFragmentBox(offset, size);
         _movieFragmentBox.parse(ba);
     }
 
@@ -62,7 +60,7 @@ public class MediaSegmentHandler extends SegmentHandler {
 
         processTrackBox(ba);
 
-        _bytes = _muxer.mux(_messages);
+        _bytes = _context.muxer.mux(_messages);
         _bytes.position = 0; // reset
     }
 

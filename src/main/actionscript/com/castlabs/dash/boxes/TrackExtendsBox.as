@@ -7,14 +7,16 @@
  */
 
 package com.castlabs.dash.boxes {
+import com.castlabs.dash.DashContext;
+
 import flash.utils.ByteArray;
 
 public class TrackExtendsBox extends FullBox {
     private var _trackId:uint;
     private var _defaultSampleDuration:uint;
 
-    public function TrackExtendsBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function TrackExtendsBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get trackId():uint {

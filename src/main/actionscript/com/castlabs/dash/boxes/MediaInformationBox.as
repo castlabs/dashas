@@ -7,13 +7,15 @@
  */
 
 package com.castlabs.dash.boxes {
+import com.castlabs.dash.DashContext;
+
 import flash.utils.ByteArray;
 
 public class MediaInformationBox extends Box {
     private var _stbl:SampleTableBox;
 
-    public function MediaInformationBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function MediaInformationBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get stbl():SampleTableBox {
@@ -30,7 +32,7 @@ public class MediaInformationBox extends Box {
     }
 
     private function parseSampleTableBox(offset:uint, size:uint, ba:ByteArray):void {
-        _stbl = new SampleTableBox(offset, size);
+        _stbl = _context.buildSampleTableBox(offset, size);
         _stbl.parse(ba);
     }
 }

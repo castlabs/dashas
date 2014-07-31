@@ -7,10 +7,9 @@
  */
 
 package com.castlabs.dash.descriptors.index {
-import com.castlabs.dash.descriptors.segments.MediaDataSegment;
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.descriptors.segments.WaitSegment;
-import com.castlabs.dash.utils.Console;
 import com.castlabs.dash.utils.Manifest;
 
 public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
@@ -19,8 +18,8 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
     private var _timeShiftBuffer:Number; // seconds
     private var _segments:Vector.<Object> = new Vector.<Object>();
 
-    public function SegmentTimeline(representation:XML) {
-        super(representation);
+    public function SegmentTimeline(context:DashContext, representation:XML) {
+        super(context, representation);
 
         _live = traverseAndBuildLive(representation);
         if (_live) {
@@ -38,7 +37,7 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         }
 
         if (isLast(timestamp)) {
-            return new WaitSegment(internalRepresentationId);
+            return _context.buildWaitSegment(internalRepresentationId);
         }
 
         var segment:Object = null;
@@ -68,7 +67,8 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         var startTimestamp:Number = seconds(segment.time);
         var endTimestamp:Number = startTimestamp + seconds(segment.duration);
 
-        return new MediaDataSegment(internalRepresentationId, baseUrl + url, "0-", startTimestamp, endTimestamp);
+        return _context.buildMediaDataSegment(internalRepresentationId, baseUrl + url, "0-", startTimestamp,
+                endTimestamp);
     }
 
     private function findSegment(timestamp:Number):Object {
@@ -160,9 +160,9 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         return seconds(_segments[last].time) == timestmap;
     }
 
-    private static function traverseAndBuildTimeline(node:XML):XMLList {
+    private function traverseAndBuildTimeline(node:XML):XMLList {
         if (node == null) {
-            throw Console.getInstance().logError(new Error("Couldn't find any S tag"));
+            throw _context.console.logError(new Error("Couldn't find any S tag"));
         }
 
         if (node.SegmentTemplate.length() == 1
@@ -175,9 +175,9 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         return traverseAndBuildTimeline(node.parent());
     }
 
-    private static function traverseAndBuildTimeShiftBufferDepth(node:XML):Number {
+    private function traverseAndBuildTimeShiftBufferDepth(node:XML):Number {
         if (node == null) {
-            throw Console.getInstance().logError(new Error("Couldn't find any 'timeShiftBufferDepth' attribute"));
+            throw _context.console.logError(new Error("Couldn't find any 'timeShiftBufferDepth' attribute"));
         }
 
         if (node.hasOwnProperty("@timeShiftBufferDepth")) {
@@ -188,9 +188,9 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         return traverseAndBuildTimeShiftBufferDepth(node.parent());
     }
 
-    private static function traverseAndBuildLive(node:XML):Boolean {
+    private function traverseAndBuildLive(node:XML):Boolean {
         if (node == null) {
-            throw Console.getInstance().logError(new Error("Couldn't find any 'type' attribute"));
+            throw _context.console.logError(new Error("Couldn't find any 'type' attribute"));
         }
 
         if (node.hasOwnProperty("@type")) {
@@ -201,9 +201,9 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         return traverseAndBuildLive(node.parent());
     }
 
-    private static function traverseAndBuildMinBufferTime(node:XML):Number {
+    private function traverseAndBuildMinBufferTime(node:XML):Number {
         if (node == null) {
-            throw Console.getInstance().logError(new Error("Couldn't find any 'minBufferTime' attribute"));
+            throw _context.console.logError(new Error("Couldn't find any 'minBufferTime' attribute"));
         }
 
         if (node.hasOwnProperty("@minBufferTime")) {

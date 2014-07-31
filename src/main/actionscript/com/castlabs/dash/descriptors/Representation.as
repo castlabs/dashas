@@ -7,12 +7,12 @@
  */
 
 package com.castlabs.dash.descriptors {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.descriptors.index.SegmentIndex;
-import com.castlabs.dash.descriptors.index.SegmentIndexFactory;
 import com.castlabs.dash.descriptors.segments.Segment;
-import com.castlabs.dash.utils.Console;
 
 public class Representation {
+    private var _context:DashContext;
     private var _internalId:Number;
     private var _baseUrl:String;
     private var _duration:Number;
@@ -21,13 +21,14 @@ public class Representation {
 
     private var _segmentIndex:SegmentIndex;
 
-    public function Representation(internalId:Number, baseUrl:String, duration:Number, xml:XML) {
+    public function Representation(context:DashContext, internalId:Number, baseUrl:String, duration:Number, xml:XML) {
+        _context = context;
         _internalId = internalId;
         _baseUrl = baseUrl;
         _duration = duration;
         _id = buildId(xml);
         _bandwidth = buildBandwidth(xml);
-        _segmentIndex = SegmentIndexFactory.create(xml);
+        _segmentIndex = _context.segmentIndexFactory.create(xml);
     }
 
     public function get id():String {
@@ -58,12 +59,12 @@ public class Representation {
         _segmentIndex.update(xml);
     }
 
-    private static function buildId(xml:XML):String {
+    private function buildId(xml:XML):String {
         if (xml.hasOwnProperty("@id")) {
             return xml.@id;
         }
 
-        throw Console.getInstance().logError(new Error("Representation doesn't have 'id' attribute"));
+        throw _context.console.logError(new Error("Representation doesn't have 'id' attribute"));
     }
 
     private static function buildBandwidth(xml:XML):Number {

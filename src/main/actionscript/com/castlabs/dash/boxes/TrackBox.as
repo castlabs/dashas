@@ -8,14 +8,16 @@
 
 package com.castlabs.dash.boxes {
 
+import com.castlabs.dash.DashContext;
+
 import flash.utils.ByteArray;
 
 public class TrackBox extends Box {
     private var _tkhd:TrackHeaderBox;
     private var _mdia:MediaBox;
 
-    public function TrackBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function TrackBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get tkhd():TrackHeaderBox {
@@ -41,12 +43,12 @@ public class TrackBox extends Box {
     }
 
     private function parseTrackHeaderBox(offset:uint, size:uint, ba:ByteArray):void {
-        _tkhd = new TrackHeaderBox(offset, size);
+        _tkhd = _context.buildTrackHeaderBox(offset, size);
         _tkhd.parse(ba);
     }
 
     private function parseMediaBox(offset:uint, size:uint, ba:ByteArray):void {
-        _mdia = new MediaBox(offset, size);
+        _mdia = _context.buildMediaBox(offset, size);
         _mdia.parse(ba);
     }
 }

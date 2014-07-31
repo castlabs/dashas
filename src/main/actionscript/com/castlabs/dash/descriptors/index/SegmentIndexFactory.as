@@ -7,19 +7,22 @@
  */
 
 package com.castlabs.dash.descriptors.index {
-import com.castlabs.dash.utils.Console;
+import com.castlabs.dash.DashContext;
 
 public class SegmentIndexFactory {
-    public function SegmentIndexFactory() {
+    private var _context:DashContext;
+
+    public function SegmentIndexFactory(context:DashContext) {
+        _context = context;
     }
 
-    static public function create(representation:XML):SegmentIndex {
+    public function create(representation:XML):SegmentIndex {
         return traverseAndCreate(representation, representation);
     }
 
-    static private function traverseAndCreate(node:XML, representation:XML):SegmentIndex {
+    private function traverseAndCreate(node:XML, representation:XML):SegmentIndex {
         if (node == null) {
-            throw Console.getInstance().logError(new Error("Couldn't find any 'SegmentTimeline', 'SegmentTemplate', " +
+            throw _context.console.logError(new Error("Couldn't find any 'SegmentTimeline', 'SegmentTemplate', " +
                     "'SegmentTemplate', 'SegmentList' or 'BaseURL' tag"));
         }
 
@@ -27,30 +30,30 @@ public class SegmentIndexFactory {
 
         if (node.SegmentTemplate.length() == 1
                 && node.SegmentTemplate.SegmentTimeline.length() == 1) {
-            Console.getInstance().info("Creating segment time line...");
-            segmentIndex = new SegmentTimeline(representation);
-            Console.getInstance().info("Created segment time line, " + segmentIndex.toString());
+            _context.console.info("Creating segment time line...");
+            segmentIndex = _context.buildSegmentTimeline(representation);
+            _context.console.info("Created segment time line, " + segmentIndex.toString());
             return segmentIndex;
         }
 
         if (node.SegmentTemplate.length() == 1) {
-            Console.getInstance().info("Creating segment template...");
-            segmentIndex = new SegmentTemplate(representation);
-            Console.getInstance().info("Created segment template, " + segmentIndex.toString());
+            _context.console.info("Creating segment template...");
+            segmentIndex = _context.buildSegmentTemplate(representation);
+            _context.console.info("Created segment template, " + segmentIndex.toString());
             return segmentIndex;
         }
 
         if (node.SegmentList.length() == 1) {
-            Console.getInstance().info("Creating segment list...");
-            segmentIndex = new SegmentList(representation);
-            Console.getInstance().info("Created segment list, " + segmentIndex.toString());
+            _context.console.info("Creating segment list...");
+            segmentIndex = _context.buildSegmentList(representation);
+            _context.console.info("Created segment list, " + segmentIndex.toString());
             return segmentIndex;
         }
 
         if (node.BaseURL.length() == 1) {
-            Console.getInstance().info("Creating segment base URL...");
-            segmentIndex = new SegmentRange(representation);
-            Console.getInstance().info("Created segment base URL, " + segmentIndex.toString());
+            _context.console.info("Creating segment base URL...");
+            segmentIndex = _context.buildSegmentRange(representation);
+            _context.console.info("Created segment base URL, " + segmentIndex.toString());
             return segmentIndex;
         }
 

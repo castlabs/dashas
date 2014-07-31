@@ -7,6 +7,8 @@
  */
 
 package com.castlabs.dash.boxes {
+import com.castlabs.dash.DashContext;
+
 import flash.errors.IllegalOperationError;
 import flash.utils.ByteArray;
 
@@ -14,8 +16,8 @@ public class FullBox extends Box {
     private var _version:uint;
     private var _flags:uint;
 
-    public function FullBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function FullBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get version():uint {

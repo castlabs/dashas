@@ -23,7 +23,7 @@ public class DashPlugin extends Sprite {
         super();
 
         if (this.root.loaderInfo.parameters.log == "true") {
-            Console.getInstance().enable();
+            DashContext.getInstance().console.enable();
         }
 
         _pluginInfo = new DashPluginInfo();
@@ -38,7 +38,7 @@ public class DashPlugin extends Sprite {
     }
 
     public static function mediaElementCreationFunction():MediaElement {
-        return new VideoElement(null, new DashNetLoader());
+        return new VideoElement(null, DashContext.getInstance().dashNetLoader);
     }
 }
 }

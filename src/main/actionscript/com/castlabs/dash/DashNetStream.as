@@ -43,6 +43,8 @@ public class DashNetStream extends NetStream {
     private const PAUSED:uint = 4;
     private const STOPPED:uint = 5;
 
+    private var _context:DashContext;
+
     private var _state:uint = STOPPED;
 
     private var _loader:FragmentLoader;
@@ -57,8 +59,10 @@ public class DashNetStream extends NetStream {
     private var _bufferTimer:Timer;
     private var _fragmentTimer:Timer;
 
-    public function DashNetStream(connection:NetConnection) {
+    public function DashNetStream(context:DashContext, connection:NetConnection) {
         super(connection);
+
+        _context = context;
 
         addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 
@@ -204,7 +208,7 @@ public class DashNetStream extends NetStream {
         _live = manifest.live;
         _duration = manifest.duration;
 
-        _loader = Factory.createFragmentLoader(manifest);
+        _loader = _context.buildFragmentLoader(manifest);
         _loader.addEventListener(StreamEvent.READY, onReady);
         _loader.addEventListener(FragmentEvent.LOADED, onLoaded);
         _loader.addEventListener(StreamEvent.END, onEnd);
@@ -239,36 +243,36 @@ public class DashNetStream extends NetStream {
     private function updateState(action:Number):void {
         switch (action) {
             case PLAY:
-                Console.getInstance().debug("Received PLAY action and changed to PLAYING state");
+                _context.console.debug("Received PLAY action and changed to PLAYING state");
                 _state = PLAYING;
                 break;
             case PAUSE:
-                Console.getInstance().debug("Received PAUSE action and changed to PAUSED state");
+                _context.console.debug("Received PAUSE action and changed to PAUSED state");
                 _state = PAUSED;
                 break;
             case RESUME:
-                Console.getInstance().debug("Received RESUME action and changed to PLAYING state");
+                _context.console.debug("Received RESUME action and changed to PLAYING state");
                 _state = PLAYING;
                 break;
             case STOP:
-                Console.getInstance().debug("Received STOP action and changed to STOPPED state");
+                _context.console.debug("Received STOP action and changed to STOPPED state");
                 _state = STOPPED;
                 break;
             case SEEK:
                 switch (_state) {
                     case PAUSED:
-                        Console.getInstance().debug("Received SEEK action and changed to SEEKING state");
+                        _context.console.debug("Received SEEK action and changed to SEEKING state");
                         _state = SEEKING;
                         break;
                     case PLAYING:
                     case BUFFERING:
-                        Console.getInstance().debug("Received SEEK action and changed to PLAYING state");
+                        _context.console.debug("Received SEEK action and changed to PLAYING state");
                         _state = PLAYING;
                         break;
                 }
                 break;
             case BUFFER:
-                Console.getInstance().debug("Received BUFFER action and changed to BUFFERING state");
+                _context.console.debug("Received BUFFER action and changed to BUFFERING state");
                 _state = BUFFERING;
                 break;
         }

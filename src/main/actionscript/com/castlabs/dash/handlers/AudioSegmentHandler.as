@@ -7,21 +7,21 @@
  */
 
 package com.castlabs.dash.handlers {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.boxes.FLVTag;
-import com.castlabs.dash.boxes.Muxer;
 
 import flash.utils.ByteArray;
 
 public class AudioSegmentHandler extends MediaSegmentHandler {
-    public function AudioSegmentHandler(segment:ByteArray, messages:Vector.<FLVTag>, defaultSampleDuration:uint,
-                                        timescale:uint, timestamp:Number, mixer:Muxer) {
-        super(segment, messages, defaultSampleDuration, timescale, timestamp, mixer);
+    public function AudioSegmentHandler(context:DashContext, segment:ByteArray, messages:Vector.<FLVTag>,
+                                        defaultSampleDuration:uint, timescale:uint, timestamp:Number) {
+        super(context, segment, messages, defaultSampleDuration, timescale, timestamp);
     }
 
     protected override function buildMessage(sampleDuration:uint, sampleSize:uint, sampleDependsOn:uint,
                                              sampleIsDependedOn:uint, compositionTimeOffset:Number,
                                              dataOffset:uint, ba:ByteArray):FLVTag {
-        var message:FLVTag = new FLVTag();
+        var message:FLVTag = _context.buildFLVTag();
 
         message.markAsAudio();
 

@@ -7,15 +7,19 @@
  */
 
 package com.castlabs.dash.boxes {
+import com.castlabs.dash.DashContext;
+
 import flash.errors.IllegalOperationError;
 import flash.utils.ByteArray;
 
 internal class Box {
     protected const SIZE_AND_TYPE:uint = 8;
 
+    protected var _context:DashContext;
     private var _end:uint;
 
-    public function Box(offset:uint, size:uint) {
+    public function Box(context:DashContext, offset:uint, size:uint) {
+        _context = context;
         _end = offset + size;
     }
 

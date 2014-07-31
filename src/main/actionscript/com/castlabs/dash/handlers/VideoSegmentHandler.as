@@ -7,26 +7,23 @@
  */
 
 package com.castlabs.dash.handlers {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.boxes.FLVTag;
-import com.castlabs.dash.boxes.Muxer;
-import com.castlabs.dash.boxes.NalUnit;
 
 import flash.utils.ByteArray;
 
 public class VideoSegmentHandler extends MediaSegmentHandler {
-    private static var _nalUnit:NalUnit = new NalUnit(); //TODO inject
-
     private static const MIN_CTO:int = -33;
 
-    public function VideoSegmentHandler(segment:ByteArray, messages:Vector.<FLVTag>, defaultSampleDuration:uint,
-                                        timescale:uint, timestamp:Number, mixer:Muxer) {
-        super(segment, messages, defaultSampleDuration, timescale, timestamp, mixer);
+    public function VideoSegmentHandler(context:DashContext, segment:ByteArray, messages:Vector.<FLVTag>,
+                                        defaultSampleDuration:uint, timescale:uint, timestamp:Number) {
+        super(context, segment, messages, defaultSampleDuration, timescale, timestamp);
     }
 
     protected override function buildMessage(sampleDuration:uint, sampleSize:uint, sampleDependsOn:uint,
                                              sampleIsDependedOn:uint, compositionTimeOffset:Number,
                                              dataOffset:uint, ba:ByteArray):FLVTag {
-        var message:FLVTag = new FLVTag();
+        var message:FLVTag = _context.buildFLVTag();
 
         message.markAsVideo();
 
@@ -48,7 +45,7 @@ public class VideoSegmentHandler extends MediaSegmentHandler {
         } else if (sampleDependsOn == 1 && sampleIsDependedOn == 2) {
             message.frameType = FLVTag.B_FRAME;
         } else {
-            message.frameType = _nalUnit.parse(message.data);
+            message.frameType = _context.nalUnit.parse(message.data);
         }
 
         if (!isNaN(compositionTimeOffset)) {

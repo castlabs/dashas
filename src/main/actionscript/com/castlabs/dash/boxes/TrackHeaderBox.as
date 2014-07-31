@@ -7,15 +7,15 @@
  */
 
 package com.castlabs.dash.boxes {
-import com.castlabs.dash.utils.Console;
+import com.castlabs.dash.DashContext;
 
 import flash.utils.ByteArray;
 
 public class TrackHeaderBox extends FullBox {
     private var _id:uint;
 
-    public function TrackHeaderBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function TrackHeaderBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get id():uint {
@@ -40,7 +40,7 @@ public class TrackHeaderBox extends FullBox {
 
             ba.position += 16;
         } else {
-            throw Console.getInstance().logError(new Error("Unknown TrackHeaderBox version"));
+            throw _context.console.logError(new Error("Unknown TrackHeaderBox version"));
         }
 
         _id = ba.readUnsignedInt();

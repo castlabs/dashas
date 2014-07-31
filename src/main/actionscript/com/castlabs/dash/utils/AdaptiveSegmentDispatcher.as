@@ -7,20 +7,18 @@
  */
 
 package com.castlabs.dash.utils {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.handlers.ManifestHandler;
 
 public class AdaptiveSegmentDispatcher {
+    private var _context:DashContext;
     private var _manifest:ManifestHandler;
-    private var _bandwidthMonitor:BandwidthMonitor;
-    private var _smoothMonitor:SmoothMonitor;
 
-    public function AdaptiveSegmentDispatcher(manifest:ManifestHandler, bandwidthMonitor:BandwidthMonitor,
-                                              smoothMonitor:SmoothMonitor) {
+    public function AdaptiveSegmentDispatcher(context:DashContext, manifest:ManifestHandler) {
+        _context = context;
         _manifest = manifest;
-        _bandwidthMonitor = bandwidthMonitor;
-        _smoothMonitor = smoothMonitor;
     }
 
     public function getAudioSegment(timestamp:Number):Segment {
@@ -39,7 +37,7 @@ public class AdaptiveSegmentDispatcher {
         var index:int = 0;
 
         for (var i:uint = 0;  i < representations.length; i++) {
-            if (_bandwidthMonitor.userBandwidth >= representations[i].bandwidth) {
+            if (_context.bandwidthMonitor.userBandwidth >= representations[i].bandwidth) {
                 index = i;
             } else {
                 break;
@@ -48,13 +46,13 @@ public class AdaptiveSegmentDispatcher {
 
         var oldIndex:int = index;
 
-        index -= _smoothMonitor.fix;
+        index -= _context.smoothMonitor.fix;
         if (index < 0) {
             index = 0;
         }
 
         if (index != oldIndex) {
-            Console.getInstance().warn("Downgrade quality, originalBandwidth='" + representations[oldIndex].bandwidth
+            _context.console.warn("Downgrade quality, originalBandwidth='" + representations[oldIndex].bandwidth
                     + "', newBandwidth='" + representations[index].bandwidth + "'");
         }
 

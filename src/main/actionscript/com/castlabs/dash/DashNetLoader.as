@@ -31,8 +31,11 @@ import org.osmf.net.StreamingURLResource;
 import org.osmf.traits.LoadState;
 
 public class DashNetLoader extends NetLoader {
-    public function DashNetLoader(factory:NetConnectionFactoryBase = null) {
-        super(factory);
+    private var _context:DashContext;
+
+    public function DashNetLoader(context:DashContext) {
+        super(null);
+        _context = context;
     }
 
     override public function canHandleResource(resource:MediaResourceBase):Boolean {
@@ -40,9 +43,9 @@ public class DashNetLoader extends NetLoader {
     }
 
     override protected function createNetStream(connection:NetConnection, resource:URLResource):NetStream {
-        var netStream:NetStream = new DashNetStream(connection);
+        var netStream:NetStream = _context.buildDashNetStream(connection);
 
-        var smoothMonitor:SmoothMonitor = Factory.createSmoothMonitor();
+        var smoothMonitor:SmoothMonitor = _context.smoothMonitor;
         smoothMonitor.appendListeners(netStream);
 
         return netStream;
@@ -56,9 +59,9 @@ public class DashNetLoader extends NetLoader {
             if (event.manifest.live && loadTrait.resource is StreamingURLResource) {
                 StreamingURLResource(loadTrait.resource).streamType = "live";
             } else {
-                var timeTrait:DashTimeTrait = new DashTimeTrait(stream, event.manifest.duration);
+                var timeTrait:DashTimeTrait = _context.buildDashTimeTrait(stream, event.manifest.duration);
                 loadTrait.setTrait(timeTrait);
-                loadTrait.setTrait(new DashSeekTrait(timeTrait, loadTrait, stream));
+                loadTrait.setTrait(_context.buildDashSeekTrait(timeTrait, loadTrait, stream));
             }
 
             updateLoadTrait(loadTrait, LoadState.READY);
@@ -69,17 +72,17 @@ public class DashNetLoader extends NetLoader {
     }
 
     private function loadManifest(loadTrait:NetStreamLoadTrait, url:String, stream:DashNetStream):void {
-        var loader:ManifestLoader = new ManifestLoader(url);
+        var loader:ManifestLoader = _context.buildManifestLoader(url);
 
         loader.addEventListener(ManifestEvent.LOADED, onLoad);
         loader.addEventListener(ManifestEvent.ERROR, onError);
 
         function onLoad(event:ManifestEvent):void {
-            Console.getInstance().info("Creating manifest...");
+            _context.console.info("Creating manifest...");
 
-            var manifest:ManifestHandler = new ManifestHandler(event.url, event.xml);
+            var manifest:ManifestHandler = _context.buildManifestHandler(event.url, event.xml);
 
-            Console.getInstance().info("Created manifest, " + manifest.toString());
+            _context.console.info("Created manifest, " + manifest.toString());
 
             stream.manifest = manifest;
         }

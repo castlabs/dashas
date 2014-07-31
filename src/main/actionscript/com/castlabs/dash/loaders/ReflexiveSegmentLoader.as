@@ -7,17 +7,17 @@
  */
 
 package com.castlabs.dash.loaders {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.descriptors.segments.ReflexiveSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
-import com.castlabs.dash.utils.BandwidthMonitor;
 
 import flash.events.Event;
 import flash.net.URLLoader;
 import flash.utils.ByteArray;
 
 public class ReflexiveSegmentLoader extends DataSegmentLoader {
-    public function ReflexiveSegmentLoader(segment:Segment, monitor:BandwidthMonitor) {
-        super(segment, monitor);
+    public function ReflexiveSegmentLoader(context:DashContext, segment:Segment) {
+        super(context, segment);
     }
 
     override protected function onComplete(event:Event):void {

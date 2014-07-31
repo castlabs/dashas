@@ -8,6 +8,7 @@
 
 package com.castlabs.dash.boxes {
 
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.utils.Bytes;
 
 import flash.utils.ByteArray;
@@ -18,8 +19,8 @@ public class TrackFragmentHeaderBox extends FullBox {
     private var _defaultSampleDurationPresent:Boolean = false;
     private var _defaultSampleDuration:uint;
 
-    public function TrackFragmentHeaderBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function TrackFragmentHeaderBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get defaultSampleDurationPresent():Boolean {

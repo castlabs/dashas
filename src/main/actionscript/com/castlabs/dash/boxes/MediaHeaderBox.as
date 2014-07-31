@@ -7,13 +7,15 @@
  */
 
 package com.castlabs.dash.boxes {
+import com.castlabs.dash.DashContext;
+
 import flash.utils.ByteArray;
 
 public class MediaHeaderBox extends FullBox {
     private var _timescale:uint;
 
-    public function MediaHeaderBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function MediaHeaderBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get timescale():uint {

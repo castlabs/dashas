@@ -8,7 +8,7 @@
 
 package com.castlabs.dash.boxes {
 
-import com.castlabs.dash.utils.Console;
+import com.castlabs.dash.DashContext;
 
 import flash.utils.ByteArray;
 
@@ -19,8 +19,8 @@ public class SampleEntry extends Box {
     private var _data:ByteArray;
     private var _type:String;
 
-    public function SampleEntry(offset:uint, size:uint, type:String) {
-        super(offset, size);
+    public function SampleEntry(context:DashContext, offset:uint, size:uint, type:String) {
+        super(context, offset, size);
         _type = type;
     }
 
@@ -88,7 +88,7 @@ public class SampleEntry extends Box {
             }
         }
 
-        throw Console.getInstance().logError(new Error("Couldn't find any '" + type + "' box"));
+        throw _context.console.logError(new Error("Couldn't find any '" + type + "' box"));
     }
 
     private function parseMp4aData(ba:ByteArray):ByteArray {

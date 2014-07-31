@@ -7,15 +7,13 @@
  */
 
 package com.castlabs.dash.loaders {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.descriptors.segments.DataSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.events.SegmentEvent;
-import com.castlabs.dash.utils.BandwidthMonitor;
-import com.castlabs.dash.utils.Console;
 
 import flash.events.AsyncErrorEvent;
 import flash.events.ErrorEvent;
-
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
 import flash.events.IOErrorEvent;
@@ -29,8 +27,8 @@ public class DataSegmentLoader extends SegmentLoader {
     private var status:int = 0;
     private var http:URLLoader = new URLLoader();
 
-    public function DataSegmentLoader(segment:Segment, monitor:BandwidthMonitor) {
-        super(segment, monitor)
+    public function DataSegmentLoader(context:DashContext, segment:Segment) {
+        super(context, segment)
     }
 
     override public function load():void {
@@ -43,9 +41,9 @@ public class DataSegmentLoader extends SegmentLoader {
         http.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onError);
         http.addEventListener(IOErrorEvent.IO_ERROR, onError);
 
-        _monitor.appendListeners(http);
+        _context.bandwidthMonitor.appendListeners(http);
 
-        Console.getInstance().debug("Loading segment, url='" + getUrl() + "'");
+        _context.console.debug("Loading segment, url='" + getUrl() + "'");
 
         http.load(new URLRequest(getUrl()));
     }
@@ -59,8 +57,8 @@ public class DataSegmentLoader extends SegmentLoader {
     }
 
     private function onError(event:Event):void {
-        Console.getInstance().error("Connection was interrupted: " + event.toString());
-        dispatchEvent(new SegmentEvent(SegmentEvent.ERROR, false, false));
+        _context.console.error("Connection was interrupted: " + event.toString());
+        dispatchEvent(_context.buildSegmentEvent(SegmentEvent.ERROR, false, false));
     }
 
     protected function getUrl():String {
@@ -68,17 +66,17 @@ public class DataSegmentLoader extends SegmentLoader {
     }
 
     protected function onComplete(event:Event):void {
-        Console.getInstance().debug("Loaded segment, url='" + getUrl() + "', status='" + status + "'");
+        _context.console.debug("Loaded segment, url='" + getUrl() + "', status='" + status + "'");
 
         if (DataSegment(_segment).isRange && status == 200) {
-            Console.getInstance().error("Partial content wasn't returned. Please make sure that range requests " +
+            _context.console.error("Partial content wasn't returned. Please make sure that range requests " +
                     "are handle properly on the server side: https://github.com/castlabs/dashas/wiki/htaccess");
-            dispatchEvent(new SegmentEvent(SegmentEvent.ERROR, false, false));
+            dispatchEvent(_context.buildSegmentEvent(SegmentEvent.ERROR, false, false));
             return;
         }
 
         var bytes:ByteArray = URLLoader(event.target).data;
-        dispatchEvent(new SegmentEvent(SegmentEvent.LOADED, false, false, _segment, bytes));
+        dispatchEvent(_context.buildSegmentEvent(SegmentEvent.LOADED, false, false, _segment, bytes));
     }
 }
 }

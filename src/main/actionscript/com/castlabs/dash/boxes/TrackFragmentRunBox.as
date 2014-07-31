@@ -7,6 +7,7 @@
  */
 
 package com.castlabs.dash.boxes {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.utils.Bytes;
 
 import flash.utils.ByteArray;
@@ -20,8 +21,8 @@ public class TrackFragmentRunBox extends FullBox {
     private var _sampleCompositionTimeOffset:Vector.<int> = new Vector.<int>();
     private var _dataOffset:int;
 
-    public function TrackFragmentRunBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function TrackFragmentRunBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get dataOffset():int {

@@ -7,6 +7,8 @@
  */
 
 package com.castlabs.dash.utils {
+import com.castlabs.dash.DashContext;
+
 import flash.events.EventDispatcher;
 import flash.events.NetStatusEvent;
 
@@ -15,9 +17,12 @@ import org.osmf.net.NetStreamCodes;
 public class SmoothMonitor {
     private static const ACCEPTED_BUFFERING_COUNT:uint = 1;
 
+    private var _context:DashContext;
+
     private var _bufferingCount:Number = 0;
 
-    public function SmoothMonitor() {
+    public function SmoothMonitor(context:DashContext) {
+        _context = context;
     }
 
     public function appendListeners(netStream:EventDispatcher):void {
@@ -27,12 +32,12 @@ public class SmoothMonitor {
     private function onNetStatus(event:NetStatusEvent):void {
         if (event.info.code == NetStreamCodes.NETSTREAM_BUFFER_EMPTY) {
             _bufferingCount++;
-            Console.getInstance().warn("Registered buffering incident, bufferingCount='" + _bufferingCount + "'");
+            _context.console.warn("Registered buffering incident, bufferingCount='" + _bufferingCount + "'");
         }
 
         if (event.info.code == NetStreamCodes.NETSTREAM_SEEK_NOTIFY) {
             _bufferingCount = 0;
-            Console.getInstance().info("Reset buffering incidents counter");
+            _context.console.info("Reset buffering incidents counter");
         }
     }
 

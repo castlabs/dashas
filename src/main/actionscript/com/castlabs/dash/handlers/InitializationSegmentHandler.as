@@ -7,12 +7,12 @@
  */
 
 package com.castlabs.dash.handlers {
+import com.castlabs.dash.DashContext;
 import com.castlabs.dash.boxes.FLVTag;
 import com.castlabs.dash.boxes.MovieBox;
 import com.castlabs.dash.boxes.SampleEntry;
 import com.castlabs.dash.boxes.TrackBox;
 import com.castlabs.dash.boxes.TrackExtendsBox;
-import com.castlabs.dash.utils.Console;
 
 import flash.errors.IllegalOperationError;
 import flash.utils.ByteArray;
@@ -22,7 +22,8 @@ public class InitializationSegmentHandler extends SegmentHandler {
     private var _defaultSampleDuration:uint = 0;
     private var _messages:Vector.<FLVTag> = new Vector.<FLVTag>();
 
-    public function InitializationSegmentHandler(ba:ByteArray) {
+    public function InitializationSegmentHandler(context:DashContext, ba:ByteArray) {
+        super(context);
         parseMovieBox(ba);
     }
 
@@ -43,7 +44,7 @@ public class InitializationSegmentHandler extends SegmentHandler {
         var offset:uint = offsetAndSize.offset;
         var size:uint = offsetAndSize.size;
 
-        var movie:MovieBox = new MovieBox(offset, size);
+        var movie:MovieBox = _context.buildMovieBox(offset, size);
         movie.parse(ba);
 
         var track:TrackBox = findTrackWithSpecifiedType(movie);
@@ -60,7 +61,7 @@ public class InitializationSegmentHandler extends SegmentHandler {
             }
         }
 
-        throw Console.getInstance().logError(new Error("Track isn't defined, type='" + expectedTrackType + "'"));
+        throw _context.console.logError(new Error("Track isn't defined, type='" + expectedTrackType + "'"));
     }
 
     protected function get expectedTrackType():String {
@@ -85,7 +86,7 @@ public class InitializationSegmentHandler extends SegmentHandler {
             }
         }
 
-        Console.getInstance().warn("Default sample duration isn't defined, trackId='" + trackId + "'");
+        _context.console.warn("Default sample duration isn't defined, trackId='" + trackId + "'");
     }
 
     private function buildSampleEntry(track:TrackBox):SampleEntry {

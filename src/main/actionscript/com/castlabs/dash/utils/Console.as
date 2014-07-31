@@ -25,6 +25,7 @@ public class Console {
     public function Console() {
     }
 
+    //TODO move this to DashContext
     public static function getInstance():Console {
         if (instance == null) {
             instance = new Console();
@@ -69,6 +70,7 @@ public class Console {
         log(DEBUG, message);
     }
 
+    //TODO rather logAndCreateError(string)
     public function logError(error:Error):Error {
         log(ERROR, error.message);
         return error;

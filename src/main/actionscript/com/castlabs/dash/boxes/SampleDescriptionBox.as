@@ -8,13 +8,15 @@
 
 package com.castlabs.dash.boxes {
 
+import com.castlabs.dash.DashContext;
+
 import flash.utils.ByteArray;
 
 public class SampleDescriptionBox extends FullBox {
     private var _sampleEntries:Vector.<SampleEntry> = new Vector.<SampleEntry>();
 
-    public function SampleDescriptionBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function SampleDescriptionBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get sampleEntries():Vector.<SampleEntry> {
@@ -34,7 +36,7 @@ public class SampleDescriptionBox extends FullBox {
     }
 
     private function parseSampleEntry(offset:uint, size:uint, type:String, ba:ByteArray):void {
-        var sampleEntry:SampleEntry = new SampleEntry(offset, size, type);
+        var sampleEntry:SampleEntry = _context.buildSampleEntry(offset, size, type);
         sampleEntry.parse(ba);
         _sampleEntries.push(sampleEntry);
     }

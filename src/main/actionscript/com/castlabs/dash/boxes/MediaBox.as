@@ -8,6 +8,8 @@
 
 package com.castlabs.dash.boxes {
 
+import com.castlabs.dash.DashContext;
+
 import flash.utils.ByteArray;
 
 public class MediaBox extends Box {
@@ -15,8 +17,8 @@ public class MediaBox extends Box {
     private var _hdlr:HandlerReferenceBox;
     private var _minf:MediaInformationBox;
 
-    public function MediaBox(offset:uint, size:uint) {
-        super(offset, size);
+    public function MediaBox(context:DashContext, offset:uint, size:uint) {
+        super(context, offset, size);
     }
 
     public function get mdhd():MediaHeaderBox {
@@ -51,17 +53,17 @@ public class MediaBox extends Box {
     }
 
     private function parseMediaInformationBox(offset:uint, size:uint, ba:ByteArray):void {
-        _minf = new MediaInformationBox(offset, size);
+        _minf = _context.buildMediaInformationBox(offset, size);
         _minf.parse(ba);
     }
 
     private function parseHandlerReferenceBox(offset:uint, size:uint, ba:ByteArray):void {
-        _hdlr = new HandlerReferenceBox(offset, size);
+        _hdlr = _context.buildHandlerReferenceBox(offset, size);
         _hdlr.parse(ba);
     }
 
     private function parseMediaHeaderBox(offset:uint, size:uint, ba:ByteArray):void {
-        _mdhd = new MediaHeaderBox(offset, size);
+        _mdhd = _context.buildMediaHeaderBox(offset, size);
         _mdhd.parse(ba);
     }
 }
