@@ -1,6 +1,8 @@
 language: groovy
 cache: false
-script:
+install:
   - TERM=dumb gradle --version
   - TERM=dumb rm -Rf ~/.gradle
-  - TERM=dumb gradle clean compile --stacktrace 
+  - TERM=dumb gradle assemble
+script:
+  - TERM=dumb gradle clean compile --stacktrace
