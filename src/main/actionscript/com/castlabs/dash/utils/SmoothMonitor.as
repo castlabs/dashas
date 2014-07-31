@@ -13,7 +13,7 @@ import flash.events.NetStatusEvent;
 import org.osmf.net.NetStreamCodes;
 
 public class SmoothMonitor {
-    private static const ACCEPTED_BUFFERING_COUNT:uint = 1;
+    private static const ACCEPTED_BUFFERING_COUNT:uint = 2;
 
     private var _bufferingCount:Number = 0;
 

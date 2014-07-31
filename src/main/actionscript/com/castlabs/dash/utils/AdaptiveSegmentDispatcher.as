@@ -12,20 +12,14 @@ import com.castlabs.dash.descriptors.segments.Segment;
 import com.castlabs.dash.handlers.ManifestHandler;
 
 public class AdaptiveSegmentDispatcher {
-    private var _manifest:ManifestHandler;
-    private var _bandwidthMonitor:BandwidthMonitor;
-    private var _smoothMonitor:SmoothMonitor;
-
-    public function AdaptiveSegmentDispatcher(manifest:ManifestHandler, bandwidthMonitor:BandwidthMonitor,
-                                              smoothMonitor:SmoothMonitor) {
+    public function AdaptiveSegmentDispatcher(manifest:ManifestHandler, bandwidthMonitor:BandwidthMonitor) {
         _manifest = manifest;
         _bandwidthMonitor = bandwidthMonitor;
-        _smoothMonitor = smoothMonitor;
     }
 
-    public function getAudioSegment(timestamp:Number):Segment {
-        return findOptimalRepresentation(_manifest.audioRepresentations).getSegment(timestamp);
-    }
+    private var _manifest:ManifestHandler;
+    private var _bandwidthMonitor:BandwidthMonitor;
+    private var _oldIndex:int = 0;
 
     public function getVideoSegment(timestamp:Number):Segment {
         return findOptimalRepresentation(_manifest.videoRepresentations).getSegment(timestamp);
@@ -36,29 +30,26 @@ public class AdaptiveSegmentDispatcher {
             return null;
         }
 
-        var index:int = 0;
-
-        for (var i:uint = 0;  i < representations.length; i++) {
-            if (_bandwidthMonitor.userBandwidth >= representations[i].bandwidth) {
-                index = i;
+        var newIndex:int = _oldIndex;
+        while (true) {
+            if (newIndex < 0 || newIndex >= representations.length) {
+                break;
+            } else if (_bandwidthMonitor.userBandwidth < representations[newIndex].bandwidth) {
+                newIndex--;
+            } else if (newIndex < representations.length - 1 &&
+                    _bandwidthMonitor.userBandwidth > representations[newIndex + 1].bandwidth * 1.1) {
+                newIndex++;
             } else {
                 break;
             }
         }
 
-        var oldIndex:int = index;
-
-        index -= _smoothMonitor.fix;
-        if (index < 0) {
-            index = 0;
+        if (newIndex != _oldIndex) {
+            Console.getInstance().warn("Updating quality, originalBandwidth='" + representations[_oldIndex].bandwidth
+                    + "', newBandwidth='" + representations[newIndex].bandwidth + "'");
         }
-
-        if (index != oldIndex) {
-            Console.getInstance().warn("Downgrade quality, originalBandwidth='" + representations[oldIndex].bandwidth
-                    + "', newBandwidth='" + representations[index].bandwidth + "'");
-        }
-
-        return representations[index];
+        _oldIndex = newIndex;
+        return representations[newIndex];
     }
 }
 }

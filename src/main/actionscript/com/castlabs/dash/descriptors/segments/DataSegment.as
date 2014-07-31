@@ -19,7 +19,11 @@ public class DataSegment extends Segment {
     }
 
     public function get url():String {
-        return _url + "?bytes=" + _range;
+        if (_url.indexOf("?") > 0) {
+            return _url + "&bytes=" + _range;
+        } else {
+            return _url + "?bytes=" + _range;
+        }
     }
 
     public function get isRange():Boolean {

@@ -52,6 +52,18 @@ public class TrackFragmentRunBox extends FullBox {
         return _sampleIsDependedOn;
     }
 
+    public function calcSamplesDuration(defaultDuration:uint):uint {
+        var sum:uint = 0;
+        if (_sampleDurationPresent) {
+            for (var i:uint = 0; i < _sampleDuration.length; ++i) {
+                sum += _sampleDuration[i];
+            }
+        } else {
+            sum = _sampleSize.length * defaultDuration;
+        }
+        return sum;
+    }
+
     override protected function parseBox(ba:ByteArray):void {
         var dataOffsetPresent:Boolean = false;
         if ((flags & 0x1) == 0x1) {

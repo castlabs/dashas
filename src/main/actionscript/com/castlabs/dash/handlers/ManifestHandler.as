@@ -21,7 +21,6 @@ public class ManifestHandler {
 
     private var _live:Boolean;
     private var _duration:Number;
-    private var _audioRepresentations:Vector.<Representation>;
     private var _videoRepresentations:Vector.<Representation>;
 
     private var _nextInternalRepresentationId:Number = 0;
@@ -33,10 +32,8 @@ public class ManifestHandler {
         _duration = buildDuration(xml);
 
         var baseUrl:String = buildBaseUrl(url);
-        _audioRepresentations = buildRepresentations(baseUrl, _duration, findAudioRepresentationNodes(xml));
         _videoRepresentations = buildRepresentations(baseUrl, _duration, findVideoRepresentationNodes(xml));
 
-        sortByBandwidth(_audioRepresentations);
         sortByBandwidth(_videoRepresentations);
 
         _live = buildLive(xml);
@@ -59,10 +56,6 @@ public class ManifestHandler {
         return _duration;
     }
 
-    public function get audioRepresentations():Vector.<Representation> {
-        return _audioRepresentations;
-    }
-
     public function get videoRepresentations():Vector.<Representation> {
         return _videoRepresentations
     }
@@ -76,10 +69,6 @@ public class ManifestHandler {
 
             for each (var representation1:Representation in _videoRepresentations) {
                 representation1.update(event.xml..Representation.(@id == representation1.id)[0]);
-            }
-
-            for each (var representation2:Representation in _audioRepresentations) {
-                representation2.update(event.xml..Representation.(@id == representation2.id)[0]);
             }
 
             Console.getInstance().info("Updated representations");
@@ -120,10 +109,6 @@ public class ManifestHandler {
 
     private static function findVideoRepresentationNodes(xml:XML):* {
         return findRepresentationNodes("video/mp4", xml);
-    }
-
-    private static function findAudioRepresentationNodes(xml:XML):* {
-        return findRepresentationNodes("audio/mp4", xml);
     }
 
     private static function findRepresentationNodes(mimeType:String, xml:XML):* {
@@ -173,7 +158,7 @@ public class ManifestHandler {
 
     public function toString():String {
         return "isLive='" + _live + "', duration[s]='" + _duration + "', videoRepresentationsCount='"
-                + _videoRepresentations.length + "', audioRepresentationsCount='" + _audioRepresentations.length + "'";
+                + _videoRepresentations.length;
     }
 }
 }

@@ -89,7 +89,7 @@ public class DashNetStream extends NetStream {
 
         switch(_state) {
             case PLAYING:
-                if (!_loaded && bufferTime < MIN_BUFFER_TIME) {
+                if (!_loaded && bufferTime < Math.min(MIN_BUFFER_TIME, _duration)) {
                     pause();
                     notifyBufferEmpty();
                     updateState(BUFFER);
@@ -97,7 +97,7 @@ public class DashNetStream extends NetStream {
                 }
                 break;
             case BUFFERING:
-                if (bufferTime > MIN_BUFFER_TIME) {
+                if (bufferTime >= Math.min(MIN_BUFFER_TIME, _duration)) {
                     resume();
                     notifyBufferFull();
                     return;

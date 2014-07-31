@@ -15,8 +15,8 @@ public class SegmentHandler {
     public function SegmentHandler() {
     }
 
-    protected function goToBox(expectedType:String, ba:ByteArray):Object {
-        var offset:uint = 0;
+    protected function goToBox(expectedType:String, ba:ByteArray, startFrom:uint):Object {
+        var offset:uint = startFrom;
         var size:uint = 0;
         var type:String;
 
@@ -49,10 +49,6 @@ public class SegmentHandler {
     }
 
     protected function validateTracksNumber(number:int):void {
-        if (number > 1) {
-            throw Console.getInstance().logError(new Error("Multiple tracks aren't supported"));
-        }
-
         if (number < 1) {
             throw Console.getInstance().logError(new Error("Track isn't defined"));
         }
