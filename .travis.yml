@@ -4,6 +4,6 @@ install:
   - TERM=dumb gradle --version
   - TERM=dumb rm -Rf ~/.gradle
 script:
-  - TERM=dumb gradle assemble
+  - TERM=dumb gradle assemble --debug
   - TERM=dumb ./fixFramework.sh
   - TERM=dumb gradle clean compile --stacktrace 
