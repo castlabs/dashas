@@ -17,7 +17,7 @@ public class HamcrestAndMockolateTest {
 
     [Before(async, timeout=5000)]
     public function setUp():void {
-        Async.proceedOnEvent(this, prepare(Foo), Event.COMPLETE);
+        Async.proceedOnEvent(this, prepare(Foo, Bar), Event.COMPLETE);
     }
 
     [Test]
@@ -31,6 +31,23 @@ public class HamcrestAndMockolateTest {
         verify(foo);
 
         assertThat(baz, equalTo('baz'));
+    }
+
+    [Test]
+    public function testContext():void {
+        var b:Bar = nice(Bar);
+
+        mock(b).method('foo').returns('baz');
+
+        var baz:String = b.foo();
+
+        // unmocked methods return null
+        var bar:String = b.bar();
+
+        verify(b);
+
+        assertThat(baz, equalTo('baz'));
+        assertThat(bar, equalTo(null));
     }
 }
 }
