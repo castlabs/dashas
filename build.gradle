@@ -16,11 +16,8 @@ mainClass = 'com/castlabs/dash/DashPlugin.as'
 
 repositories {
     ivy {
-        name 'Apache'
-        artifactPattern 'http://dashas.castlabs.com/flex/[revision]/binaries/[module]-[revision]-bin.[ext]'
-    }
-    maven {
-        url "http://dashas.castlabs.com/maven2/"
+        name 'Castlabs'
+        artifactPattern 'http://dashas.castlabs.com/ivy/[module]-[revision].[ext]'
     }
 }
 
