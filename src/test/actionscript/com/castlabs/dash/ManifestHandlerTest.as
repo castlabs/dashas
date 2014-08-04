@@ -5,7 +5,10 @@ import org.flexunit.assertThat;
 import org.hamcrest.object.equalTo;
 
 public class ManifestHandlerTest{
+    private var context:DashContext;
+
     public function ManifestHandlerTest() {
+        context = new DashContext();
     }
 
     [Test]
@@ -32,7 +35,7 @@ public class ManifestHandlerTest{
                 </Period>
             </MPD>;
 
-        var handler: ManifestHandler = new ManifestHandler("http://localhost/Manifest.mpd", xml);
+        var handler: ManifestHandler = new ManifestHandler(context, "http://localhost/Manifest.mpd", xml);
 
         assertThat(handler.duration, equalTo(596));
         assertThat(handler.live, equalTo(false));
@@ -68,7 +71,7 @@ public class ManifestHandlerTest{
                 </Period>
             </MPD>;
 
-        var handler: ManifestHandler = new ManifestHandler("http://localhost/Manifest.mpd", xml);
+        var handler: ManifestHandler = new ManifestHandler(context, "http://localhost/Manifest.mpd", xml);
 
         assertThat(handler.live, equalTo(false));
         assertThat(handler.duration, equalTo(596));
@@ -100,7 +103,7 @@ public class ManifestHandlerTest{
                 </Period>
             </MPD>;
 
-        var handler: ManifestHandler = new ManifestHandler("http://localhost/Manifest.mpd", xml);
+        var handler: ManifestHandler = new ManifestHandler(context, "http://localhost/Manifest.mpd", xml);
 
         assertThat(handler.live, equalTo(false));
         assertThat(handler.duration, equalTo(596));
@@ -142,7 +145,7 @@ public class ManifestHandlerTest{
                 </Period>
             </MPD>;
 
-        var handler: ManifestHandler = new ManifestHandler("http://localhost/Manifest.mpd", xml, true);
+        var handler: ManifestHandler = new ManifestHandler(context, "http://localhost/Manifest.mpd", xml, true);
 
         assertThat(handler.live, equalTo(true));
         assertThat(handler.duration, equalTo(596));
