@@ -255,7 +255,8 @@ public class DashContext {
         return new MediaDataSegment(internalRepresentationId, url, range, startTimestamp, endTimestamp);
     }
 
-    public function buildReflexiveSegment(internalRepresentationId:Number, url:String, range:String, callback:Function) {
+    public function buildReflexiveSegment(internalRepresentationId:Number, url:String, range:String,
+                                          callback:Function):ReflexiveSegment {
         return new ReflexiveSegment(internalRepresentationId, url, range, callback);
     }
 
