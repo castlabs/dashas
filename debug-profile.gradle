@@ -1,6 +1,8 @@
 project.ext.copyFrom = 'build/dashas.swf'
 project.ext.copyTo = 'site/demo/debug/'
 
+includeSources = ['src/main/actionscript']
+
 additionalCompilerOptions = [
         '-define=CONFIG::FLASH_10_1,true',
         '-define=CONFIG::LOGGING,true',
