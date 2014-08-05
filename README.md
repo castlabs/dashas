@@ -3,7 +3,7 @@
 dash.as
 =======
 
-Dash.as plays [MPEG-DASH](http://dashif.org/) video on any device supporting Adobe Flash. It is written in Adobe ActionScript and was designed from the ground-up to be lightweight with performance in mind.
+Dash.as plays [MPEG-DASH](http://dashif.org/) video on any device supporting Adobe Flash. It is written in Adobe ActionScript and was designed from the ground-up to be lightweight with performance in mind. 
 
 MPEG-DASH (Dynamic Adaptive Streaming over HTTP) became an [International Standard](http://standards.iso.org/ittf/PubliclyAvailableStandards/c057623_ISO_IEC_23009-1_2012.zip) in 2011 and is a technique designed specifically for streaming high-quality multimedia over an HTTP server. It works by fragmenting content into a series of small HTTP-based file segments where each contains block of playback time. Content is made available at a variety of different bitrates to account for variations in a connection's bandwidth quality. Upon each download of a segment, the highest bitrate the connection can handle in time for seamless playback is selected. This allows MPEG-DASH to seamlessly adapt to changing network conditions at the highest quality possible for a seamless user experience.
 
