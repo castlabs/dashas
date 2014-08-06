@@ -13,6 +13,7 @@ apply plugin: 'flashbuilder'
 type = 'swf'
 version = '1.0'
 mainClass = 'com/castlabs/dash/DashPlugin.as'
+output = 'dashas'
 
 repositories {
     ivy {
