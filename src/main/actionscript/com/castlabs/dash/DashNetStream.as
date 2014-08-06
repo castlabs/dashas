@@ -12,7 +12,6 @@ import com.castlabs.dash.events.SegmentEvent;
 import com.castlabs.dash.events.StreamEvent;
 import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.FragmentLoader;
-import com.castlabs.dash.utils.Console;
 
 import flash.events.NetStatusEvent;
 import flash.events.TimerEvent;
@@ -43,7 +42,7 @@ public class DashNetStream extends NetStream {
     private const PAUSED:uint = 4;
     private const STOPPED:uint = 5;
 
-    private var _context:DashContext;
+    protected var _context:DashContext;
 
     private var _state:uint = STOPPED;
 
@@ -216,7 +215,7 @@ public class DashNetStream extends NetStream {
         _loader.init();
     }
 
-    private function appendFileHeader():void {
+    protected function appendFileHeader():void {
         var output:ByteArray = new ByteArray();
         output.writeByte(0x46);	// 'F'
         output.writeByte(0x4c); // 'L'

@@ -22,7 +22,7 @@ public class MediaSegmentHandler extends SegmentHandler {
     protected var _timestamp:Number;
 
     private var _bytes:ByteArray;
-    private var _movieFragmentBox:MovieFragmentBox;
+    protected var _movieFragmentBox:MovieFragmentBox;
     private var _defaultSampleDuration:uint;
 
     public function MediaSegmentHandler(context:DashContext, ba:ByteArray, messages:Vector.<FLVTag>,

@@ -58,7 +58,7 @@ public class ManifestLoader extends EventDispatcher {
         dispatchEvent(_context.buildManifestEvent(ManifestEvent.LOADED, false, false, _url, xml));
     }
 
-    private static function removeNamespacesAndBuildXml(response:String):XML {
+    protected function removeNamespacesAndBuildXml(response:String):XML {
 
         // define the regex pattern to remove the namespaces from the string
         var xmlnsPattern:RegExp = new RegExp("(xmlns|xsi)[^\"]*\"[^\"]*\"", "gi");

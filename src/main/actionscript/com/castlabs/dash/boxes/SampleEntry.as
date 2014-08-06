@@ -17,7 +17,7 @@ public class SampleEntry extends Box {
     public static var sampleSize:uint;
 
     private var _data:ByteArray;
-    private var _type:String;
+    protected var _type:String;
 
     public function SampleEntry(context:DashContext, offset:uint, size:uint, type:String) {
         super(context, offset, size);
@@ -40,7 +40,7 @@ public class SampleEntry extends Box {
         ba.position = end;
     }
 
-    private function parseAvc1(ba:ByteArray):void {
+    protected function parseAvc1(ba:ByteArray):void {
 
         // skip
         ba.position += 78;
@@ -48,7 +48,7 @@ public class SampleEntry extends Box {
         parseAvc1Data(ba);
     }
 
-    private function parseMp4a(ba:ByteArray):void {
+    protected function parseMp4a(ba:ByteArray):void {
 
         // skip
         ba.position += 16;
@@ -74,7 +74,7 @@ public class SampleEntry extends Box {
         ba.readBytes(_data, 0, size - SIZE_AND_TYPE);
     }
 
-    private function goToBox(type:String, ba:ByteArray):uint {
+    protected function goToBox(type:String, ba:ByteArray):uint {
         var typeBegin:String = type.slice(0, 1);
         var typeOther:String = type.slice(1);
 
@@ -93,16 +93,19 @@ public class SampleEntry extends Box {
 
     private function parseMp4aData(ba:ByteArray):ByteArray {
 
-//        // 4-bytes size
-//        ba.position += 4;
-//        // 4-bytes type
-//        ba.position += 4;
+        // 4-bytes size
+        ba.position += 4;
+
+        if (ba.readUTFBytes(4) != 'esds') {
+            throw _context.console.logError(new Error("Couldn't find a 'esds' box"));
+        }
+
 //        // 4-bytes version/flags
 //        ba.position += 4;
 //        // 1-byte type (0x03)
 //        ba.position += 1;
 
-        ba.position += 13;
+        ba.position += 5;
 
         // 3-bytes header (optional) and 1-byte size
         getDescriptorSize(ba);

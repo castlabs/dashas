@@ -138,8 +138,6 @@ public class DashContext {
         return _nalUnit;
     }
 
-
-    //TODO used by DashNetLoader; it's possible to connect DashNetStream with SmoothMonitor here
     public function buildDashNetStream(connection:NetConnection):DashNetStream {
         return new DashNetStream(this, connection);
     }

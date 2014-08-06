@@ -15,9 +15,6 @@ public class FLVTag {
     public static const B_FRAME:uint = 3;
     public static const UNKNOWN:uint = 4;
 
-    private static const VIDEO_TYPE:uint = 9;
-    private static const AUDIO_TYPE:uint = 8;
-
     public var length:uint;
     public var timestamp:uint;
     public var frameType:uint;
@@ -36,19 +33,27 @@ public class FLVTag {
     }
 
     public function isVideo():Boolean {
-        return _type == VIDEO_TYPE;
+        return _type == videoType;
     }
 
     public function isAudio():Boolean {
-        return _type == AUDIO_TYPE;
+        return _type == audioType;
     }
 
     public function markAsVideo():void {
-        _type = VIDEO_TYPE;
+        _type = videoType;
     }
 
     public function markAsAudio():void {
-        _type = AUDIO_TYPE;
+        _type = audioType;
+    }
+
+    protected function get videoType():uint {
+        return 9;
+    }
+
+    protected function get audioType():uint {
+        return 8;
     }
 }
 }

@@ -39,7 +39,7 @@ public class Muxer {
         ba.writeUnsignedInt(messageSize + 11); // 4 bytes
     }
 
-    private function calculateSize(message:FLVTag):uint {
+    protected function calculateSize(message:FLVTag):uint {
         var size:uint = message.length;
 
         if (message.isVideo()) {
@@ -61,7 +61,7 @@ public class Muxer {
         }
     }
 
-    private function writeHeader(message:FLVTag, ba:ByteArray):void {
+    protected function writeHeader(message:FLVTag, ba:ByteArray):void {
         if (message.isVideo()) {
             writeVideoHeader(message, ba);
             writeCompositionTimestamp(message, ba);
