@@ -331,7 +331,7 @@ public class DashNetStream extends NetStream {
 
     private function onError(event:SegmentEvent):void {
         dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS, false, false,
-                { code: NetStreamCodes.NETSTREAM_FAILED, level: "error" }));
+                { code: NetStreamCodes.NETSTREAM_FAILED, level: "status" }));
     }
 
     private function onFragmentTimer(timerEvent:TimerEvent = null):void {

@@ -13,20 +13,10 @@ import com.castlabs.dash.descriptors.segments.WaitSegment;
 import com.castlabs.dash.utils.Manifest;
 
 public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
-    private var _live:Boolean;
-    private var _minBufferTime:Number; // seconds
-    private var _timeShiftBuffer:Number; // seconds
     private var _segments:Vector.<Object> = new Vector.<Object>();
 
     public function SegmentTimeline(context:DashContext, representation:XML) {
         super(context, representation);
-
-        _live = traverseAndBuildLive(representation);
-        if (_live) {
-            _minBufferTime = traverseAndBuildMinBufferTime(representation);
-            _timeShiftBuffer = traverseAndBuildTimeShiftBufferDepth(representation);
-        }
-
         update(representation);
     }
 
@@ -82,12 +72,14 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         return null;
     }
 
-    public override function update(xml:XML):void {
+    public override function update(representation:XML):void {
+        super.update(representation);
+
         if (_live) {
             removeOutdatedSegments();
         }
 
-        appendNewSegments(xml);
+        appendNewSegments(representation);
     }
 
     private function appendNewSegments(xml:XML):void {
@@ -173,45 +165,6 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
 
         // go up one level in hierarchy, e.g. adaptionSet and period
         return traverseAndBuildTimeline(node.parent());
-    }
-
-    private function traverseAndBuildTimeShiftBufferDepth(node:XML):Number {
-        if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'timeShiftBufferDepth' attribute"));
-        }
-
-        if (node.hasOwnProperty("@timeShiftBufferDepth")) {
-            return Manifest.toSeconds(node.@timeShiftBufferDepth.toString());
-        }
-
-        // go up one level in hierarchy, e.g. adaptionSet and period
-        return traverseAndBuildTimeShiftBufferDepth(node.parent());
-    }
-
-    private function traverseAndBuildLive(node:XML):Boolean {
-        if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'type' attribute"));
-        }
-
-        if (node.hasOwnProperty("@type")) {
-            return node.@type.toString() == "dynamic";
-        }
-
-        // go up one level in hierarchy, e.g. adaptionSet and period
-        return traverseAndBuildLive(node.parent());
-    }
-
-    private function traverseAndBuildMinBufferTime(node:XML):Number {
-        if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'minBufferTime' attribute"));
-        }
-
-        if (node.hasOwnProperty("@minBufferTime")) {
-            return  Manifest.toSeconds(node.@minBufferTime.toString());
-        }
-
-        // go up one level in hierarchy, e.g. adaptionSet and period
-        return traverseAndBuildMinBufferTime(node.parent());
     }
 
     protected override function traverseAndBuildDuration(node:XML):Number {
