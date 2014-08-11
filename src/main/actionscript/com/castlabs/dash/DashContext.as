@@ -241,7 +241,7 @@ public class DashContext {
             return new NullSegmentLoader(this, segment);
         }
 
-        throw console.logError(new Error("Unknown segment type"));
+        throw console.logAndBuildError("Unknown segment type");
     }
 
     public function buildSegmentEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false,

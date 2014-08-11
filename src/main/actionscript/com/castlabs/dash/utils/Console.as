@@ -59,10 +59,9 @@ public class Console {
         log(DEBUG, message);
     }
 
-    //TODO rather logAndCreateError(string)
-    public function logError(error:Error):Error {
-        log(ERROR, error.message);
-        return error;
+    public function logAndBuildError(message:String):Error {
+        log(ERROR, message);
+        return new Error(message);
     }
 
     public function log(level:String, message:String):void {

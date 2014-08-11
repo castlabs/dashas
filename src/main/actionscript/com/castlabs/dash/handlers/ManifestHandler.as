@@ -142,8 +142,7 @@ public class ManifestHandler {
             return representations;
         }
 
-        throw _context.console.logError(new Error("Couldn't find any representations, " +
-                "mimeType='" + mimeType + "'"));
+        throw _context.console.logAndBuildError("Couldn't find any representations, mimeType='" + mimeType + "'");
     }
 
     private function buildRepresentations(baseUrl:String, duration:Number, nodes:XMLList):Vector.<Representation> {

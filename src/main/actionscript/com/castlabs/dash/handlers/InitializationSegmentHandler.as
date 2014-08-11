@@ -61,7 +61,7 @@ public class InitializationSegmentHandler extends SegmentHandler {
             }
         }
 
-        throw _context.console.logError(new Error("Track isn't defined, type='" + expectedTrackType + "'"));
+        throw _context.console.logAndBuildError("Track isn't defined, type='" + expectedTrackType + "'");
     }
 
     protected function get expectedTrackType():String {

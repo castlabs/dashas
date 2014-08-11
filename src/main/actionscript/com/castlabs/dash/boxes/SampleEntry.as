@@ -88,7 +88,7 @@ public class SampleEntry extends Box {
             }
         }
 
-        throw _context.console.logError(new Error("Couldn't find any '" + type + "' box"));
+        throw _context.console.logAndBuildError("Couldn't find any '" + type + "' box");
     }
 
     private function parseMp4aData(ba:ByteArray):ByteArray {
@@ -97,7 +97,7 @@ public class SampleEntry extends Box {
         ba.position += 4;
 
         if (ba.readUTFBytes(4) != 'esds') {
-            throw _context.console.logError(new Error("Couldn't find a 'esds' box"));
+            throw _context.console.logAndBuildError("Couldn't find a 'esds' box");
         }
 
 //        // 4-bytes version/flags

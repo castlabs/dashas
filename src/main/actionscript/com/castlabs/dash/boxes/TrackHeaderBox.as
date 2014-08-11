@@ -40,7 +40,7 @@ public class TrackHeaderBox extends FullBox {
 
             ba.position += 16;
         } else {
-            throw _context.console.logError(new Error("Unknown TrackHeaderBox version"));
+            throw _context.console.logAndBuildError("Unknown TrackHeaderBox version");
         }
 
         _id = ba.readUnsignedInt();

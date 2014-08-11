@@ -133,8 +133,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildInitializationFilename(node:XML):String {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'sourceURL' or " +
-                    "'initialization' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'sourceURL' or 'initialization' attribute");
         }
 
         if (node.SegmentBase.length() == 1
@@ -160,7 +159,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildSegmentFilename(node:XML):String {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'media' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'media' attribute");
         }
 
         if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@media")) {
@@ -173,7 +172,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     protected function traverseAndBuildDuration(node:XML):Number {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'duration' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'duration' attribute");
         }
 
         if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@duration")) {
@@ -186,7 +185,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildTimescale(node:XML):Number {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'timescale' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'timescale' attribute");
         }
 
         if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@timescale")) {
@@ -199,7 +198,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     protected function traverseAndBuildStartNumber(node:XML):Number {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'startNumber' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'startNumber' attribute");
         }
 
         if (node.SegmentTemplate.length() == 1 && node.SegmentTemplate.hasOwnProperty("@startNumber")) {
@@ -212,7 +211,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildLive(node:XML):Boolean {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'type' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'type' attribute");
         }
 
         if (node.hasOwnProperty("@type")) {
@@ -225,7 +224,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildTimeShiftBufferDepth(node:XML):Number {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'timeShiftBufferDepth' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'timeShiftBufferDepth' attribute");
         }
 
         if (node.hasOwnProperty("@timeShiftBufferDepth")) {
@@ -238,7 +237,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildMinBufferTime(node:XML):Number {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'minBufferTime' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'minBufferTime' attribute");
         }
 
         if (node.hasOwnProperty("@minBufferTime")) {
@@ -251,7 +250,7 @@ public class SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildAvailabilityStartTime(node:XML):Number {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'availabilityStartTime' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'availabilityStartTime' attribute");
         }
 
         if (node.hasOwnProperty("@availabilityStartTime")) {

@@ -79,7 +79,7 @@ public class SegmentRange implements SegmentIndex {
 
     private function traverseAndBuildBaseUrl(node:XML):String {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'BaseURL' tag"));
+            throw _context.console.logAndBuildError("Couldn't find any 'BaseURL' tag");
         }
 
         if (node.BaseURL.length() == 1) {
@@ -92,7 +92,7 @@ public class SegmentRange implements SegmentIndex {
 
     private function traverseAndBuildIndexRange(node:XML):String {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'indexRange' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'indexRange' attribute");
         }
 
         if (node.SegmentBase.length() == 1 && node.SegmentBase.hasOwnProperty("@indexRange")) {
@@ -105,7 +105,7 @@ public class SegmentRange implements SegmentIndex {
 
     private function traverseAndBuildInitializationRange(node:XML):String {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any 'range' attribute"));
+            throw _context.console.logAndBuildError("Couldn't find any 'range' attribute");
         }
 
         if (node.SegmentBase.length() == 1

@@ -154,7 +154,7 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
 
     private function traverseAndBuildTimeline(node:XML):XMLList {
         if (node == null) {
-            throw _context.console.logError(new Error("Couldn't find any S tag"));
+            throw _context.console.logAndBuildError("Couldn't find any S tag");
         }
 
         if (node.SegmentTemplate.length() == 1

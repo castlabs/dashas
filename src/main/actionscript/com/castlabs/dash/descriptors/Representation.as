@@ -64,7 +64,7 @@ public class Representation {
             return xml.@id;
         }
 
-        throw _context.console.logError(new Error("Representation doesn't have 'id' attribute"));
+        throw _context.console.logAndBuildError("Representation doesn't have 'id' attribute");
     }
 
     private static function buildBandwidth(xml:XML):Number {
