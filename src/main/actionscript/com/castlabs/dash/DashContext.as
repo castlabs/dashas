@@ -175,8 +175,8 @@ public class DashContext {
     }
 
     public function buildStreamEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false,
-                                     manifest:ManifestHandler = null):StreamEvent {
-        return new StreamEvent(type, bubbles, cancelable, manifest);
+                                     live:Boolean = false, duration:Number = 0):StreamEvent {
+        return new StreamEvent(type, bubbles, cancelable, live, duration);
     }
 
     public function buildAudioSegmentHandler(segment:ByteArray, messages:Vector.<FLVTag>, defaultSampleDuration:uint,

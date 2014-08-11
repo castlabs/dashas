@@ -231,7 +231,7 @@ public class FragmentLoader extends EventDispatcher {
         var indexSegmentsLoaded:Boolean = getLength(_indexSegmentFlags) == expectedLength;
 
         if (initializationSegmentsLoaded && indexSegmentsLoaded) {
-            dispatchEvent(_context.buildStreamEvent(StreamEvent.READY, false, false, _manifest));
+            dispatchEvent(_context.buildStreamEvent(StreamEvent.READY, false, false, _manifest.live, _manifest.duration));
         }
     }
 

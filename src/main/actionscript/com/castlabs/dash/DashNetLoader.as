@@ -56,10 +56,10 @@ public class DashNetLoader extends NetLoader {
         stream.addEventListener(StreamEvent.READY, onReady);
 
         function onReady(event:StreamEvent):void {
-            if (event.manifest.live && loadTrait.resource is StreamingURLResource) {
+            if (event.live && loadTrait.resource is StreamingURLResource) {
                 StreamingURLResource(loadTrait.resource).streamType = "live";
             } else {
-                var timeTrait:DashTimeTrait = _context.buildDashTimeTrait(stream, event.manifest.duration);
+                var timeTrait:DashTimeTrait = _context.buildDashTimeTrait(stream, event.duration);
                 loadTrait.setTrait(timeTrait);
                 loadTrait.setTrait(_context.buildDashSeekTrait(timeTrait, loadTrait, stream));
             }
