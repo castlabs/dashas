@@ -134,7 +134,7 @@ public class FragmentLoader extends EventDispatcher {
         }
 
         if (!_audioSegment || !_videoSegment) { // notify end
-            dispatchEvent(new StreamEvent(StreamEvent.END));
+            dispatchEvent(_context.buildStreamEvent(StreamEvent.END));
             reset();
             return;
         }
