@@ -76,6 +76,9 @@ public class DashContext {
     private static var _muxer:Muxer;
     private static var _segmentIndexFactory:SegmentIndexFactory;
     private static var _nalUnit:NalUnit;
+    private static var _manifestHandler:ManifestHandler;
+    private static var _adaptiveSegmentDispatcher:AdaptiveSegmentDispatcher;
+    private static var _fragmentLoader:FragmentLoader;
 
     public function DashContext() {}
 
@@ -143,6 +146,30 @@ public class DashContext {
         return _nalUnit;
     }
 
+    public function get manifestHandler():ManifestHandler {
+        if (_manifestHandler == null) {
+            throw new Error("'manifestHandler' is undefined");
+        }
+
+        return _manifestHandler;
+    }
+
+    public function get adaptiveSegmentDispatcher():AdaptiveSegmentDispatcher {
+        if (_adaptiveSegmentDispatcher == null) {
+            _adaptiveSegmentDispatcher = new AdaptiveSegmentDispatcher(this);
+        }
+
+        return _adaptiveSegmentDispatcher;
+    }
+
+    public function get fragmentLoader():FragmentLoader {
+        if (_fragmentLoader == null) {
+            _fragmentLoader = new FragmentLoader(this);
+        }
+
+        return _fragmentLoader;
+    }
+
     public function buildDashNetStream(connection:NetConnection):DashNetStream {
         return new DashNetStream(this, connection);
     }
@@ -159,16 +186,14 @@ public class DashContext {
         return new ManifestLoader(this, url);
     }
 
-    public function buildManifestHandler(url:String, xml:XML):ManifestHandler {
-        return new ManifestHandler(this, url, xml);
-    }
+    public function createManifestHandler(url:String, xml:XML):ManifestHandler {
+        if (_manifestHandler != null) {
+            throw new Error("'manifestHandler' is already defined");
+        }
 
-    public function buildAdaptiveSegmentDispatcher(manifest:ManifestHandler):AdaptiveSegmentDispatcher {
-        return new AdaptiveSegmentDispatcher(this, manifest);
-    }
+        _manifestHandler = new ManifestHandler(this, url, xml);
 
-    public function buildFragmentLoader(manifest:ManifestHandler):FragmentLoader {
-        return new FragmentLoader(this, manifest);
+        return _manifestHandler;
     }
 
     public function buildInitializationAudioSegmentHandler(bytes:ByteArray):InitializationAudioSegmentHandler {

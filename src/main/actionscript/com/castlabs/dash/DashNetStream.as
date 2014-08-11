@@ -203,11 +203,11 @@ public class DashNetStream extends NetStream {
         }
     }
 
-    public function set manifest(manifest:ManifestHandler):void {
-        _live = manifest.live;
-        _duration = manifest.duration;
+    public function init():void {
+        _live = _context.manifestHandler.live;
+        _duration = _context.manifestHandler.duration;
 
-        _loader = _context.buildFragmentLoader(manifest);
+        _loader = _context.fragmentLoader;
         _loader.addEventListener(StreamEvent.READY, onReady);
         _loader.addEventListener(FragmentEvent.LOADED, onLoaded);
         _loader.addEventListener(StreamEvent.END, onEnd);

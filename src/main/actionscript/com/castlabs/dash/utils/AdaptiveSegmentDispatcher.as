@@ -14,19 +14,17 @@ import com.castlabs.dash.handlers.ManifestHandler;
 
 public class AdaptiveSegmentDispatcher {
     private var _context:DashContext;
-    private var _manifest:ManifestHandler;
 
-    public function AdaptiveSegmentDispatcher(context:DashContext, manifest:ManifestHandler) {
+    public function AdaptiveSegmentDispatcher(context:DashContext) {
         _context = context;
-        _manifest = manifest;
     }
 
     public function getAudioSegment(timestamp:Number):Segment {
-        return findOptimalRepresentation(_manifest.audioRepresentations).getSegment(timestamp);
+        return findOptimalRepresentation(_context.manifestHandler.audioRepresentations).getSegment(timestamp);
     }
 
     public function getVideoSegment(timestamp:Number):Segment {
-        return findOptimalRepresentation(_manifest.videoRepresentations).getSegment(timestamp);
+        return findOptimalRepresentation(_context.manifestHandler.videoRepresentations).getSegment(timestamp);
     }
 
     private function findOptimalRepresentation(representations:Vector.<Representation>):Representation {

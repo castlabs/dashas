@@ -27,9 +27,6 @@ import flash.utils.Dictionary;
 import flash.utils.Timer;
 
 public class FragmentLoader extends EventDispatcher {
-    private var _manifest:ManifestHandler;
-    private var _iterator:AdaptiveSegmentDispatcher;
-
     private var _initializationSegmentHandlers:Dictionary = new Dictionary();
     private var _indexSegmentFlags:Dictionary = new Dictionary();
 
@@ -52,28 +49,26 @@ public class FragmentLoader extends EventDispatcher {
 
     private var _context:DashContext;
 
-    public function FragmentLoader(context:DashContext, manifest:ManifestHandler) {
-        _manifest = manifest;
+    public function FragmentLoader(context:DashContext) {
         _context = context;
-        _iterator = _context.buildAdaptiveSegmentDispatcher(manifest);
 
         _waitTimer = new Timer(250); // 250 ms
         _waitTimer.addEventListener(TimerEvent.TIMER, loadNextFragment);
     }
 
     public function init():void {
-        loadInitializationSegments(_manifest.audioRepresentations, onInitializationAudioSegmentLoaded);
-        loadInitializationSegments(_manifest.videoRepresentations, onInitializationVideoSegmentLoaded);
+        loadInitializationSegments(_context.manifestHandler.audioRepresentations, onInitializationAudioSegmentLoaded);
+        loadInitializationSegments(_context.manifestHandler.videoRepresentations, onInitializationVideoSegmentLoaded);
 
-        loadIndexSegments(_manifest.audioRepresentations, onIndexSegmentLoaded);
-        loadIndexSegments(_manifest.videoRepresentations, onIndexSegmentLoaded);
+        loadIndexSegments(_context.manifestHandler.audioRepresentations, onIndexSegmentLoaded);
+        loadIndexSegments(_context.manifestHandler.videoRepresentations, onIndexSegmentLoaded);
     }
 
     public function seek(timestamp:Number):Number {
         close();
 
-        _videoSegment = MediaDataSegment(_iterator.getVideoSegment(timestamp));
-        _audioSegment = MediaDataSegment(_iterator.getAudioSegment(_videoSegment.startTimestamp));
+        _videoSegment = MediaDataSegment(_context.adaptiveSegmentDispatcher.getVideoSegment(timestamp));
+        _audioSegment = MediaDataSegment(_context.adaptiveSegmentDispatcher.getAudioSegment(_videoSegment.startTimestamp));
 
         _audioOffset = _audioSegment.startTimestamp;
         _videoOffset = _videoSegment.startTimestamp;
@@ -110,7 +105,7 @@ public class FragmentLoader extends EventDispatcher {
         }
 
         if (!_audioSegmentLoaded) {
-            var segment1:Segment = _iterator.getAudioSegment(_audioSegment.endTimestamp);
+            var segment1:Segment = _context.adaptiveSegmentDispatcher.getAudioSegment(_audioSegment.endTimestamp);
 
             if (segment1 is WaitSegment) {
                 _waitTimer.start();
@@ -122,7 +117,7 @@ public class FragmentLoader extends EventDispatcher {
         }
 
         if (!_videoSegmentLoaded) {
-            var segment2:Segment = _iterator.getVideoSegment(_videoSegment.endTimestamp);
+            var segment2:Segment = _context.adaptiveSegmentDispatcher.getVideoSegment(_videoSegment.endTimestamp);
 
             if (segment2 is WaitSegment) {
                 _waitTimer.start();
@@ -153,14 +148,14 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     private function logMediaBandwidth():void {
-        for each (var representation1:Representation in _manifest.audioRepresentations) {
+        for each (var representation1:Representation in _context.manifestHandler.audioRepresentations) {
             if (representation1.internalId == _audioSegment.internalRepresentationId) {
                 _context.console.appendAudioBandwidth(representation1.bandwidth);
                 break;
             }
         }
 
-        for each (var representation2:Representation in _manifest.videoRepresentations) {
+        for each (var representation2:Representation in _context.manifestHandler.videoRepresentations) {
             if (representation2.internalId == _videoSegment.internalRepresentationId) {
                 _context.console.appendVideoBandwidth(representation2.bandwidth);
                 break;
@@ -226,12 +221,14 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     private function notifyReadyIfNeeded():void {
-        var expectedLength:Number = _manifest.audioRepresentations.length + _manifest.videoRepresentations.length;
+        var expectedLength:Number = _context.manifestHandler.audioRepresentations.length
+                + _context.manifestHandler.videoRepresentations.length;
         var initializationSegmentsLoaded:Boolean = getLength(_initializationSegmentHandlers) == expectedLength;
         var indexSegmentsLoaded:Boolean = getLength(_indexSegmentFlags) == expectedLength;
 
         if (initializationSegmentsLoaded && indexSegmentsLoaded) {
-            dispatchEvent(_context.buildStreamEvent(StreamEvent.READY, false, false, _manifest.live, _manifest.duration));
+            dispatchEvent(_context.buildStreamEvent(StreamEvent.READY, false, false,
+                    _context.manifestHandler.live, _context.manifestHandler.duration));
         }
     }
 

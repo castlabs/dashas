@@ -80,11 +80,10 @@ public class DashNetLoader extends NetLoader {
         function onLoad(event:ManifestEvent):void {
             _context.console.info("Creating manifest...");
 
-            var manifest:ManifestHandler = _context.buildManifestHandler(event.url, event.xml);
-
+            var manifest:ManifestHandler = _context.createManifestHandler(event.url, event.xml);
             _context.console.info("Created manifest, " + manifest.toString());
 
-            stream.manifest = manifest;
+            stream.init();
         }
 
         function onError(event:ManifestEvent):void {
