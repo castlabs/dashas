@@ -69,6 +69,7 @@ import org.osmf.traits.TimeTrait;
 public class DashContext {
     private static var _instance:DashContext;
 
+    private static var _console:Console;
     private static var _dashNetLoader:DashNetLoader;
     private static var _smoothMonitor:SmoothMonitor;
     private static var _bandwidthMonitor:BandwidthMonitor;
@@ -87,7 +88,11 @@ public class DashContext {
     }
 
     public function get console():Console {
-        return Console.getInstance();
+        if (_console == null) {
+            _console = new Console();
+        }
+
+        return _console;
     }
 
     public function get dashNetLoader():DashNetLoader {

@@ -12,8 +12,6 @@ import flash.external.ExternalInterface;
 import flash.utils.Timer;
 
 public class Console {
-    private static var instance:Console;
-
     private static const ERROR:String = "error";
     private static const WARN:String = "warn";
     private static const INFO:String = "info";
@@ -23,15 +21,6 @@ public class Console {
     private var events:Array = [];
 
     public function Console() {
-    }
-
-    //TODO move this to DashContext
-    public static function getInstance():Console {
-        if (instance == null) {
-            instance = new Console();
-        }
-
-        return instance;
     }
 
     public function enable():void {
