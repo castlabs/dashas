@@ -10,21 +10,17 @@ package com.castlabs.dash {
 import com.castlabs.dash.events.ManifestEvent;
 import com.castlabs.dash.events.StreamEvent;
 import com.castlabs.dash.handlers.ManifestHandler;
-import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.ManifestLoader;
-import com.castlabs.dash.utils.Console;
 import com.castlabs.dash.utils.SmoothMonitor;
 
 import flash.net.NetConnection;
 import flash.net.NetStream;
 
 import org.osmf.events.MediaError;
-
+import org.osmf.events.MediaErrorCodes;
 import org.osmf.events.MediaErrorEvent;
-
 import org.osmf.media.MediaResourceBase;
 import org.osmf.media.URLResource;
-import org.osmf.net.NetConnectionFactoryBase;
 import org.osmf.net.NetLoader;
 import org.osmf.net.NetStreamLoadTrait;
 import org.osmf.net.StreamingURLResource;
@@ -52,6 +48,8 @@ public class DashNetLoader extends NetLoader {
     }
 
     override protected function processFinishLoading(loadTrait:NetStreamLoadTrait):void {
+        updateLoadTrait(loadTrait, LoadState.LOADING);
+
         var stream:DashNetStream = loadTrait.netStream as DashNetStream;
         stream.addEventListener(StreamEvent.READY, onReady);
 
@@ -87,7 +85,8 @@ public class DashNetLoader extends NetLoader {
         }
 
         function onError(event:ManifestEvent):void {
-            loadTrait.dispatchEvent(new MediaErrorEvent(MediaErrorEvent.MEDIA_ERROR, false, false, new MediaError(7)));
+            loadTrait.dispatchEvent(new MediaErrorEvent(MediaErrorEvent.MEDIA_ERROR, false, false,
+                    new MediaError(MediaErrorCodes.MEDIA_LOAD_FAILED)));
         }
 
         loader.load();

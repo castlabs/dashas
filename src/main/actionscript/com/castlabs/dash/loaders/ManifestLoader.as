@@ -47,7 +47,7 @@ public class ManifestLoader extends EventDispatcher {
 
     private function onError(event:Event):void {
         _context.console.error("Connection was interrupted: " + event.toString());
-        dispatchEvent(_context.buildManifestEvent(ManifestEvent.ERROR, false, false));
+        dispatchEvent(_context.buildManifestEvent(ManifestEvent.ERROR));
     }
 
     private function onComplete(event:Event):void {

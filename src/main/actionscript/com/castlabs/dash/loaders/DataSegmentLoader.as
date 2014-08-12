@@ -84,7 +84,7 @@ public class DataSegmentLoader extends SegmentLoader {
         }
 
         _context.console.error("Exceed the maximum number of tries");
-        dispatchEvent(_context.buildSegmentEvent(SegmentEvent.ERROR, false, false));
+        dispatchEvent(_context.buildSegmentEvent(SegmentEvent.ERROR));
     }
 
     protected function getUrl():String {
@@ -97,7 +97,7 @@ public class DataSegmentLoader extends SegmentLoader {
         if (DataSegment(_segment).isRange && _status == 200) {
             _context.console.error("Partial content wasn't returned. Please make sure that range requests " +
                     "are handle properly on the server side: https://github.com/castlabs/dashas/wiki/htaccess");
-            dispatchEvent(_context.buildSegmentEvent(SegmentEvent.ERROR, false, false));
+            dispatchEvent(_context.buildSegmentEvent(SegmentEvent.ERROR));
             return;
         }
 

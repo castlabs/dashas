@@ -9,7 +9,6 @@
 package com.castlabs.dash.handlers {
 
 import com.castlabs.dash.utils.Bytes;
-import com.castlabs.dash.utils.Console;
 
 import flash.utils.ByteArray;
 

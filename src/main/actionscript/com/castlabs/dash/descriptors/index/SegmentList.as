@@ -8,7 +8,6 @@
 
 package com.castlabs.dash.descriptors.index {
 import com.castlabs.dash.DashContext;
-import com.castlabs.dash.descriptors.segments.MediaDataSegment;
 import com.castlabs.dash.descriptors.segments.Segment;
 
 public class SegmentList implements SegmentIndex {

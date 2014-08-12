@@ -10,7 +10,6 @@ package com.castlabs.dash.utils {
 import com.castlabs.dash.DashContext;
 import com.castlabs.dash.descriptors.Representation;
 import com.castlabs.dash.descriptors.segments.Segment;
-import com.castlabs.dash.handlers.ManifestHandler;
 
 public class AdaptiveSegmentDispatcher {
     private var _context:DashContext;

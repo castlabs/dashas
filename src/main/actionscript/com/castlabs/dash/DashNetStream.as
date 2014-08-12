@@ -10,7 +10,6 @@ package com.castlabs.dash {
 import com.castlabs.dash.events.FragmentEvent;
 import com.castlabs.dash.events.SegmentEvent;
 import com.castlabs.dash.events.StreamEvent;
-import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.loaders.FragmentLoader;
 
 import flash.events.NetStatusEvent;

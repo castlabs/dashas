@@ -16,9 +16,7 @@ import com.castlabs.dash.events.FragmentEvent;
 import com.castlabs.dash.events.SegmentEvent;
 import com.castlabs.dash.events.StreamEvent;
 import com.castlabs.dash.handlers.InitializationSegmentHandler;
-import com.castlabs.dash.handlers.ManifestHandler;
 import com.castlabs.dash.handlers.MediaSegmentHandler;
-import com.castlabs.dash.utils.AdaptiveSegmentDispatcher;
 
 import flash.events.EventDispatcher;
 import flash.events.TimerEvent;
