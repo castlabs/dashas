@@ -13,6 +13,8 @@ At the same time there is profersional edition of dash.as which integrates nicel
 
 Please visit [CHANGELOG](https://github.com/castlabs/dashas/blob/master/CHANGELOG.md) for changes history.
 
+For information on a digital rights management (DRM) enabled version, please visit the  [castLabs](http://castlabs.com/products/dashas/) website.
+
 ## Demo
 
 For more information visit [examples page](http://dashas.castlabs.com/demo/try.html).
