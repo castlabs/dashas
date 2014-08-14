@@ -43,10 +43,6 @@ For more information visit [examples page](http://dashas.castlabs.com/demo/try.h
 
 For more information about which attributes and tags are required in a manifest please visit [unit tests](https://github.com/castlabs/dashas/blob/master/src/test/actionscript/com/castlabs/dash/ManifestHandlerTest.as).
 
-### Known issues
-
-* [#2](https://github.com/castlabs/dashas/issues/2) Player doesn't resume downloading after reconnecting;
-
 ## Quick start
 
 ### Input files
