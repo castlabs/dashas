@@ -126,7 +126,12 @@ public class ManifestHandler {
     }
 
     private function findAudioRepresentationNodes(xml:XML):* {
-        return findRepresentationNodes("audio/mp4", xml);
+        try {
+            return findRepresentationNodes("audio/mp4", xml);
+        } catch (e:RepresentationNotFoundError) {
+            _context.console.warn("Ignored missed audio representation");
+            return new XMLList();
+        }
     }
 
     private function findRepresentationNodes(mimeType:String, xml:XML):* {
@@ -142,7 +147,8 @@ public class ManifestHandler {
             return representations;
         }
 
-        throw _context.console.logAndBuildError("Couldn't find any representations, mimeType='" + mimeType + "'");
+        _context.console.error("Couldn't find any representations, mimeType='" + mimeType + "'");
+        throw new RepresentationNotFoundError();
     }
 
     private function buildRepresentations(baseUrl:String, duration:Number, nodes:XMLList):Vector.<Representation> {
@@ -180,3 +186,5 @@ public class ManifestHandler {
     }
 }
 }
+
+class RepresentationNotFoundError extends Error {}

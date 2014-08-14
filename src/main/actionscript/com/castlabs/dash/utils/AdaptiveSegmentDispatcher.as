@@ -19,7 +19,13 @@ public class AdaptiveSegmentDispatcher {
     }
 
     public function getAudioSegment(timestamp:Number):Segment {
-        return findOptimalRepresentation(_context.manifestHandler.audioRepresentations).getSegment(timestamp);
+
+        // there isn't audio representation if silent video
+        if (_context.manifestHandler.audioRepresentations.length == 0) {
+            return null;
+        } else {
+            return findOptimalRepresentation(_context.manifestHandler.audioRepresentations).getSegment(timestamp);
+        }
     }
 
     public function getVideoSegment(timestamp:Number):Segment {
@@ -27,10 +33,6 @@ public class AdaptiveSegmentDispatcher {
     }
 
     private function findOptimalRepresentation(representations:Vector.<Representation>):Representation {
-        if (representations.length == 0) {
-            return null;
-        }
-
         var index:int = 0;
 
         for (var i:uint = 0;  i < representations.length; i++) {

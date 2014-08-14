@@ -66,7 +66,7 @@ public class FragmentLoader extends EventDispatcher {
         close();
 
         _videoSegment = MediaDataSegment(_context.adaptiveSegmentDispatcher.getVideoSegment(timestamp));
-        _audioSegment = MediaDataSegment(_context.adaptiveSegmentDispatcher.getAudioSegment(_videoSegment.startTimestamp));
+        _audioSegment = MediaDataSegment(getAudioOrSilentSegment(_videoSegment.startTimestamp));
 
         _audioOffset = _audioSegment.startTimestamp;
         _videoOffset = _videoSegment.startTimestamp;
@@ -78,16 +78,23 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     public function loadFirstFragment():void {
+        markIfAudioAndVideoLoaded();
+
         logMediaBandwidth();
 
-        _audioSegmentLoader = loadSegment(_audioSegment, onAudioSegmentLoaded);
-        _videoSegmentLoader = loadSegment(_videoSegment, onVideoSegmentLoaded);
+        if (!_audioSegmentLoaded) {
+            _audioSegmentLoader = loadSegment(_audioSegment, onAudioSegmentLoaded);
+        }
+
+        if (!_videoSegmentLoaded) {
+            _videoSegmentLoader = loadSegment(_videoSegment, onVideoSegmentLoaded);
+        }
     }
 
     public function loadNextFragment(timerEvent:TimerEvent = null):void {
         _waitTimer.stop();
 
-        markIfAudioOrVideoLoaded();
+        markIfAudioAndVideoLoaded();
 
         if (!_audioSegmentLoaded) {
             var segment1:Segment = _context.adaptiveSegmentDispatcher.getAudioSegment(_audioSegment.endTimestamp);
@@ -114,6 +121,7 @@ public class FragmentLoader extends EventDispatcher {
         }
 
         if (!_audioSegment || !_videoSegment) { // notify end
+            _context.console.info("Reached the end");
             dispatchEvent(_context.buildStreamEvent(StreamEvent.END));
             reset();
             return;
@@ -132,21 +140,28 @@ public class FragmentLoader extends EventDispatcher {
         }
     }
 
-    private function markIfAudioOrVideoLoaded():void {
-        if (_videoSegment.endTimestamp < _audioSegment.endTimestamp) {
+    private function markIfAudioAndVideoLoaded():void {
+        if (_videoSegment.startTimestamp == _videoOffset) {
+            // first fragment
+            _videoSegmentLoaded = false;
+            _audioSegmentLoaded = isSilent();
+        } else if (_videoSegment.endTimestamp < _audioSegment.endTimestamp) {
+            // next fragment with longer audio or silent;
             _videoSegmentLoaded = false;
             _audioSegmentLoaded = true;
-        }
-
-        if (_videoSegment.endTimestamp > _audioSegment.endTimestamp) {
+        } else if (_videoSegment.endTimestamp > _audioSegment.endTimestamp) {
+            // next fragment with shorter audio
             _videoSegmentLoaded = true;
             _audioSegmentLoaded = false;
-        }
-
-        if (_videoSegment.endTimestamp == _audioSegment.endTimestamp) {
+        } else if (_videoSegment.endTimestamp == _audioSegment.endTimestamp) {
+            // next fragment with equal audio
             _videoSegmentLoaded = false;
             _audioSegmentLoaded = false;
         }
+    }
+
+    private function isSilent():Boolean {
+        return _audioSegment.startTimestamp == Infinity;
     }
 
     private function logMediaBandwidth():void {
@@ -318,6 +333,11 @@ public class FragmentLoader extends EventDispatcher {
 
             dispatchEvent(_context.buildFragmentEvent(FragmentEvent.LOADED, false, false, bytes, endTimestamp));
         }
+    }
+
+    private function getAudioOrSilentSegment(timestamp:Number):Segment {
+        var segment:Segment = _context.adaptiveSegmentDispatcher.getAudioSegment(timestamp);
+        return segment ? segment : new MediaDataSegment(NaN, null, null, Infinity, Infinity);
     }
 
     private function reset():void {
