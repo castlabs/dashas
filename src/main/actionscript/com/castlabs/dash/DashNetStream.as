@@ -35,6 +35,7 @@ public class DashNetStream extends NetStream {
     private const BUFFER:uint = 6;
 
     // states
+    private const INITIALIZING:uint = 0;
     private const PLAYING:uint = 1;
     private const BUFFERING:uint = 2;
     private const SEEKING:uint = 3;
@@ -43,7 +44,7 @@ public class DashNetStream extends NetStream {
 
     protected var _context:DashContext;
 
-    private var _state:uint = STOPPED;
+    private var _state:uint = INITIALIZING;
 
     private var _loader:FragmentLoader;
 
@@ -319,6 +320,7 @@ public class DashNetStream extends NetStream {
     }
 
     private function onReady(event:StreamEvent):void {
+        _state = STOPPED;
         dispatchEvent(event);
     }
 
@@ -329,8 +331,12 @@ public class DashNetStream extends NetStream {
     }
 
     private function onError(event:SegmentEvent):void {
-        dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS, false, false,
-                { code: NetStreamCodes.NETSTREAM_FAILED, level: "status" }));
+        if (_state == INITIALIZING) {
+            dispatchEvent(_context.buildStreamEvent(StreamEvent.ERROR));
+        } else {
+            dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS, false, false,
+                    { code: NetStreamCodes.NETSTREAM_FAILED, level: "status" }));
+        }
     }
 
     private function onFragmentTimer(timerEvent:TimerEvent = null):void {

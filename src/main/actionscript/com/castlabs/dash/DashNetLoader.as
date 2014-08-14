@@ -52,6 +52,7 @@ public class DashNetLoader extends NetLoader {
 
         var stream:DashNetStream = loadTrait.netStream as DashNetStream;
         stream.addEventListener(StreamEvent.READY, onReady);
+        stream.addEventListener(StreamEvent.ERROR, onError);
 
         function onReady(event:StreamEvent):void {
             if (event.live && loadTrait.resource is StreamingURLResource) {
@@ -63,6 +64,11 @@ public class DashNetLoader extends NetLoader {
             }
 
             updateLoadTrait(loadTrait, LoadState.READY);
+        }
+
+        function onError(event:StreamEvent):void {
+            loadTrait.dispatchEvent(new MediaErrorEvent(MediaErrorEvent.MEDIA_ERROR, false, false,
+                    new MediaError(MediaErrorCodes.MEDIA_LOAD_FAILED)));
         }
 
         var manifest:URLResource = loadTrait.resource as URLResource;

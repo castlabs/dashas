@@ -12,6 +12,7 @@ import flash.events.Event;
 public class StreamEvent extends Event {
     public static const READY:String = "streamReady";
     public static const END:String = "streamEnd";
+    public static const ERROR:String = "streamError";
 
     private var _live:Boolean;
     private var _duration:Number;
