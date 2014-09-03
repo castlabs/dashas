@@ -252,6 +252,7 @@ function loadSwf(manifestUrl) {
 
     var flashvars = {};
     flashvars.src = encodeURIComponent(manifestUrl);
+    flashvars.plugin_WatermarkPlugin = encodeURIComponent(location.href + "/../" + (isDebug() ? "debug" : "production") + "/watermark.swf?t=" + timestamp);
     flashvars.plugin_DashPlugin = encodeURIComponent(location.href + "/../"  + (isDebug() ? "debug" : "production") + "/dashas.swf?t=" + timestamp + "&log=true");
     flashvars.javascriptCallbackFunction = "onJavaScriptBridgeCreated";
 
