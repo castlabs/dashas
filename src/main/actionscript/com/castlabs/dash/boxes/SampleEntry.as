@@ -50,14 +50,25 @@ public class SampleEntry extends Box {
 
     protected function parseMp4a(ba:ByteArray):void {
 
-        // skip
-        ba.position += 16;
+        ba.position += 6;
+
+        var soundVersion:uint;
+        soundVersion = ba.readUnsignedShort();
+
+
+        ba.position += 8;
 
         channelCount = ba.readUnsignedShort();
         sampleSize = ba.readUnsignedShort();
 
         // skip
         ba.position += 8;
+        if (soundVersion==1) {
+            ba.position += 16;
+        }
+        if (soundVersion==2) {
+            ba.position += 36;
+        }
 
         _data = parseMp4aData(ba);
     }
