@@ -49,26 +49,10 @@ public class SampleEntry extends Box {
     }
 
     protected function parseMp4a(ba:ByteArray):void {
-
-        ba.position += 6;
-
-        var soundVersion:uint;
-        soundVersion = ba.readUnsignedShort();
-
-
-        ba.position += 8;
+        ba.position += 16;
 
         channelCount = ba.readUnsignedShort();
         sampleSize = ba.readUnsignedShort();
-
-        // skip
-        ba.position += 8;
-        if (soundVersion==1) {
-            ba.position += 16;
-        }
-        if (soundVersion==2) {
-            ba.position += 36;
-        }
 
         _data = parseMp4aData(ba);
     }
@@ -103,13 +87,14 @@ public class SampleEntry extends Box {
     }
 
     private function parseMp4aData(ba:ByteArray):ByteArray {
+        ba.position = goToBox("esds", ba);
 
-        // 4-bytes size
-        ba.position += 4;
+//        // 4-bytes size
+//        ba.position += 4;
+//        // 4-bytes type
+//        ba.position += 4;
 
-        if (ba.readUTFBytes(4) != 'esds') {
-            throw _context.console.logAndBuildError("Couldn't find a 'esds' box");
-        }
+        ba.position += 8;
 
 //        // 4-bytes version/flags
 //        ba.position += 4;
