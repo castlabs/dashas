@@ -31,15 +31,15 @@ public class MovieFragmentBox extends Box {
 
     override protected function parseChildBox(type:String, offset:uint, size:uint, ba:ByteArray):Boolean {
         if (type == "traf") {
-            parseTrackFragmentBox(offset, size, ba);
+            parseTrackFragmentBox(_offset /* moof offset */, offset, size, ba);
             return true;
         }
 
         return false;
     }
 
-    private function parseTrackFragmentBox(offset:uint, size:uint, ba:ByteArray):void {
-        var traf:TrackFragmentBox = _context.buildTrackFragmentBox(offset, size);
+    private function parseTrackFragmentBox(moofOffset:uint, offset:uint, size:uint, ba:ByteArray):void {
+        var traf:TrackFragmentBox = _context.buildTrackFragmentBox(moofOffset, offset, size);
         traf.parse(ba);
         _trafs.push(traf);
     }

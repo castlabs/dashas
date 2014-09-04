@@ -16,7 +16,7 @@ public class TrackFragmentBox extends Box {
     private var _truns:Vector.<TrackFragmentRunBox> = new Vector.<TrackFragmentRunBox>();
     private var _tfhd:TrackFragmentHeaderBox;
 
-    public function TrackFragmentBox(context:DashContext, offset:uint, size:uint) {
+    public function TrackFragmentBox(context:DashContext, moofOffset:uint, offset:uint, size:uint) {
         super(context, offset, size);
     }
 

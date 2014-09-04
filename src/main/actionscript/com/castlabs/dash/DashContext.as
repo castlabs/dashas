@@ -336,8 +336,8 @@ public class DashContext {
         return new TrackExtendsBox(this, offset, size);
     }
 
-    public function buildTrackFragmentBox(offset:uint, size:uint):TrackFragmentBox {
-        return new TrackFragmentBox(this, offset, size);
+    public function buildTrackFragmentBox(moofOffset:uint, offset:uint, size:uint):TrackFragmentBox {
+        return new TrackFragmentBox(this, moofOffset, offset, size);
     }
 
     public function buildSampleEntry(offset:uint, size:uint, type:String):SampleEntry {
