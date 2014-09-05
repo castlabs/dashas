@@ -54,9 +54,8 @@ public class TrackFragmentRunBox extends FullBox {
     }
 
     override protected function parseBox(ba:ByteArray):void {
-        var dataOffsetPresent:Boolean = false;
-        if ((flags & 0x1) == 0x1) {
-            dataOffsetPresent = true;
+        if ((flags & 0x1) != 0x1) {
+            throw _context.console.logError(new Error("[TrackFragmentBox]: 'dataOffset' isn't present"));
         }
 
         var firstSampleFlagsPresent:Boolean = false;
@@ -85,7 +84,7 @@ public class TrackFragmentRunBox extends FullBox {
 
         var sampleCount:uint = Bytes.readNumber(ba);
 
-        parseDataOffsetIfNeeded(dataOffsetPresent, ba);
+        _dataOffset = Bytes.readNumber(ba);
         Bytes.skipNumberIfNeeded(firstSampleFlagsPresent, ba);
 
         for (var i:uint = 0; i < sampleCount; i++) {
@@ -93,12 +92,6 @@ public class TrackFragmentRunBox extends FullBox {
             parseSampleSizeIfNeeded(sampleSizePresent, i, ba);
             parseSampleFlagsIfNeeded(secondSampleFlagsPresent, i, ba);
             parseSampleCompositionTimeOffsetsIfNeeded(sampleCompositionTimeOffsetsPresent, i, ba);
-        }
-    }
-
-    private function parseDataOffsetIfNeeded(present:Boolean, ba:ByteArray):void {
-        if (present) {
-            _dataOffset = Bytes.readNumber(ba);
         }
     }
 
