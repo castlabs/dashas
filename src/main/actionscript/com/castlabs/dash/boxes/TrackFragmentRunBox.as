@@ -55,7 +55,7 @@ public class TrackFragmentRunBox extends FullBox {
 
     override protected function parseBox(ba:ByteArray):void {
         if ((flags & 0x1) != 0x1) {
-            throw _context.console.logError(new Error("[TrackFragmentBox]: 'dataOffset' isn't present"));
+            throw _context.console.logAndBuildError("[TrackFragmentBox]: 'dataOffset' isn't present");
         }
 
         var firstSampleFlagsPresent:Boolean = false;
