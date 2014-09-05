@@ -24,7 +24,7 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
             return null;
         }
 
-        if (isLast(timestamp)) {
+        if (_live && isLast(timestamp)) {
             return _context.buildWaitSegment(internalRepresentationId);
         }
 
