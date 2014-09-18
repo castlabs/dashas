@@ -42,6 +42,10 @@ public class MediaSegmentHandler extends SegmentHandler {
         return _bytes;
     }
 
+    public function get timestamp():Number {
+        return _timestamp;
+    }
+
     private function parseMovieFragmentBox(ba:ByteArray):void {
         var offsetAndSize:Object = goToBox("moof", ba);
         var offset:uint = offsetAndSize.offset;
