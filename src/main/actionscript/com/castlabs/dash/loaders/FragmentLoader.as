@@ -80,11 +80,12 @@ public class FragmentLoader extends EventDispatcher {
         _context.console.info("Seek to audio segment: " + _audioSegment);
         _context.console.info("Seek to video segment: " + _videoSegment);
 
-        return _videoSegment.startTimestamp; // offset
+        return Math.min(_videoOffset, _audioOffset);
     }
 
     public function loadFirstFragment():void {
-        markIfAudioAndVideoLoaded();
+        _videoSegmentLoaded = false;
+        _audioSegmentLoaded = isSilent();
 
         logMediaBandwidth();
 
@@ -147,11 +148,7 @@ public class FragmentLoader extends EventDispatcher {
     }
 
     private function markIfAudioAndVideoLoaded():void {
-        if (_videoSegment.startTimestamp == _videoOffset) {
-            // first fragment
-            _videoSegmentLoaded = false;
-            _audioSegmentLoaded = isSilent();
-        } else if (_videoSegment.endTimestamp < _audioSegment.endTimestamp) {
+        if (_videoSegment.endTimestamp < _audioSegment.endTimestamp) {
             // next fragment with longer audio or silent;
             _videoSegmentLoaded = false;
             _audioSegmentLoaded = true;
