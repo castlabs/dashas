@@ -20,6 +20,7 @@ lib/
 .DS_Store
 unused/
 rsync.sh
+rsync_vanilla.sh
 libs/
 Flash Player Debugger.app/
 
