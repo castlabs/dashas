@@ -70,6 +70,12 @@ public class DashNetStream extends NetStream {
 
         _fragmentTimer = new Timer(250); // 250 ms
         _fragmentTimer.addEventListener(TimerEvent.TIMER, onFragmentTimer);
+
+        inBufferSeek = false;
+        bufferTime = 0;
+        bufferTimeMax = 0;
+        maxPauseBufferTime = 0;
+        useHardwareDecoder = true;
     }
 
     override public function play(...rest):void {
