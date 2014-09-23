@@ -89,7 +89,7 @@ Convert media input files into DASH stream files.
 
 * Use following command to generate DASH stream:
 		
-		$ MP4Box -dash 3000 -bs-switching no -segment-name %s_ -url-template -out sintel.mpd avc1-sintel-436p-250k.mp4 avc1-sintel-436p-500k.mp4 avc1-sintel-436p-1000k.mp4 mp4a-sintel-69k.mp4
+		$ MP4Box -dash 3000 -bs-switching no -segment-name "%s_" -url-template -out sintel.mpd avc1-sintel-436p-250k.mp4 avc1-sintel-436p-500k.mp4 avc1-sintel-436p-1000k.mp4 mp4a-sintel-69k.mp4
 		
 ### Page
 
