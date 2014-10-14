@@ -40,8 +40,8 @@ public class FragmentLoader extends EventDispatcher {
     private var _audioSegment:MediaDataSegment;
     private var _videoSegment:MediaDataSegment;
 
-    private var _audioTimestamp:Number = 0;
-    private var _videoTimestamp:Number = 0;
+    private var _audioOffset:Number = 0;
+    private var _videoOffset:Number = 0;
 
     private var _waitTimer:Timer;
 
@@ -68,16 +68,13 @@ public class FragmentLoader extends EventDispatcher {
         _videoSegment = MediaDataSegment(_context.adaptiveSegmentDispatcher.getVideoSegment(timestamp));
         _audioSegment = MediaDataSegment(getAudioOrSilentSegment(_videoSegment.startTimestamp));
 
-        var audioOffset:Number = _audioSegment.startTimestamp;
-        var videoOffset:Number = _videoSegment.startTimestamp;
-
-        _audioTimestamp = (audioOffset - Math.min(videoOffset, audioOffset)) * 1000;
-        _videoTimestamp = (videoOffset - Math.min(videoOffset, audioOffset)) * 1000;
+        _audioOffset = _audioSegment.startTimestamp;
+        _videoOffset = _videoSegment.startTimestamp;
 
         _context.console.info("Seek to audio segment: " + _audioSegment);
         _context.console.info("Seek to video segment: " + _videoSegment);
 
-        return Math.min(videoOffset, audioOffset);
+        return Math.min(_videoOffset, _audioOffset);
     }
 
     public function loadFirstFragment():void {
@@ -263,13 +260,13 @@ public class FragmentLoader extends EventDispatcher {
         var _initializationSegmentHandler:InitializationSegmentHandler =
                 _initializationSegmentHandlers[event.segment.internalRepresentationId];
 
+        var offset:Number = Math.min(_videoOffset, _audioOffset);
+
         _context.console.debug("Processing audio segment...");
 
         _audioSegmentHandler = _context.buildAudioSegmentHandler(event.bytes, _initializationSegmentHandler.messages,
                 _initializationSegmentHandler.defaultSampleDuration, _initializationSegmentHandler.timescale,
-                _audioTimestamp);
-
-        _audioTimestamp = _audioSegmentHandler.timestamp;
+                (_audioSegment.startTimestamp - offset) * 1000);
 
         _context.console.debug("Processed audio segment");
 
@@ -282,13 +279,13 @@ public class FragmentLoader extends EventDispatcher {
         var _initializationSegmentHandler:InitializationSegmentHandler =
                 _initializationSegmentHandlers[event.segment.internalRepresentationId];
 
+        var offset:Number = Math.min(_videoOffset, _audioOffset);
+
         _context.console.debug("Processing video segment...");
 
         _videoSegmentHandler = _context.buildVideoSegmentHandler(event.bytes, _initializationSegmentHandler.messages,
                 _initializationSegmentHandler.defaultSampleDuration, _initializationSegmentHandler.timescale,
-                _videoTimestamp);
-
-        _videoTimestamp = _videoSegmentHandler.timestamp;
+                (_videoSegment.startTimestamp - offset) * 1000);
 
         _context.console.debug("Processed video segment");
 
