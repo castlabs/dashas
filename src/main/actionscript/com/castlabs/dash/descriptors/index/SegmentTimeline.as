@@ -147,7 +147,8 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         }
 
         var last:uint = _segments.length - 1;
-        return seconds(_segments[last].time) == timestmap;
+        // #31 workaround for rounding issue; TODO solve this issue more elegant
+        return (seconds(_segments[last].time) - timestmap) < 0.1;
     }
 
     private function traverseAndBuildTimeline(node:XML):XMLList {
