@@ -94,13 +94,17 @@ public class MediaSegmentHandler extends SegmentHandler {
         var dataOffset:uint = runBox.dataOffset + baseDataOffset;
         var sampleSizes:Vector.<uint> = runBox.sampleSize;
 
+        var samplesDuration:uint = 0;
         for (var i:uint = 0; i < sampleSizes.length; i++) {
             var sampleDuration:uint = loadSampleDuration(runBox, i);
             var compositionTimeOffset:int = loadCompositionTimeOffset(runBox, i);
             var sampleDependsOn:uint = loadSampleDependsOn(runBox, i);
             var sampleIsDependedOn:uint = loadSampleIsDependedOn(runBox, i);
 
-            var message:FLVTag = buildMessage(sampleDuration, sampleSizes[i], sampleDependsOn, sampleIsDependedOn,
+            samplesDuration += sampleDuration;
+            var sampleTimestamp:Number = _timestamp + ((samplesDuration * 1000) / _timescale);
+
+            var message:FLVTag = buildMessage(sampleTimestamp, sampleSizes[i], sampleDependsOn, sampleIsDependedOn,
                     compositionTimeOffset, dataOffset, ba);
 
             _messages.push(message);
@@ -125,7 +129,7 @@ public class MediaSegmentHandler extends SegmentHandler {
         return i < runBox.sampleIsDependedOn.length ? runBox.sampleIsDependedOn[i] : 0;
     }
 
-    protected function buildMessage(sampleDuration:uint, sampleSize:uint, sampleDependsOn:uint,
+    protected function buildMessage(sampleTimestamp:Number, sampleSize:uint, sampleDependsOn:uint,
                                     sampleIsDependedOn:uint, compositionTimeOffset:Number,
                                     dataOffset:uint, ba:ByteArray):FLVTag {
         throw new IllegalOperationError("Method isn't implemented");

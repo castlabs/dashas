@@ -18,18 +18,14 @@ public class AudioSegmentHandler extends MediaSegmentHandler {
         super(context, segment, messages, defaultSampleDuration, timescale, timestamp);
     }
 
-    protected override function buildMessage(sampleDuration:uint, sampleSize:uint, sampleDependsOn:uint,
+    protected override function buildMessage(sampleTimestamp:Number, sampleSize:uint, sampleDependsOn:uint,
                                              sampleIsDependedOn:uint, compositionTimeOffset:Number,
                                              dataOffset:uint, ba:ByteArray):FLVTag {
         var message:FLVTag = _context.buildFLVTag();
 
         message.markAsAudio();
-
-        message.timestamp = _timestamp;
-        _timestamp = message.timestamp + sampleDuration * 1000 / _timescale;
-
+        message.timestamp = sampleTimestamp;
         message.length = sampleSize;
-
         message.dataOffset = dataOffset;
 
         message.data = new ByteArray();

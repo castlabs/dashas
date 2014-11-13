@@ -13,25 +13,20 @@ import com.castlabs.dash.boxes.FLVTag;
 import flash.utils.ByteArray;
 
 public class VideoSegmentHandler extends MediaSegmentHandler {
-    private static const MIN_CTO:int = -33;
-
     public function VideoSegmentHandler(context:DashContext, segment:ByteArray, messages:Vector.<FLVTag>,
                                         defaultSampleDuration:uint, timescale:uint, timestamp:Number) {
         super(context, segment, messages, defaultSampleDuration, timescale, timestamp);
     }
 
-    protected override function buildMessage(sampleDuration:uint, sampleSize:uint, sampleDependsOn:uint,
+    protected override function buildMessage(sampleTimestamp:Number, sampleSize:uint, sampleDependsOn:uint,
                                              sampleIsDependedOn:uint, compositionTimeOffset:Number,
                                              dataOffset:uint, ba:ByteArray):FLVTag {
         var message:FLVTag = _context.buildFLVTag();
 
         message.markAsVideo();
 
-        message.timestamp = _timestamp;
-        _timestamp = message.timestamp + sampleDuration * 1000 / _timescale;
-
+        message.timestamp = sampleTimestamp;
         message.length = sampleSize;
-
         message.dataOffset = dataOffset;
 
         message.data = new ByteArray();
@@ -49,7 +44,7 @@ public class VideoSegmentHandler extends MediaSegmentHandler {
         }
 
         if (!isNaN(compositionTimeOffset)) {
-            message.compositionTimestamp = compositionTimeOffset * 1000 / _timescale - MIN_CTO;
+            message.compositionTimestamp = compositionTimeOffset * 1000 / _timescale;
         }
 
         return message;
