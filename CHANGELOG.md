@@ -1,3 +1,10 @@
+## 1.0.3 (2014-12-29)
+
+Bugfixes:
+
+ - Fix rounding issue (@tomasz-oponowicz);
+ - Fragment files not being loaded (@tomasz-oponowicz, #31);
+
 ## 1.0.2 (2014-09-05)
 
 Bugfixes:
