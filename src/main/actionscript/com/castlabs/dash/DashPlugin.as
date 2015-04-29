@@ -13,6 +13,7 @@ import org.osmf.elements.VideoElement;
 import org.osmf.media.MediaElement;
 import org.osmf.media.MediaResourceBase;
 import org.osmf.media.PluginInfo;
+import org.osmf.media.URLResource;
 
 public class DashPlugin extends Sprite {
     private var _pluginInfo:PluginInfo;
@@ -32,7 +33,17 @@ public class DashPlugin extends Sprite {
     }
 
     public static function canHandleResource(resource:MediaResourceBase):Boolean {
-        return true;
+		var urlResource:URLResource = resource as URLResource;
+		
+		if (!urlResource || !urlResource.url)
+		{
+			return false;
+		}
+		
+		var url:String = urlResource.url;
+		var extension:String = url.substring(url.lastIndexOf('.')+1, url.length).toLowerCase();
+		
+		return extension == 'mpd';
     }
 
     public static function mediaElementCreationFunction():MediaElement {
