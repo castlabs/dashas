@@ -50,6 +50,7 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         var url:String = String(_segmentFilename);
 
         url = url.replace("$Time$", segment.time);
+        url = url.replace("$Number$", segment.num);
         url = url.replace("$RepresentationID$", representationId);
 
         var startTimestamp:Number = seconds(segment.time);
@@ -84,6 +85,7 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
         var items:XMLList = traverseAndBuildTimeline(xml);
 
         var time:Number = 0;
+        var num:Number = _startNumber;
         for (var i:uint = 0; i < items.length(); i++) {
 
             // read time if present
@@ -103,10 +105,11 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
             // add duplicates if repeats > 0
             for (var j:uint = 0; j <= repeats; j++) {
                 if (!isTimeExists(time)) { // unique
-                    _segments.push({ time: time, duration: duration});
+                    _segments.push({ time: time, duration: duration, num: num});
                 }
 
                 time += duration;
+                num++;
             }
         }
     }
@@ -167,10 +170,6 @@ public class SegmentTimeline extends SegmentTemplate implements SegmentIndex {
     }
 
     protected override function traverseAndBuildDuration(node:XML):Number {
-        return NaN;
-    }
-
-    protected override function traverseAndBuildStartNumber(node:XML):Number {
         return NaN;
     }
 
