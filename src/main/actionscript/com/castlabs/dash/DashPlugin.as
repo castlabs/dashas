@@ -41,10 +41,11 @@ public class DashPlugin extends Sprite {
 			return false;
 		}
 		
-		var url:String = urlResource.url.toLowerCase();
+		var url:String = urlResource.url;
 		
-        return url.indexOf('.mpd') != -1
-			|| url.indexOf('.dash') != -1;
+        return /\.mpd/i.test(url)
+			|| /\.dash/i.test(url)
+			;
     }
 	
     public static function mediaElementCreationFunction():MediaElement {
