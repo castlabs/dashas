@@ -147,7 +147,6 @@ Finally try dash.as locally.
 
 **TIP:** The flash is very aggressive in caching. If you notice that player doesn't respond to your server side changes, please clean browser's cache (i.e. cached images and files). 
 	
-
 ## Development
 
 At the moment project supports only Gradle 1.11. Please read [how to install Gradle 1.11 on Linux](https://github.com/castlabs/dashas/wiki/linux).
@@ -193,4 +192,3 @@ At the moment project supports only Gradle 1.11. Please read [how to install Gra
 
         $ cd <project_workspace>
         $ gradle test
-
