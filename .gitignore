@@ -4,9 +4,12 @@
 bin-debug/
 
 # Flash Builder
+.settings
 .flexProperties
+.flexLibProperties
 .actionScriptProperties
 .project
+bin
 
 # Maven
 target/
@@ -23,4 +26,3 @@ rsync.sh
 rsync_vanilla.sh
 libs/
 Flash Player Debugger.app/
-
